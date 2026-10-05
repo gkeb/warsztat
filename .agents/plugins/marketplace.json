@@ -1,0 +1,20 @@
+{
+  "name": "warsztat-local",
+  "interface": {
+    "displayName": "Warsztat"
+  },
+  "plugins": [
+    {
+      "name": "ai",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ai"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

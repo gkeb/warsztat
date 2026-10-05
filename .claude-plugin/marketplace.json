@@ -1,0 +1,14 @@
+{
+  "name": "warsztat",
+  "description": "Osobisty warsztat pracy z agentem: roadmapa, grill, spec, pionowe plasterki i budowa ticket po tickecie — wszystko w .ai/ repozytorium.",
+  "owner": {
+    "name": "Grzegorz"
+  },
+  "plugins": [
+    {
+      "name": "ai",
+      "source": "./plugins/ai",
+      "description": "Komendy /ai:* i hook stanu sesji dla kontraktu katalogów .ai/."
+    }
+  ]
+}

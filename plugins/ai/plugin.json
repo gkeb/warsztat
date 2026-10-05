@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ai",
+  "version": "0.13.0",
+  "description": "Mapa, decyzje i małe kroki w uniwersalnym warsztacie pracy z agentem.",
+  "author": {
+    "name": "Grzegorz"
+  },
+  "keywords": ["workflow", "roadmap", "spec", "tdd"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Warsztat",
+        "shortDescription": "Roadmapa, specyfikacje i budowa ticket po ticketcie.",
+        "developerName": "Grzegorz",
+        "category": "Productivity"
+      }
+    }
+  }
+}

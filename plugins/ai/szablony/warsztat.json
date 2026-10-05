@@ -1,0 +1,34 @@
+{
+  "wersja": 1,
+  "tracker": "pliki",
+  "profile": ["przekrojowe"],
+  "walidacja": [],
+  "odniesienie": {
+    "data": null,
+    "znane": []
+  },
+  "weryfikacja": {
+    "wymagana": true,
+    "innyModel": true,
+    "drugaOpinia": "zalecana"
+  },
+  "wydanie": {
+    "wersjonowanie": null,
+    "changelog": null,
+    "githubRelease": false,
+    "komendy": [],
+    "sprawdzenie": []
+  },
+  "pielegnacja": [],
+  "sciezki": {
+    "decyzje": ".ai/decyzje"
+  },
+  "modele": {
+    "claude": { "przeglad": null, "badanie": null },
+    "codex": { "przeglad": null, "badanie": null }
+  },
+  "github": {
+    "repo": null,
+    "synchronizacja": false
+  }
+}
