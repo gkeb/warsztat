@@ -55,6 +55,17 @@ git pull
 codex plugin add ai@warsztat-local      # tylko Codex; Claude Code czyta klon wprost
 ```
 
+**Claude Code** w otwartej sesji: `/reload-plugins` wczytuje nowe skille bez restartu (wypisuje liczbę skilli — porównaj z tabelą [Skille](#skille)). Z terminala `claude plugin marketplace update` odświeża zarejestrowane marketplace.
+
+**Codex** potrzebuje CLI z komendą `codex plugin add` (jest w 0.160.0, brak jej w 0.130.0 — tam `codex plugin --help` pokazuje tylko `marketplace`). Starszy Codex zaktualizuj:
+
+```text
+npm i -g @openai/codex@latest
+codex plugin add ai@warsztat-local
+```
+
+`codex plugin marketplace upgrade` nie pomoże — działa tylko dla marketplace z gita, a lokalny klon kończy się błędem „not configured as a Git marketplace”. Wersję kopii, której używa Codex, widać po nazwie katalogu w `~/.codex/plugins/cache/warsztat-local/ai/` — powinna równać się `version` w `plugins/ai/plugin.json`. Po odświeżeniu otwórz `/hooks` i ponownie zaakceptuj hook, jeśli Codex o to poprosi.
+
 Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu](#po-aktualizacji-pluginu)) — hook sam przypomni, gdy blok w `AGENTS.md` będzie starszy niż plugin.
 
 **Przejście ze starszej instalacji** (z innego katalogu albo innej nazwy marketplace): usuń starą rejestrację (`claude plugin marketplace remove <nazwa>`, `codex plugin marketplace remove <nazwa>`; listę pokazuje `claude plugin marketplace list` i `codex plugin marketplace list`), sklonuj repo i zainstaluj jak wyżej.
