@@ -8,20 +8,56 @@ Osobisty, przenośny system pracy z agentem kodującym. Łączy pomysły ze skil
 
 Treść skilli, kontrakt i stan projektu są wspólne dla Claude Code i Codexa. Różnią się tylko manifesty pluginu, instalacja i składnia wywołania.
 
-**Claude Code:**
+Plugin instalujesz z **klonu repozytorium** jako lokalny marketplace — nie bezpośrednio z GitHuba. Dzięki temu aktualizacja to `git pull`, a `retro` może zapisywać wzorce i profile w repo warsztatu (w kopii z cache nie może). GitHub służy do synchronizacji między komputerami.
 
 ```text
-/plugin marketplace add C:\progs\repo
-/plugin install ai@warsztat
+git clone https://github.com/gkeb/warsztat.git C:\progs\repo
 ```
 
-Marketplace z lokalnego katalogu ładuje plugin w miejscu — zmiany w tym repo działają od następnej sesji, bez reinstalacji.
+**Claude Code** — w czacie albo w terminalu:
 
-**Codex:** dodaj lokalny marketplace z katalogu repozytorium poleceniem `codex plugin marketplace add .`. Następnie otwórz `/plugins`, zainstaluj Warsztat i rozpocznij nową sesję. Przed pierwszym użyciem hooka otwórz `/hooks` i przejrzyj oraz zaakceptuj definicję hooka; po zmianie jego konfiguracji Codex może poprosić o ponowne zaufanie. Sama instalacja pluginu hooka nie włącza.
+```text
+/plugin marketplace add C:\progs\repo          (terminal: claude plugin marketplace add C:\progs\repo)
+/plugin install ai@warsztat                    (terminal: claude plugin install ai@warsztat)
+```
+
+Claude Code czyta plugin wprost z katalogu klonu — zmiany działają od następnej sesji, bez reinstalacji.
+
+**Codex** — w terminalu:
+
+```text
+codex plugin marketplace add C:\progs\repo
+codex plugin add ai@warsztat-local
+```
+
+Albo w aplikacji: `/plugins` → Warsztat → zainstaluj. Codex kopiuje plugin do `~/.codex/plugins/cache/warsztat-local/ai/<wersja>/`, więc **po każdej zmianie w repo** uruchom ponownie `codex plugin add ai@warsztat-local` — odświeża kopię (dodaje nowe pliki, usuwa skasowane). Przed pierwszym użyciem hooka otwórz `/hooks`, przejrzyj i zaakceptuj definicję; po zmianie jego konfiguracji Codex może poprosić o ponowne zaufanie. Sama instalacja pluginu hooka nie włącza.
+
+**Tylko rozszerzenia VS Code, bez CLI w `PATH`.** Rozszerzenia mają w sobie pełne CLI i używają tej samej konfiguracji (`~/.claude`, `~/.codex`) co wersja terminalowa — plugin zainstalowany raz działa w rozszerzeniu, terminalu i wszystkich projektach. W Claude Code wystarczą komendy `/plugin` w czacie. Do komend terminalowych użyj pliku z rozszerzenia (numer wersji w ścieżce zmienia się po aktualizacji rozszerzenia):
+
+```text
+Claude Code: %USERPROFILE%\.vscode\extensions\anthropic.claude-code-<wersja>-win32-x64\resources\native-binary\claude.exe
+Codex:       %USERPROFILE%\.vscode\extensions\openai.chatgpt-<wersja>-win32-x64\bin\windows-x86_64\codex.exe
+```
 
 **Wymaganie:** hook startowy uruchamia `node`, więc Node musi być w `PATH`. Bez niego skille działają, ale stan projektu nie jest wstrzykiwany na starcie sesji.
 
 W każdym projekcie zaczynasz od `start` — szczegóły w [Scenariuszach](#scenariusze).
+
+### Kilka komputerów i aktualizacja
+
+Na każdym komputerze klon repo i instalacja jak wyżej. Zmiany w warsztacie — poprawki skilli, nowe wzorce i pozycje profili z `retro` — commitujesz i wypychasz z komputera, na którym powstały.
+
+Aktualizacja na pozostałych:
+
+```text
+cd C:\progs\repo
+git pull
+codex plugin add ai@warsztat-local      # tylko Codex; Claude Code czyta klon wprost
+```
+
+Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu](#po-aktualizacji-pluginu)) — hook sam przypomni, gdy blok w `AGENTS.md` będzie starszy niż plugin.
+
+**Przejście ze starszej instalacji** (z innego katalogu albo innej nazwy marketplace): usuń starą rejestrację (`claude plugin marketplace remove <nazwa>`, `codex plugin marketplace remove <nazwa>`; listę pokazuje `claude plugin marketplace list` i `codex plugin marketplace list`), sklonuj repo i zainstaluj jak wyżej.
 
 ## Skille
 
