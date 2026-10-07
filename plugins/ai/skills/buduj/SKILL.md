@@ -25,6 +25,8 @@ Jedna sesja = jeden ticket. Pracujemy razem: mówisz, co robisz, i pytasz tylko 
 - Zdolność w `grill` albo `spec` → zatrzymaj się i wskaż właściwą komendę.
 - Inna zdolność już w `budowa` → zatrzymaj się (limit Teraz) i zapytaj, co robimy.
 - `git status`: są niezacommitowane zmiany niezwiązane z ticketem → zapytaj, co z nimi zrobić, zanim zaczniesz.
+- Remote: `git fetch` i `git status -sb` — gałąź za zdalną → `git pull --ff-only`; rozjechana → stop i pytanie (kontrakt, `### Push`).
+- `git.galezie` = `zdolnosc` → praca na gałęzi `zdolnosc/<slug>`: pierwszy ticket ją zakłada z aktualnej gałęzi głównej, kolejne sprawdzają, że na niej są (kontrakt, `### Gałęzie i PR`).
 
 ## 3. Kontekst
 
@@ -104,13 +106,14 @@ Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące po
 ## 9. Zamknięcie ticketu
 
 - Odhacz kryteria akceptacji (scenariusze kończone w tym tickecie: test akceptacyjny z numerem istnieje i przechodzi), status ticketu → `zrobione`, a w `budowal` wpisz `"<narzędzie> / <model>"` (np. `"Claude Code / claude-opus-5-5"`). Modelu nie zgadujesz — nieznany zapisz jako `nieznany`.
-- Commit tylko plików tego ticketu (kod, testy, ticket, mapa): `<slug>#<nr>: <tytuł>`.
 - `mapa.md` → `## Następny krok`: następny ticket. Wyczyść `## Stan sesji`, jeśli dotyczył tego ticketu.
 - **To był ostatni ticket** (wszystkie `zrobione` albo `porzucony`):
   - `weryfikacja.wymagana` w `.ai/warsztat.json` = `true` (domyślnie) → status zdolności w `ROADMAP.md` → `weryfikacja`; Następny krok: `skill weryfikuj <slug>`. Przy `weryfikacja.innyModel` = `true` (domyślnie) wskaż, że należy uruchomić go w modelu spoza listy `budowal`; przy `false` można użyć tego samego modelu, ale runda będzie nieniezależna;
   - `false` → Następny krok: `skill zamknij <slug>`.
 - Sprawdź, czy każde fałszywe założenie z tej sesji ma lekcję w `.ai/lekcje.md` (krok 6). Jeśli pomógł albo nie pasował wzorzec — dopisek `Wzorzec:` w lekcji.
+- Commit tylko plików tego ticketu (kod, testy, ticket, mapa, przy ostatnim tickecie także `ROADMAP.md`): `<slug>#<nr>: <tytuł>`, według `### Commit` w kontrakcie — skan sekretów przed commitem, `Closes #<github>` przy trackerze GitHub, potem push według `git.push`.
+- Ostatni ticket i `git.galezie` = `zdolnosc` → po pushu PR w wersji roboczej z szablonu `../../szablony/pr.md` (kontrakt, `### Gałęzie i PR`). Komendę pokazujesz przed uruchomieniem, a adres PR podajesz w raporcie — nie zapisujesz go w `.ai/`, bo odnajdzie go `gh pr view zdolnosc/<slug>`.
 
 ## 10. Stop
 
-Raport: co zrobione, wynik walidacji, hash commita, następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.
+Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.

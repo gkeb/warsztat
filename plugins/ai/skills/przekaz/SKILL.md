@@ -23,6 +23,7 @@ RRRR-MM-DD — ticket NN (w-toku)
 - W połowie: … (pliki, funkcje, test, który jeszcze nie przechodzi)
 - Nieoczywiste: … (pułapki, ustalenia z rozmowy, ślepe uliczki — żeby ich nie powtarzać)
 - Niezacommitowane: tak/nie — co
+- Gałąź: … (tylko gdy inna niż główna albo niewypchnięta)
 - Pierwszy ruch w następnej sesji: …
 ```
 
@@ -34,6 +35,6 @@ Nie streszczasz czatu i nie kopiujesz treści ticketu ani specu — linkujesz.
 - Jeśli ticket okazał się za duży, Następny krok = `skill pokroj <slug>#NN`.
 - Fałszywe założenia z tej sesji, które już mają rozwiązanie i jeszcze nie mają lekcji → wpis w `.ai/lekcje.md` (ta sama przyczyna → nowe wystąpienie). Bez rozwiązania → `proby.md` jako `nierozwiazane` albo `[badanie]` w mapie.
 - Ślepe uliczki i odłożone ścieżki z tej sesji, których jeszcze nie ma w `.ai/proby.md` → dopisz je tam. `Stan sesji` jest kasowany po zamknięciu ticketu; `proby.md` zostaje. W `Nieoczywiste` tylko linkujesz wpisy.
-- Kodu w połowie nie commitujesz. Zapytaj zgodnie z sekcją `## Jak pytać`, czy zrobić commit roboczy. Domyślnie rekomenduj brak commita. Zmiany w `.ai/` możesz zacommitować jako `<slug>: przekazanie`, jeśli użytkownik chce.
+- Kodu w połowie nie commitujesz. Zapytaj zgodnie z sekcją `## Jak pytać`, czy zrobić commit roboczy. Domyślnie rekomenduj brak commita. Zmiany w `.ai/` możesz zacommitować jako `<slug>: przekazanie`, jeśli użytkownik chce — według `### Commit` w kontrakcie. Gdy praca będzie kontynuowana na innym komputerze, rekomenduj commit `.ai/` i push; inaczej stan sesji zostanie na tym komputerze.
 
 Na koniec potwierdź jednym zdaniem, co zapisałeś i od czego zaczyna następna sesja.

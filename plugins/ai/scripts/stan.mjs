@@ -1,5 +1,6 @@
 // SessionStart (Claude Code i Codex): wstrzykuje stan .ai/ bieżącego projektu.
 // Projekt bez .ai/ROADMAP.md → brak wyjścia, żeby nie śmiecić w innych repozytoriach.
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -303,5 +304,34 @@ if (claudeMd && !/^\s*@AGENTS\.md\b/m.test(czytaj(claudeMd))) {
   uwagi.push('- CLAUDE.md nie importuje @AGENTS.md — Claude Code nie widzi reguł warsztatu; skill start to poprawi.');
 }
 if (uwagi.length > 0) wyjscie.push('', 'Do aktualizacji:', ...uwagi);
+
+// Git: tylko lokalne odczyty (bez fetch), żeby start sesji nie czekał na sieć.
+function git(...args) {
+  try {
+    return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 3000 }).trim();
+  } catch {
+    return null;
+  }
+}
+
+const uwagiGit = [];
+if (git('rev-parse', '--is-inside-work-tree') === 'true') {
+  // Hook skanu sekretów jest w repo, ale core.hooksPath to ustawienie lokalne — na nowym komputerze trzeba je włączyć.
+  if (existsSync(join(root, '.githooks', 'pre-commit')) && git('config', 'core.hooksPath') !== '.githooks') {
+    uwagiGit.push('- Skan sekretów przed commitem nie działa na tym komputerze (core.hooksPath ≠ .githooks) — skill start go włączy.');
+  }
+  const galaz = git('branch', '--show-current');
+  if (warsztat.git?.galezie === 'zdolnosc' && galaz) {
+    const wBudowie = [...teraz.matchAll(/zdolnosci\/([a-z0-9-]+)\/[^\n]*—\s*(?:budowa|weryfikacja)\s*—/g)].map((m) => m[1]);
+    for (const slug of wBudowie) {
+      if (galaz !== `zdolnosc/${slug}`) uwagiGit.push(`- ${slug} jest w budowie, a bieżąca gałąź to ${galaz} (oczekiwana: zdolnosc/${slug}).`);
+    }
+  }
+  const przed = Number(git('rev-list', '--count', '@{u}..HEAD'));
+  if (przed > 0 && warsztat.git?.push !== 'nigdy') {
+    uwagiGit.push(`- Niewypchnięte commity na ${galaz || 'bieżącej gałęzi'}: ${przed} (stan z ostatniego fetch).`);
+  }
+}
+if (uwagiGit.length > 0) wyjscie.push('', 'Git:', ...uwagiGit);
 
 process.stdout.write(wyjscie.join('\n') + '\n');

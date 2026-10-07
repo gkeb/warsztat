@@ -20,9 +20,9 @@
 
 ### Konfiguracja i bezpieczeństwo
 
-- **P-08 Konfiguracja i sekrety** — skąd program bierze ustawienia; sekrety tylko w zmiennych środowiskowych albo menedżerze sekretów, `.env` w `.gitignore`, `.env.example` w repo.
+- **P-08 Konfiguracja i sekrety** — skąd program bierze ustawienia; sekrety tylko w zmiennych środowiskowych albo menedżerze sekretów, `.env` w `.gitignore`, `.env.example` w repo; skan sekretów przed commitem (`bezpieczenstwo.skanSekretow`, hook `.githooks/pre-commit`) i lista plików chronionych przed agentem (`bezpieczenstwo.chronione`). Domyślne ustawia skill `start`.
 - **P-09 Bezpieczeństwo** — skąd przychodzą dane wejściowe i na ile im ufamy; uprawnienia; audyt zależności (`npm audit`, `pip-audit`).
-- **P-10 Dane osobowe** — czy przetwarzamy (także w logach i analityce), co, gdzie, jak długo; RODO: podstawa, polityka prywatności, zgoda na cookies.
+- **P-10 Dane osobowe** — czy przetwarzamy (także w logach i analityce), co, gdzie, jak długo; RODO: podstawa, polityka prywatności, zgoda na cookies. Dane w testach, przykładach i `.ai/` zawsze syntetyczne; skąd brać dane do odtworzenia błędów z produkcji (anonimizacja).
 
 ### Działanie
 
@@ -41,6 +41,7 @@
 - **P-20 Dokumentacja użytkownika** — README, pomoc w programie, strona; co minimum przy każdym wydaniu.
 - **P-21 Licencja i prawa** — licencja kodu; prawa do treści, obrazów i fontów.
 - **P-22 Dane trwałe** — jeśli są: format, migracje, kopie zapasowe, odtworzenie.
+- **P-23 Git i GitHub** — gałęzie (`glowna` albo `zdolnosc` z PR), push po commicie (`pytaj`, `zawsze`, `nigdy`), scalanie (`merge` albo `rebase`, nigdy squash), tracker (`pliki` albo `github` — Issues jako lustro ticketów), ochrona gałęzi głównej i skanowanie sekretów na GitHubie. Zapis w `warsztat.json` → `git`, `tracker`, `github`; zasady w kontrakcie warsztatu, sekcja „Git i GitHub”.
 
 ## Doświadczenie (UX)
 
@@ -57,6 +58,7 @@ Poziom i narzędzia określa profil klasy. Wspólne: test akceptacyjny idzie prz
 ## Niedowiezienia
 
 - sekret, adres albo klucz wpisany na sztywno;
+- prawdziwe dane osobowe w testach, przykładach albo logach;
 - działa tylko na maszynie autora: ścieżki absolutne, zależność od katalogu roboczego, brakująca zmienna środowiskowa bez komunikatu;
 - brak wpisu w historii zmian dla zmiany widocznej dla użytkownika (gdy prowadzimy `CHANGELOG.md`);
 - dokumentacja użytkownika nie opisuje nowego zachowania.
@@ -71,6 +73,7 @@ Poziom i narzędzia określa profil klasy. Wspólne: test akceptacyjny idzie prz
 ## Pielęgnacja
 
 - zależności przestarzałe i z podatnościami;
+- skan sekretów całej historii (`gitleaks git --redact --no-banner`) i alerty skanowania sekretów na GitHubie;
 - wersje środowiska bliskie końca wsparcia (EOL Node, Pythona);
 - wpisy „Niewydane” w historii zmian starsze niż kilka tygodni;
 - zasady twarde bez automatu, otwarte pozycje profilu.

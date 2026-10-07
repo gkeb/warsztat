@@ -25,7 +25,8 @@ Wszystkie pytania o wyjątek od kryteriów zamknięcia, porzucenie i wybór nast
    **Historia zmian.** Projekt z `warsztat.json` → `wydanie.changelog` → dopisz zdolność do `## Niewydane` (grupa `Dodane`, `Zmienione` albo `Usunięte`), jednym albo dwoma zdaniami z perspektywy użytkownika, w języku z P-02. Zmiana niewidoczna dla użytkownika (refaktor) — bez wpisu. Zaproponuj skill `wydaj`, jeśli zmiana jest widoczna i nic nie czeka na dołączenie do wydania.
    **Profil.** Pozycje `.ai/profil.md` rozstrzygnięte w tej zdolności mają aktualny wynik.
 6. **Co dalej.** Teraz ma wolne miejsce. Pokaż Dalej i zapytaj, co wchodzi (albo nic). Decyduje użytkownik. Wybrana zdolność dostaje `grill`, a Następny krok to `skill pomysl <slug>`.
-7. **Commit** zmian w `.ai/`: `<slug>: zamknięcie`.
+7. **Commit** zmian w `.ai/`: `<slug>: zamknięcie`, według `### Commit` w kontrakcie (skan sekretów, potem push według `git.push`).
+8. **Scalenie** — tylko przy `git.galezie` = `zdolnosc`: push gałęzi zdolności, `gh pr ready`, a po zgodzie `gh pr merge --merge --delete-branch` (albo `--rebase`, według `git.scalanie`; nigdy squash), potem `git switch <glowna>` i `git pull --ff-only`. Komendy pokazujesz przed uruchomieniem. Konflikt przy scaleniu → stop i pytanie; nie rozwiązujesz go sam w ciemno. Przy `tracker` = `github` sprawdź po scaleniu, że Issue ticketów się zamknęły (`gh issue list --label <slug> --state open`).
 
 ## Porzucenie — `porzuc`
 
@@ -33,4 +34,5 @@ Wszystkie pytania o wyjątek od kryteriów zamknięcia, porzucenie i wybór nast
 2. Mapa: `RRRR-MM-DD — porzucone — powód`. Tickety `do-zrobienia` i `w-toku` → `porzucony`.
 3. Roadmapa: linia do Porzucone: `— porzucone RRRR-MM — powód`.
 4. Kod, który już wszedł, zostaje. Zapytaj, czy coś trzeba cofnąć. Nigdy nie cofasz automatycznie.
-5. Kroki 6–7 jak wyżej.
+5. GitHub: `tracker` = `github` → otwarte Issue zdolności zamknij jako `not planned` z powodem. `git.galezie` = `zdolnosc` → PR zamknij bez scalania (`gh pr close`); commit porzucenia (zmiany w `.ai/`) zrób na gałęzi głównej, a gałąź zdolności usuń tylko na wyraźną prośbę.
+6. Kroki 6–7 jak wyżej.

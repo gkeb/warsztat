@@ -1,6 +1,31 @@
 {
   "wersja": 1,
   "tracker": "pliki",
+  "git": {
+    "galezie": "glowna",
+    "glowna": null,
+    "push": "pytaj",
+    "scalanie": "merge"
+  },
+  "bezpieczenstwo": {
+    "skanSekretow": null,
+    "chronione": [
+      ".env",
+      ".env.local",
+      ".env.*.local",
+      ".env.production",
+      ".env.staging",
+      "*.pem",
+      "*.key",
+      "*.p12",
+      "*.pfx",
+      "id_rsa*",
+      "id_ed25519*",
+      "secrets/**",
+      "credentials*.json",
+      "service-account*.json"
+    ]
+  },
   "profile": ["przekrojowe"],
   "walidacja": [],
   "odniesienie": {
@@ -28,7 +53,6 @@
     "codex": { "przeglad": null, "badanie": null }
   },
   "github": {
-    "repo": null,
-    "synchronizacja": false
+    "repo": null
   }
 }

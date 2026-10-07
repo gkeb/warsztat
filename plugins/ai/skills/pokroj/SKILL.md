@@ -48,6 +48,8 @@ Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności.
 - `mapa.md` → `## Plasterki`: lista linków w kolejności, z zależnościami, bez statusów.
 - `mapa.md` → `## Następny krok`: `skill buduj <slug>` → ticket 01.
 - `ROADMAP.md`: status `plan`.
+- `tracker` = `github` → pokaż listę Issue do utworzenia (tytuł, etykiety; treść według `### Tracker GitHub` w kontrakcie) i po zgodzie utwórz je. Numery wpisz do pola `github` w ticketach. Przy pierwszej synchronizacji w repo publicznym przypomnij, że Issues są publiczne. Bez `gh` → podaj komendy i zostaw `github: null`; `gdzie` pokaże tickety bez Issue.
+- Commit `<slug>: plan` według `### Commit` w kontrakcie, po zgodzie.
 
 ## Tryb podziału (`slug#NN`)
 
@@ -56,4 +58,5 @@ Ticket okazał się za duży:
 - nowe tickety dostają kolejne wolne numery, nie „03a”;
 - stary ticket dostaje `porzucony` i notatkę „podzielony na NN, NN”;
 - przepnij `blokowany-przez` w ticketach, które zależały od starego;
-- zaktualizuj Plasterki i Następny krok. Status zdolności zostaje bez zmian.
+- zaktualizuj Plasterki i Następny krok. Status zdolności zostaje bez zmian;
+- `tracker` = `github` → Issue dla nowych ticketów, a Issue starego zamknij: `gh issue close <nr> --reason "not planned" --comment "podzielony na #…"`.

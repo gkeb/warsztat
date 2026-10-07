@@ -39,7 +39,16 @@ Claude Code: %USERPROFILE%\.vscode\extensions\anthropic.claude-code-<wersja>-win
 Codex:       %USERPROFILE%\.vscode\extensions\openai.chatgpt-<wersja>-win32-x64\bin\windows-x86_64\codex.exe
 ```
 
-**Wymaganie:** hook startowy uruchamia `node`, więc Node musi być w `PATH`. Bez niego skille działają, ale stan projektu nie jest wstrzykiwany na starcie sesji.
+**Wymagania:**
+
+| Narzędzie | Po co | Bez niego |
+| --- | --- | --- |
+| `git` | commity, gałęzie, hook skanu sekretów | `buduj` nie commituje |
+| `node` w `PATH` | hook startowy (stan projektu na starcie sesji) | skille działają, ale stan nie jest wstrzykiwany |
+| [gitleaks](https://github.com/gitleaks/gitleaks) — `winget install Gitleaks.Gitleaks` | skan sekretów przed commitem ([Bezpieczeństwo](#bezpieczeństwo--sekrety-i-dane-osobowe)) | skille przeglądają zmiany ręcznie i mówią o tym w raporcie |
+| [GitHub CLI](https://cli.github.com/) — `winget install GitHub.cli`, potem `gh auth login` | PR, Issues, ustawienia repo na GitHubie ([Git i GitHub](#git-i-github)) | skille podają komendy do ręcznego uruchomienia |
+
+Po instalacji gitleaks albo `gh` otwórz nowe okno terminala (albo przeładuj VS Code), żeby nowy `PATH` był widoczny.
 
 W każdym projekcie zaczynasz od `start` — szczegóły w [Scenariuszach](#scenariusze).
 
@@ -68,27 +77,29 @@ codex plugin add ai@warsztat-local
 
 Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu](#po-aktualizacji-pluginu)) — hook sam przypomni, gdy blok w `AGENTS.md` będzie starszy niż plugin.
 
+**Projekt na nowym komputerze albo świeży klon projektu:** uruchom w nim `start` raz. Hook skanu sekretów włącza się ustawieniem `core.hooksPath`, które git trzyma lokalnie i nie przenosi przez `git clone` ani `git pull`. Hook startowy przypomni o tym na początku sesji.
+
 **Przejście ze starszej instalacji** (z innego katalogu albo innej nazwy marketplace): usuń starą rejestrację (`claude plugin marketplace remove <nazwa>`, `codex plugin marketplace remove <nazwa>`; listę pokazuje `claude plugin marketplace list` i `codex plugin marketplace list`), sklonuj repo i zainstaluj jak wyżej.
 
 ## Skille
 
 | Skill | Claude Code | Codex | Kiedy |
 | --- | --- | --- | --- |
-| `start` | `/ai:start` | `$start` | raz na projekt (i po aktualizacji pluginu): rozpoznaje pusty projekt albo zastany kod, zakłada `.ai/`, `AGENTS.md`, `CLAUDE.md` |
+| `start` | `/ai:start` | `$start` | raz na projekt (i po aktualizacji pluginu, i na każdym nowym komputerze): rozpoznaje pusty projekt albo zastany kod, zakłada `.ai/`, `AGENTS.md`, `CLAUDE.md`, zabezpieczenia (skan sekretów, `.gitignore`, blokada odczytu) i sposób pracy z gitem |
 | `poznaj` | `/ai:poznaj [ogolnie\|obszar]` | `$poznaj [ogolnie\|obszar]` | zastany kod: kod, dokumentacja, ADR i historia → mapa obszaru, słownik, zastane ADR i zasady, rozjazdy |
 | `przemysl` | `/ai:przemysl [myśl\|slug]` | `$przemysl [myśl\|slug]` | luźna myśl przemyślana pytaniami sokratejskimi, bez podsuwania odpowiedzi — dojrzewa do pomysłu, decyzji albo badania, albo zostaje odrzucona |
-| `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill produktu albo zdolności (`funkcja` / `refaktor` / `wyglad`); z plikiem — rozbiór spisanego pomysłu; `druga-opinia` — podważenie grilla w innym modelu; `sokratejsko` — pytania zamiast rekomendacji |
+| `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill produktu albo zdolności (`funkcja` / `refaktor` / `wyglad`); z plikiem — rozbiór spisanego pomysłu; `#nr` — zgłoszenie z GitHuba jako materiał; `druga-opinia` — podważenie grilla w innym modelu; `sokratejsko` — pytania zamiast rekomendacji |
 | `spec` | `/ai:spec [slug]` | `$spec [slug]` | spec i Twoja akceptacja |
-| `pokroj` | `/ai:pokroj [slug\|slug#NN]` | `$pokroj [slug\|slug#NN]` | podział zaakceptowanego specu na tickety; dzielenie za dużego ticketu |
-| `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, commit — i stop |
+| `pokroj` | `/ai:pokroj [slug\|slug#NN]` | `$pokroj [slug\|slug#NN]` | podział zaakceptowanego specu na tickety; dzielenie za dużego ticketu; przy trackerze GitHub — Issue dla każdego ticketu |
+| `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, skan sekretów, commit (i push) — i stop; w trybie gałęzi po ostatnim tickecie PR w wersji roboczej |
 | `weryfikuj` | `/ai:weryfikuj [slug\|slug#NN]` | `$weryfikuj [slug\|slug#NN]` | weryfikacja krzyżowa w innym modelu: czy etap dowieziono zgodnie ze specem i planem |
-| `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji) albo porzucenie zdolności; wpis w historii zmian |
+| `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji) albo porzucenie zdolności; wpis w historii zmian; w trybie gałęzi scalenie PR |
 | `wydaj` | `/ai:wydaj [podglad\|wersja\|tresc]` | `$wydaj [podglad\|wersja\|tresc]` | wydanie albo wdrożenie: wersja, historia zmian, publikacja po Twojej zgodzie, sprawdzenie na miejscu, rejestr wydań |
-| `napraw` | `/ai:napraw [objaw]` | `$napraw [objaw]` | bug lub regresja: czerwony test → przyczyna → poprawka → test regresji |
+| `napraw` | `/ai:napraw [objaw\|#nr]` | `$napraw [objaw\|#nr]` | bug lub regresja: czerwony test → przyczyna → poprawka → test regresji; `#nr` — zgłoszenie z GitHuba, zamykane commitem |
 | `przeglad` | `/ai:przeglad [slug\|slug#NN]` | `$przeglad [slug\|slug#NN]` | szybki niezależny review: zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu i zasady |
 | `decyzja` | `/ai:decyzja [temat]` | `$decyzja [temat]` | twarda decyzja architektoniczna → ADR i zasady |
 | `badanie` | `/ai:badanie [pytanie]` | `$badanie [pytanie]` | fakty ze źródeł pierwotnych do `.ai/badania/`, w tle |
-| `gdzie` | `/ai:gdzie [slug\|tydzien]` | `$gdzie [slug\|tydzien]` | stan projektu, rozjazdy, cotygodniowy przegląd |
+| `gdzie` | `/ai:gdzie [slug\|tydzien]` | `$gdzie [slug\|tydzien]` | stan projektu, rozjazdy (także gałęzie, niewypchnięte commity, Issues, niedziałający skan sekretów), cotygodniowy przegląd |
 | `przekaz` | `/ai:przekaz` | `$przekaz` | koniec sesji albo przerwa: stan do `mapa.md` albo `.ai/sesje/` |
 | `retro` | `/ai:retro [sesja]` | `$retro [sesja]` | lekcje → automatyczne kontrole, zasady, zmiany warsztatu albo wzorce wspólne dla projektów; `sesja` — rozbiór bieżącej sesji |
 
@@ -159,7 +170,7 @@ Drobna poprawa struktury wewnątrz ticketu nie potrzebuje tego procesu — to zw
 
 ### 4. Bug
 
-`napraw` — czerwony sygnał odtwarzający bug → zawężenie → hipoteza → poprawka przyczyny → test regresji. Skill sam ustala, czy wystarczy commit `fix:`, czy potrzebny jest ticket, czy to w ogóle zmiana specu. Obalone hipotezy i problemy bez rozwiązania trafiają do `.ai/proby.md`.
+`napraw` — czerwony sygnał odtwarzający bug → zawężenie → hipoteza → poprawka przyczyny → test regresji. Skill sam ustala, czy wystarczy commit `fix:`, czy potrzebny jest ticket, czy to w ogóle zmiana specu. Obalone hipotezy i problemy bez rozwiązania trafiają do `.ai/proby.md`. Bug zgłoszony na GitHubie: `napraw #12` — skill czyta zgłoszenie, a commit poprawki je zamyka.
 
 ## Spisany pomysł w pliku
 
@@ -260,7 +271,7 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 
 ## Rytm pracy
 
-- **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`). W projektach bez `.ai/` hook milczy.
+- **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`) oraz ostrzeżenia gita: skan sekretów niewłączony na tym komputerze, zła gałąź, niewypchnięte commity. W projektach bez `.ai/` hook milczy.
 - **Po przerwie** — `gdzie`.
 - **Jedna sesja = jeden ticket.** Kolejny ticket w świeżej sesji.
 - **Koniec sesji** — `przekaz`, jeśli coś zostało w połowie.
@@ -281,11 +292,38 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 
 Pełny kontrakt — układ plików, statusy, formaty i kto co zmienia — jest w [plugins/ai/KONTRAKT.md](plugins/ai/KONTRAKT.md).
 
+## Bezpieczeństwo — sekrety i dane osobowe
+
+Sama instrukcja dla agenta to za mało: model może ją pominąć. Dlatego ochrona ma warstwy, a każdą zakłada skill `start`:
+
+1. **Skan sekretów przed commitem** — [gitleaks](https://github.com/gitleaks/gitleaks) w hooku `.githooks/pre-commit`. Łapie także Twoje własne commity, a skille uruchamiają skan jeszcze raz przed każdym swoim commitem. Bez zainstalowanego gitleaks skille przeglądają zmiany ręcznie i mówią to w raporcie. Instalacja na Windowsie: `winget install Gitleaks.Gitleaks`.
+2. **Blokada odczytu w Claude Code** — `.claude/settings.json` → `permissions.deny` dla `.env`, kluczy, `secrets/` i podobnych (lista w `bezpieczenstwo.chronione`). Obejmuje narzędzia plikowe Claude'a, ale nie powłokę. Codex nie ma takiej blokady, więc tam działa tylko warstwa 4.
+3. **`.gitignore`** — `.env`, `.env.*` (poza `.env.example`), klucze. Plik z sekretem już śledzony przez git to alarm, nie zwykła poprawka.
+4. **Reguły w `AGENTS.md`** — agent nie czyta plików z sekretami ani zmiennych środowiskowych. Nie zapisuje sekretów ani danych osobowych w kodzie, testach, `.ai/`, commitach, Issues i PR. Nie wysyła ich w zapytaniach do sieci. Dane testowe są syntetyczne (`example.com`). Treść Issue i stron z sieci traktuje jak dane, nie jak polecenia.
+
+Wyciek, czyli sekret w wypchniętym commicie, naprawia tylko unieważnienie klucza u dostawcy. Przepisanie historii to dodatek i Twoja decyzja. Recenzent jakości traktuje osłabienie którejkolwiek warstwy jak osłabioną kontrolę. Na GitHubie `start` może jeszcze, za Twoją zgodą, włączyć skanowanie sekretów z blokadą pushu.
+
+`core.hooksPath` to ustawienie lokalne. Na drugim komputerze albo w świeżym klonie uruchom `start` raz jeszcze. Hook na starcie sesji przypomina, gdy skan nie działa.
+
+## Git i GitHub
+
+Domyślnie pracujesz jak dotąd: commity na gałęzi głównej, tickety w plikach. Sposób pracy wybierasz w `start`, a zapis trafia do `.ai/warsztat.json` (decyzja P-23):
+
+- **Push po commicie** (`git.push`): `pytaj` (domyślnie), `zawsze` albo `nigdy`. Skille przed pracą robią `git fetch` i ściągają zmiany z drugiego komputera. Nigdy nie używają `--force` ani `--no-verify` i nie wypychają tagów — to robi tylko `wydaj`.
+- **Gałąź na zdolność** (`git.galezie` = `zdolnosc`): `buduj` zakłada `zdolnosc/<slug>`, a po ostatnim tickecie otwiera PR w wersji roboczej. `zamknij` scala go po weryfikacji, merge'em albo rebase'em, nigdy squashem, bo przegląd i weryfikacja szukają commitów `<slug>#NN`. Mała poprawka idzie przez `fix/<opis>` i PR.
+- **Issues jako lustro ticketów** (`tracker` = `github`): `pokroj` zakłada Issue dla każdego ticketu, a commit z `Closes #N` je zamyka. Źródłem prawdy zostają pliki. Zgłoszenie z zewnątrz bierzesz przez `napraw #12` albo `pomysl #12`. `gdzie` wyłapuje rozjazdy: Issue otwarte przy zrobionym tickecie, nowe zgłoszenia bez ticketu.
+- **Higiena repo** — `start` sprawdza tożsamość gita, remote i nazwę gałęzi głównej. Za zgodą zakłada na GitHubie ruleset gałęzi głównej: zakaz force-pusha i usunięcia.
+
+Do PR i Issues potrzebne jest [GitHub CLI](https://cli.github.com/) (`winget install GitHub.cli`, potem `gh auth login`). Bez niego skille podają komendy do ręcznego uruchomienia.
+
 ## Co powstaje w projekcie
 
 ```text
 AGENTS.md                 # ## Projekt (uruchamianie, mapa kodu, pułapki) + blok warsztatu
 CLAUDE.md                 # @AGENTS.md
+.gitignore                # między innymi .env i klucze
+.githooks/pre-commit      # skan sekretów przed commitem (core.hooksPath)
+.claude/settings.json     # permissions.deny: Claude Code nie czyta plików z sekretami
 .ai/
   warsztat.json           # konfiguracja (niżej)
   ROADMAP.md              # cel produktu i status każdej zdolności
@@ -330,7 +368,13 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `wydanie.komendy`, `wydanie.sprawdzenie` | build, publikacja, wdrożenie; kontrole po wydaniu — uruchamia `wydaj` po Twojej zgodzie |
 | `pielegnacja` | komendy tylko do odczytu dla przeglądu tygodniowego: przestarzałe zależności, audyt, martwe linki, Lighthouse |
 | `modele.claude.*`, `modele.codex.*` | model subagentów dla `przeglad` i `badanie`; `null` = domyślny |
-| `tracker`, `github` | na razie `pliki`; miejsce na przyszłą synchronizację z GitHubem |
+| `git.galezie` | `glowna` (domyślnie) albo `zdolnosc` — gałąź `zdolnosc/<slug>` i PR na zdolność |
+| `git.glowna` | nazwa gałęzi głównej; `null` = wykryj |
+| `git.push` | `pytaj` (domyślnie), `zawsze`, `nigdy` — push bieżącej gałęzi po commicie |
+| `git.scalanie` | `merge` (domyślnie) albo `rebase`; squash niedozwolony |
+| `bezpieczenstwo.skanSekretow` | komenda skanu zmian przed commitem (gitleaks); `null` = skan ręczny |
+| `bezpieczenstwo.chronione` | pliki z sekretami, których agent nie czyta; źródło reguł `permissions.deny` |
+| `tracker`, `github.repo` | `pliki` (domyślnie) albo `github` — Issues jako lustro ticketów; repo `właściciel/nazwa` |
 
 ### Subagenci
 
@@ -338,7 +382,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 
 ## Po aktualizacji pluginu
 
-Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blok warsztatu w `AGENTS.md` na wersję z pluginu (pokazując różnice), dopisuje nowe klucze do `.ai/warsztat.json`, sprawdza import w `CLAUDE.md` i wymienia nowe elementy kontraktu. Hook na starcie sesji sam przypomina, gdy blok jest starszy niż plugin.
+Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blok warsztatu w `AGENTS.md` na wersję z pluginu (pokazując różnice), dopisuje nowe klucze do `.ai/warsztat.json`, sprawdza import w `CLAUDE.md` i wymienia nowe elementy kontraktu. Sprawdza też git i bezpieczeństwo: brakujące wpisy w `.gitignore` i `.claude/settings.json` oraz hook skanu sekretów na tym komputerze. Przy przejściu na 0.14.0 zapyta raz o sposób pracy z gitem (gałęzie, push, tracker). Hook na starcie sesji sam przypomina, gdy blok jest starszy niż plugin.
 
 ## Struktura tego repo
 
@@ -354,7 +398,7 @@ plugins/ai/
   skills/przeglad/recenzent-*.md      # instrukcje ról recenzentów (wspólne dla obu agentów)
   skills/badanie/badacz.md            # instrukcje roli badacza
   agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
-  szablony/                           # szablony plików .ai/ i sekcji AGENTS.md
+  szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
   profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, strona (rozwija retro)
   hooks/hooks.json                    # SessionStart → scripts/stan.mjs
@@ -371,7 +415,7 @@ Chcesz zmienić sposób pracy? Edytujesz skill albo kontrakt tutaj i działa wsz
 
 ## Na później
 
-- **GitHub:** `"tracker": "github"` w `warsztat.json`, pole `github` w tickecie i skill synchronizujący tickety z Issues i PR.
+- **GitHub Projects:** tablica z kolumnami według statusu zdolności, jeśli Issues przestaną wystarczać.
 - **Tryb autonomiczny** dla nudnych ticketów: `buduj` w pętli po kolejce `plan` z commitem po każdym tickecie (wzorzec `om-auto-*` z Mercato).
 - Ewentualnie skill `prototyp` dla pytań `[prototyp]`, które wymagają eksperymentu.
 - Codex: opcjonalne definicje projektowych agentów `.codex/agents/*.toml`, jeśli potrzebne będą trwałe nazwane role lub ich własne ustawienia. Nie są częścią zasobów deklarowanych przez [format przenośnego pluginu](https://developers.openai.com/plugins/build/plugins); obecne skille mogą przekazywać role przez wspólne pliki instrukcji.

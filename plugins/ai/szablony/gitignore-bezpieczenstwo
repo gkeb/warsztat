@@ -1,0 +1,15 @@
+# warsztat: sekrety — nie trafiają do repozytorium
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+secrets/
+credentials*.json
+service-account*.json
+# warsztat: zrzuty ekranu z budowy (rodzaj wyglad)
+.ai/zrzuty/

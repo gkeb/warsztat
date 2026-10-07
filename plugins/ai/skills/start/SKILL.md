@@ -27,9 +27,34 @@ Zasada nadrzędna: **niczego nie nadpisujesz i niczego nie przenosisz bez zgody*
 
 Pokaż wynik rozpoznania w kilku linijkach i potwierdź tryb, jeśli nie jest oczywisty.
 
-## 2. Git
+## 2. Git i bezpieczeństwo
 
-Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init`. Bez gita skill `buduj` nie będzie commitować.
+Zasady: sekcje `## Git i GitHub` i `## Bezpieczeństwo i dane` w kontrakcie.
+
+Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita skill `buduj` nie będzie commitować, a reszta tego kroku odpada.
+
+**Sprawdź sam**, potem pokaż wynik i propozycje jedną listą — zgoda na całość albo po punkcie:
+
+- **Tożsamość:** `git config user.name` i `user.email`. Brak → poproś o wartości, nie zgadujesz.
+- **Remote i gałąź główna:** `git remote get-url origin` → GitHub → `github.repo` (`właściciel/nazwa`); nazwa gałęzi głównej → `git.glowna`. Bez remote powiedz, że push, PR i Issues odpadają, dopóki go nie będzie. Repo na GitHubie zakładasz (`gh repo create`) tylko na prośbę.
+- **`.gitignore`:** brakujące wpisy z `../../szablony/gitignore-bezpieczenstwo` → dopisz na końcu pliku. Plik śledzony przez git, który pasuje do tych wpisów (`git ls-files` — np. `.env`, `*.pem`) → **alarm**: zatrzymaj się i postępuj według punktu „Wyciek” w kontrakcie.
+- **Skan sekretów:** `gitleaks version`.
+  - Jest → `bezpieczenstwo.skanSekretow` = `gitleaks git --pre-commit --staged --redact --no-banner` (wersja starsza niż 8.19: `gitleaks protect --staged --redact --no-banner`).
+  - Brak → zaproponuj instalację: Windows `winget install Gitleaks.Gitleaks` albo `scoop install gitleaks`, macOS `brew install gitleaks`, Linux — menedżer pakietów albo plik z wydań na GitHubie. Nie instalujesz sam. Do czasu instalacji `skanSekretow` zostaje `null`, a skille skanują zmiany ręcznie.
+  - Hook: projekt ma `.husky/` albo `.pre-commit-config.yaml` → dopisz gitleaks do istniejącego mechanizmu (w `pre-commit`: repo `https://github.com/gitleaks/gitleaks`, hook `gitleaks`). Inaczej skopiuj `../../szablony/pre-commit` do `.githooks/pre-commit`, dopisz do `.gitattributes` linię `.githooks/* text eol=lf` (skrypt z CRLF nie ruszy na Windowsie) i ustaw `git config core.hooksPath .githooks`.
+  - Zastane repo z historią → zaproponuj jednorazowy skan całej historii: `gitleaks git --redact --no-banner`. Znaleziska pokazujesz; co z nimi zrobić, decyduje człowiek.
+- **Blokada odczytu w Claude Code:** `.claude/settings.json` → `permissions.deny` — dopisz brakujące reguły z `../../szablony/claude-settings.json` (dla każdego wzorca z `bezpieczenstwo.chronione` para `Read(**/<wzorzec>)` i `Edit(**/<wzorzec>)`). Istniejących ustawień nie ruszasz. Powiedz wprost, że te reguły nie zatrzymują powłoki, a w Codexie działa tylko reguła z `AGENTS.md`.
+- **Sposób pracy** — jedno wywołanie narzędzia pytań z trzema niezależnymi pytaniami (decyzja P-23):
+  1. gałęzie: `glowna` (rekomendowane przy pracy solo) albo `zdolnosc` z PR;
+  2. push po commicie: `pytaj` (rekomendowane) / `zawsze` / `nigdy`;
+  3. tracker: `pliki` (rekomendowane) albo `github` — Issues jako lustro ticketów. Wymaga `gh` i remote na GitHubie; przy repo publicznym Issues są publiczne.
+
+  Tryb `zdolnosc` albo tracker `github` → sprawdź `gh auth status`. Brak `gh` albo logowania → powiedz, że skille podadzą komendy do ręcznego uruchomienia, i zaproponuj `gh auth login`.
+- **Ustawienia GitHuba** — tylko gdy jest remote na GitHubie i `gh` jest zalogowane; każdą komendę pokazujesz przed uruchomieniem, bo zmienia ustawienia poza repozytorium:
+  - skanowanie sekretów z blokadą pushu: `gh api -X PATCH repos/<repo> -f "security_and_analysis[secret_scanning][status]=enabled" -f "security_and_analysis[secret_scanning_push_protection][status]=enabled"`;
+  - ruleset gałęzi głównej (zakaz force-pusha i usunięcia): `gh api -X POST repos/<repo>/rulesets --input <katalog pluginu>/szablony/github-ruleset.json`.
+  
+  Widoczność sprawdź przez `gh repo view <repo> --json visibility`. Repo prywatne na darmowym planie → obie funkcje są płatne; pomiń je i zapisz to w podsumowaniu.
 
 ## 3. Pliki warsztatu
 
@@ -89,12 +114,13 @@ Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init`. Bez gita skill `bud
    - pokaż różnice między obecnym blokiem a nowym szablonem;
    - zmiany wewnątrz bloku wprowadzone ręcznie wskaż osobno i zaproponuj przeniesienie ich poza blok (do `## Projekt` albo własnej sekcji), zanim blok zostanie zastąpiony;
    - po zgodzie zastąp całość między `warsztat:start` a `warsztat:koniec`. Treści poza blokiem nie ruszasz.
-2. **`.ai/warsztat.json`** — dopisz klucze, które przybyły w nowszym szablonie, z wartościami domyślnymi. Istniejących wartości nie zmieniasz.
+2. **`.ai/warsztat.json`** — dopisz klucze, które przybyły w nowszym szablonie, z wartościami domyślnymi. Istniejących wartości nie zmieniasz. Klucze, których szablon już nie ma (np. `github.synchronizacja`), wymień i zaproponuj usunięcie.
 3. **`CLAUDE.md`** — import `@AGENTS.md` jest na miejscu.
-4. **Nowe elementy kontraktu**, których projekt jeszcze nie używa (np. katalog prób, mapy obszarów, profile, rejestr wydań) — tylko wymień je jednym zdaniem. Pliki powstaną, gdy będą potrzebne. Wyjątek: `profile` w `warsztat.json` — zaproponuj klasę z rozpoznania (krok 1), bo od niej zależą listy decyzji, niedowiezienia i wydanie.
+4. **Git i bezpieczeństwo** — krok 2 w trybie sprawdzania: brakujące wpisy w `.gitignore` i `permissions.deny`, `skanSekretow` przy zainstalowanym już gitleaks, a przede wszystkim `core.hooksPath` **na tym komputerze**. To ustawienie lokalne, więc na drugim komputerze albo w świeżym klonie trzeba je włączyć ponownie. Nowe klucze `git` i `tracker` przy pierwszej aktualizacji → zadaj pytania o sposób pracy z kroku 2.
+5. **Nowe elementy kontraktu**, których projekt jeszcze nie używa (np. katalog prób, mapy obszarów, profile, rejestr wydań) — tylko wymień je jednym zdaniem. Pliki powstaną, gdy będą potrzebne. Wyjątek: `profile` w `warsztat.json` — zaproponuj klasę z rozpoznania (krok 1), bo od niej zależą listy decyzji, niedowiezienia i wydanie.
 
 Podsumuj zmiany i zaproponuj commit `warsztat: aktualizacja do v<wersja>`.
 
 ## 7. Podsumowanie
 
-Lista: tryb, utworzone, pominięte (już istniały), katalog ADR, walidacja i punkt odniesienia, jeden skill na teraz. Zaproponuj commit `warsztat: start` (pliki warsztatu i ewentualne przeniesienie ADR-ów) — zrób go tylko po zgodzie.
+Lista: tryb, utworzone, pominięte (już istniały), katalog ADR, walidacja i punkt odniesienia, git i bezpieczeństwo (skan sekretów: hook / ręczny; blokada odczytu; gałęzie, push, tracker; ustawienia GitHuba albo powód pominięcia), jeden skill na teraz. Zaproponuj commit `warsztat: start` (pliki warsztatu, `.gitignore`, `.gitattributes`, `.githooks/`, `.claude/settings.json` i ewentualne przeniesienie ADR-ów) — zrób go tylko po zgodzie, według `### Commit` w kontrakcie.

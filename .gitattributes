@@ -1,0 +1,2 @@
+# Skrypty powłoki muszą mieć LF także po klonie na Windowsie (core.autocrlf).
+plugins/ai/szablony/pre-commit text eol=lf

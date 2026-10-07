@@ -20,7 +20,8 @@ Argument: `podglad` — tylko wdrożenie podglądu (bez wersji i tagu); `wersja`
 
 ## 2. Warunki
 
-- `git status` czysty; gałąź zgodna z P-17 (zwykle główna).
+- `git status` czysty; gałąź zgodna z P-17 (zwykle główna) i aktualna względem zdalnej (`git fetch`, `git status -sb`). W trybie `git.galezie` = `zdolnosc` wydajesz tylko z gałęzi głównej, po scaleniu PR.
+- Skan sekretów na tym, co wychodzi: `gitleaks git --redact --no-banner --log-opts="<ostatni tag>..HEAD"` (bez narzędzia — przegląd `git diff <ostatni tag>..HEAD` pod kątem sekretów). Znalezisko → stop.
 - Walidacja z `warsztat.json` zielona (z `odniesienie.znane`).
 - Testy akceptacyjne i kontrole z sekcji `Wydanie` profili (np. `astro check`, linki, Lighthouse; instalacja z artefaktu dla CLI) — zielone.
 - Zdolność w `budowa` albo `weryfikacja` z commitami od ostatniego wydania → zapytaj: wydajemy bez niej (jej kod jest już w gałęzi — upewnij się, że jest nieaktywny albo bezpieczny) czy czekamy. Rekomenduj czekanie, chyba że zmiana jest niewidoczna dla użytkownika.

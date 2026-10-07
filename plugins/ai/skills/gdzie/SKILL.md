@@ -14,7 +14,7 @@ Domyślnie **tylko czytasz**. Rozjazdy naprawiasz dopiero po zgodzie.
 
 ## Raport — tryb domyślny albo `slug`
 
-Wczytaj `ROADMAP.md`. Dla każdej zdolności z Teraz (albo tylko dla podanego slugu) wczytaj `mapa.md` i frontmattery ticketów. Sprawdź `git status` i ostatnie commity z prefiksem slugu.
+Wczytaj `ROADMAP.md`. Dla każdej zdolności z Teraz (albo tylko dla podanego slugu) wczytaj `mapa.md` i frontmattery ticketów. Sprawdź `git status -sb` (gałąź, przed/za zdalną) i ostatnie commity z prefiksem slugu.
 
 Format, zwięźle:
 
@@ -24,6 +24,7 @@ Teraz
     Następny krok: …
     Stan sesji: … (jeśli jest)
 Dalej: <slug>, <slug>, …   Mgła: <n> pozycji
+Gałąź: … (przed/za zdalną o n; PR: adres i stan — przy trybie zdolnosc)
 Niezacommitowane: … (jeśli są)
 
 → Proponuję skill: <nazwa> <argument>
@@ -49,6 +50,9 @@ Niezacommitowane: … (jeśli są)
 - Punkt odniesienia walidacji: ile znanych błędów w `odniesienie.znane` i czy lista maleje (`git log -p -- .ai/warsztat.json`). Rosnąca lista to rozjazd.
 - Mapy w `.ai/obszary/` poznane na commicie, od którego obszar mocno się zmienił — zaproponuj `skill poznaj <obszar>`.
 - Blok warsztatu w `AGENTS.md` starszy niż plugin (wersja w znaczniku `warsztat:start` kontra `version` w `../../plugin.json`) albo `CLAUDE.md` bez importu `@AGENTS.md` — zaproponuj skill `start` (krok „Aktualizacja”).
+- **Git:** commity niewypchnięte przy `git.push` = `pytaj` albo `zawsze`; gałąź za zdalną (praca z innego komputera — `git pull --ff-only` przed zmianami). Przy `git.galezie` = `zdolnosc`: zdolność w `budowa` albo `weryfikacja`, a bieżąca gałąź to nie `zdolnosc/<slug>`; gałęzie `zdolnosc/*` i `fix/*` zdolności zamkniętych albo porzuconych; zdolność w `weryfikacja` bez PR (`gh pr view zdolnosc/<slug>`).
+- **Bezpieczeństwo:** `bezpieczenstwo.skanSekretow` = `null`, choć `gitleaks` jest dostępny; `.githooks/pre-commit` w repo, a `git config core.hooksPath` na tym komputerze pusty; brakujące wpisy w `.gitignore` albo `permissions.deny` względem szablonów pluginu; plik z listy `chronione` śledzony przez git (`git ls-files`) — to alarm, nie zwykły rozjazd.
+- **GitHub** (tylko `tracker` = `github` i działające `gh`): ticket z `github: null`; Issue otwarte przy tickecie `zrobione` albo `porzucony`; Issue zamknięte przy tickecie otwartym; w trybie `tydzien` także otwarte Issue bez ticketu (nowe zgłoszenia) — każde do decyzji: `napraw #<nr>`, `pomysl #<nr>`, Mgła albo zamknięcie.
 - Pliki w `.ai/sesje/` — przerwana praca poza zdolnościami. Pokaż je w raporcie; starsze niż tydzień zaproponuj dokończyć albo usunąć.
 
 Każdy rozjazd: co się nie zgadza, które źródło wygrywa według kontraktu, proponowana poprawka. Zapytaj, czy naprawić.
