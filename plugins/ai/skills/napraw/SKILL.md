@@ -36,7 +36,7 @@ Zmniejszaj przypadek: mniej danych, mniej kroków, izolowany moduł. Jeśli w hi
 - Wypisz 1–3 hipotezy, każdą z przewidywaniem: „jeśli przyczyną jest X, to Y pokaże Z”.
 - Sprawdzaj od najtańszej: log, asercja, debugger. Jedna zmiana naraz.
 - **Nie poprawiasz, dopóki nie umiesz wyjaśnić przyczyny.** Jeśli musisz poprawić sam objaw, powiedz to wprost i zapisz w raporcie.
-- Instrumentację usuwasz przed commitem.
+- Instrumentację usuwasz przed commitem. Skrypty odtwarzające i pliki pośrednie trzymasz poza repo (kontrakt, `## Sprzątanie`), chyba że stają się testem regresji.
 - Hipoteza obalona po większym wysiłku albo poprawka, która nie pomogła → wpis `nie-dziala` w `.ai/proby.md` od razu, z dowodem. Następna osoba zacznie od tego miejsca, nie od zera.
 
 ## 5. Ustal rozmiar
@@ -61,4 +61,5 @@ Przy zmianie większej niż kilka linii albo dotykającej logiki — skill `prze
 - Bug był widoczny dla użytkownika, a projekt prowadzi historię zmian (`warsztat.json` → `wydanie.changelog`) → jedno zdanie w `## Niewydane` → `Naprawione`, z perspektywy użytkownika. Bug na produkcji → zaproponuj skill `wydaj` po commicie.
 - Jeśli przyczyną było fałszywe założenie (w kodzie albo w diagnozie) → wpis w `.ai/lekcje.md` według sekcji „Lekcje” w kontrakcie; ta sama przyczyna co w istniejącej lekcji → nowe wystąpienie. Pomógł albo nie pasował wzorzec → dopisek `Wzorzec:`. Jeśli bug mogła wyłapać automatyczna kontrola (test, lint, typ) → zaproponuj skill `retro` albo od razu tę kontrolę, jeśli jest mała.
 - Jeśli naprawa była zapisana w `.ai/sesje/`, usuń ten plik. Jeśli zamyka wpis `nierozwiazane` w `.ai/proby.md` — zamień go w lekcję (problem → przyczyna → rozwiązanie) i usuń z `proby.md`; podejścia, które po drodze okazały się błędne, zostają tam jako `nie-dziala`.
-- Raport: przyczyna w 1–2 zdaniach, poprawka, test regresji, hash commita.
+- Sprzątanie jak w `buduj` (kontrakt, `## Sprzątanie`): procesy uruchomione w tej sesji zamknięte, śmieci z listy usunięte, nowe pliki spoza listy — pytanie.
+- Raport: przyczyna w 1–2 zdaniach, poprawka, test regresji, hash commita, sprzątanie.

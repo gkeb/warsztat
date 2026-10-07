@@ -1,7 +1,7 @@
 {
   "name": "ai",
   "displayName": "Warsztat",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Mapa → decyzja → krok. Grill, spec, cięcie na pionowe plasterki i budowa TDD ticket po tickecie, ze stanem w .ai/ zamiast w czacie.",
   "author": {
     "name": "Grzegorz"

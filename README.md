@@ -91,7 +91,7 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill produktu albo zdolności (`funkcja` / `refaktor` / `wyglad`); z plikiem — rozbiór spisanego pomysłu; `#nr` — zgłoszenie z GitHuba jako materiał; `druga-opinia` — podważenie grilla w innym modelu; `sokratejsko` — pytania zamiast rekomendacji |
 | `spec` | `/ai:spec [slug]` | `$spec [slug]` | spec i Twoja akceptacja |
 | `pokroj` | `/ai:pokroj [slug\|slug#NN]` | `$pokroj [slug\|slug#NN]` | podział zaakceptowanego specu na tickety; dzielenie za dużego ticketu; przy trackerze GitHub — Issue dla każdego ticketu |
-| `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, skan sekretów, commit (i push) — i stop; w trybie gałęzi po ostatnim tickecie PR w wersji roboczej |
+| `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, skan sekretów, commit (i push), sprzątanie procesów i śmieci — i stop; w trybie gałęzi po ostatnim tickecie PR w wersji roboczej |
 | `weryfikuj` | `/ai:weryfikuj [slug\|slug#NN]` | `$weryfikuj [slug\|slug#NN]` | weryfikacja krzyżowa w innym modelu: czy etap dowieziono zgodnie ze specem i planem |
 | `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji) albo porzucenie zdolności; wpis w historii zmian; w trybie gałęzi scalenie PR |
 | `wydaj` | `/ai:wydaj [podglad\|wersja\|tresc]` | `$wydaj [podglad\|wersja\|tresc]` | wydanie albo wdrożenie: wersja, historia zmian, publikacja po Twojej zgodzie, sprawdzenie na miejscu, rejestr wydań |
@@ -271,7 +271,7 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 
 ## Rytm pracy
 
-- **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`) oraz ostrzeżenia gita: skan sekretów niewłączony na tym komputerze, zła gałąź, niewypchnięte commity. W projektach bez `.ai/` hook milczy.
+- **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`) oraz ostrzeżenia gita: skan sekretów niewłączony na tym komputerze, zła gałąź, niewypchnięte commity. Przy nowej sesji wypisuje też procesy projektu, które przeżyły poprzednią sesję, i śmieci z listy. W projektach bez `.ai/` hook milczy.
 - **Po przerwie** — `gdzie`.
 - **Jedna sesja = jeden ticket.** Kolejny ticket w świeżej sesji.
 - **Koniec sesji** — `przekaz`, jeśli coś zostało w połowie.
@@ -315,6 +315,16 @@ Domyślnie pracujesz jak dotąd: commity na gałęzi głównej, tickety w plikac
 - **Higiena repo** — `start` sprawdza tożsamość gita, remote i nazwę gałęzi głównej. Za zgodą zakłada na GitHubie ruleset gałęzi głównej: zakaz force-pusha i usunięcia.
 
 Do PR i Issues potrzebne jest [GitHub CLI](https://cli.github.com/) (`winget install GitHub.cli`, potem `gh auth login`). Bez niego skille podają komendy do ręcznego uruchomienia.
+
+## Sprzątanie — procesy i pliki tymczasowe
+
+Praca agenta zostawia ślady: serwer deweloperski, który po końcu sesji nadal trzyma port, test w trybie watch, raporty testów, pliki robocze. Zasada: **kto uruchamia albo tworzy, ten sprząta**. Najlepiej tak, żeby nie było czego sprzątać.
+
+- **Zapobieganie.** Testy jednorazowo (`vitest run`, nie watch). Serwer potrzebny testom uruchamia i zamyka sam test (Playwright `webServer`). Pliki robocze agenta powstają poza repo.
+- **Procesy.** Serwer albo watch agent uruchamia tylko w tle i zamyka z całym drzewem przed raportem (`taskkill /PID <pid> /T /F`). Cudzych procesów nie zamyka, nigdy też nie robi `taskkill /IM node.exe`, bo to zabiłoby VS Code, serwery MCP i inne projekty.
+- **Pozostałości.** Hook na starcie nowej sesji wypisuje procesy `node`, `python`, `deno` i `bun` z tego projektu, z PID-em, czasem startu i portem. Agent pyta, czy je zamknąć, bo to może być Twój serwer.
+- **Pliki.** Cache narzędzi (`.pytest_cache`, `.astro`, `node_modules/.vite`) zostaje, wystarczy `.gitignore`. Śmieci, czyli raporty testów, pokrycie i `tmp/`, są na liście `sprzatanie.smieci`. Ustawia ją `start` według stosu. `buduj`, `napraw` i `przekaz` usuwają je na koniec. Nowe pliki spoza listy agent pokazuje i pyta, co z nimi zrobić. `gdzie tydzien` robi przegląd zbiorczy.
+- **Nigdy `git clean -X`.** Usuwa wszystko, co ignorowane, razem z `.env`, `node_modules` i `.venv`. Sprzątanie idzie wyłącznie po liście.
 
 ## Co powstaje w projekcie
 
@@ -374,6 +384,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `git.scalanie` | `merge` (domyślnie) albo `rebase`; squash niedozwolony |
 | `bezpieczenstwo.skanSekretow` | komenda skanu zmian przed commitem (gitleaks); `null` = skan ręczny |
 | `bezpieczenstwo.chronione` | pliki z sekretami, których agent nie czyta; źródło reguł `permissions.deny` |
+| `sprzatanie.smieci` | pliki i katalogi bezpieczne do usunięcia po pracy (raporty testów, pokrycie, `tmp/`); ustawia `start` według stosu |
 | `tracker`, `github.repo` | `pliki` (domyślnie) albo `github` — Issues jako lustro ticketów; repo `właściciel/nazwa` |
 
 ### Subagenci

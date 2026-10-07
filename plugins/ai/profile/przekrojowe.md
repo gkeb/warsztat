@@ -14,7 +14,7 @@
 
 ### Jakość
 
-- **P-05 Strategia testów** — poziomy (akceptacyjne, jednostkowe), narzędzia, co mockujemy, poziom testu akceptacyjnego z profilu klasy.
+- **P-05 Strategia testów** — poziomy (akceptacyjne, jednostkowe), narzędzia, co mockujemy, poziom testu akceptacyjnego z profilu klasy. Testy jednorazowe (bez watch), sprzątają pliki tymczasowe i same uruchamiają oraz zamykają potrzebne serwery; wyniki narzędzi trafiają do `sprzatanie.smieci`.
 - **P-06 Walidacja** — typy, lint, format; formatowanie automatyczne czy sprawdzane. Komendy trafiają do `walidacja` w `.ai/warsztat.json`.
 - **P-07 CI** — czy i gdzie (np. GitHub Actions), co uruchamia, na jakich systemach i wersjach.
 
@@ -59,6 +59,7 @@ Poziom i narzędzia określa profil klasy. Wspólne: test akceptacyjny idzie prz
 
 - sekret, adres albo klucz wpisany na sztywno;
 - prawdziwe dane osobowe w testach, przykładach albo logach;
+- test zostawia pliki w repo albo proces po sobie (serwer, watch, otwarte połączenie, przez które test się nie kończy);
 - działa tylko na maszynie autora: ścieżki absolutne, zależność od katalogu roboczego, brakująca zmienna środowiskowa bez komunikatu;
 - brak wpisu w historii zmian dla zmiany widocznej dla użytkownika (gdy prowadzimy `CHANGELOG.md`);
 - dokumentacja użytkownika nie opisuje nowego zachowania.

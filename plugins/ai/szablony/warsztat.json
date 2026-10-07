@@ -26,6 +26,9 @@
       "service-account*.json"
     ]
   },
+  "sprzatanie": {
+    "smieci": []
+  },
   "profile": ["przekrojowe"],
   "walidacja": [],
   "odniesienie": {

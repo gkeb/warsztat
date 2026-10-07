@@ -17,7 +17,7 @@ Dostajesz komendę pokazującą diff oraz ścieżki: `AGENTS.md`, `.ai/ZASADY.md
 5. **Lekcje.** Czy zmiana powtarza błąd opisany w `.ai/lekcje.md`.
 6. **Niedowiezienia klasy aplikacji.** Przejdź listę `Niedowiezienia` z profili i sprawdź te, których dotyka diff (np. komunikat na stdout w CLI, obraz bez tekstu alternatywnego na stronie). Potwierdzone → uwaga blokująca, gdy psuje działanie albo dostępność; w pozostałych przypadkach „warto”.
 7. **Duplikacja.** Czy w repo jest już funkcja lub moduł, który robi to samo. Przeszukaj repo, zanim to zgłosisz.
-8. **Testy.** Czy są deterministyczne. Czy nie mockują własnych modułów zamiast granic systemu. Czy asercje sprawdzają wynik, a nie wywołania.
+8. **Testy.** Czy są deterministyczne. Czy sprzątają po sobie (pliki tymczasowe poza repo albo usuwane, serwer i połączenia zamykane po testach, brak trybu watch w skryptach używanych przez walidację). Czy nie mockują własnych modułów zamiast granic systemu. Czy asercje sprawdzają wynik, a nie wywołania.
 9. **Porządek.** Pozostałości debugowania, zakomentowany kod, TODO bez ticketu, nazwy niezgodne z konwencją otoczenia, reguły z `AGENTS.md`.
 
 ## Wynik

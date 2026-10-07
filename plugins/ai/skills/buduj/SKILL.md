@@ -114,6 +114,13 @@ Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące po
 - Commit tylko plików tego ticketu (kod, testy, ticket, mapa, przy ostatnim tickecie także `ROADMAP.md`): `<slug>#<nr>: <tytuł>`, według `### Commit` w kontrakcie — skan sekretów przed commitem, `Closes #<github>` przy trackerze GitHub, potem push według `git.push`.
 - Ostatni ticket i `git.galezie` = `zdolnosc` → po pushu PR w wersji roboczej z szablonu `../../szablony/pr.md` (kontrakt, `### Gałęzie i PR`). Komendę pokazujesz przed uruchomieniem, a adres PR podajesz w raporcie — nie zapisujesz go w `.ai/`, bo odnajdzie go `gh pr view zdolnosc/<slug>`.
 
-## 10. Stop
+## 10. Sprzątanie
 
-Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.
+Według sekcji `## Sprzątanie` w kontrakcie, zanim napiszesz raport:
+
+- Procesy uruchomione w tej sesji (serwer deweloperski, podgląd, watch) zamknij razem z drzewem — chyba że użytkownik chce, żeby działały dalej.
+- `git status --short --ignored`: elementy z `sprzatanie.smieci` usuń; nowe pliki i katalogi spoza listy, które powstały w tej sesji, pokaż i zapytaj, co z nimi zrobić. Cache narzędzi zostawiasz.
+
+## 11. Stop
+
+Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.

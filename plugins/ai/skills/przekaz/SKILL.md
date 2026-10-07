@@ -37,4 +37,6 @@ Nie streszczasz czatu i nie kopiujesz treści ticketu ani specu — linkujesz.
 - Ślepe uliczki i odłożone ścieżki z tej sesji, których jeszcze nie ma w `.ai/proby.md` → dopisz je tam. `Stan sesji` jest kasowany po zamknięciu ticketu; `proby.md` zostaje. W `Nieoczywiste` tylko linkujesz wpisy.
 - Kodu w połowie nie commitujesz. Zapytaj zgodnie z sekcją `## Jak pytać`, czy zrobić commit roboczy. Domyślnie rekomenduj brak commita. Zmiany w `.ai/` możesz zacommitować jako `<slug>: przekazanie`, jeśli użytkownik chce — według `### Commit` w kontrakcie. Gdy praca będzie kontynuowana na innym komputerze, rekomenduj commit `.ai/` i push; inaczej stan sesji zostanie na tym komputerze.
 
+- Sprzątanie (kontrakt, `## Sprzątanie`): procesy uruchomione w tej sesji zamknij, chyba że użytkownik chce je zostawić — wtedy zapisz w `Stan sesji` komendę, PID i port. Śmieci z listy usuń.
+
 Na koniec potwierdź jednym zdaniem, co zapisałeś i od czego zaczyna następna sesja.

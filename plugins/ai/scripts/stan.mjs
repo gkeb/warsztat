@@ -334,4 +334,90 @@ if (git('rev-parse', '--is-inside-work-tree') === 'true') {
 }
 if (uwagiGit.length > 0) wyjscie.push('', 'Git:', ...uwagiGit);
 
+// Sprzątanie: procesy z tego projektu, które przeżyły poprzednią sesję (np. serwer deweloperski), i śmieci z listy.
+// Tylko raport — zamyka agent po zgodzie użytkownika, bo to może być jego własny serwer.
+function procesyProjektu() {
+  const sciezka = root.replace(/[\\/]+$/, '');
+  const warianty = [
+    sciezka.replace(/\//g, '\\'),
+    sciezka.replace(/\\/g, '/'),
+    sciezka.replace(/\\/g, '/').replace(/^([A-Za-z]):/, (_, d) => `/${d.toLowerCase()}`),
+  ].map((w) => w.toLowerCase());
+  const pasuje = (cmd) => {
+    const c = (cmd || '').toLowerCase();
+    return warianty.some((w) => c.includes(w)) && !c.includes('stan.mjs') && !c.includes('.vscode\\extensions') && !c.includes('.vscode/extensions');
+  };
+  try {
+    if (process.platform === 'win32') {
+      // Szybki filtr: bez żadnego node/python/deno/bun nie ma po co uruchamiać PowerShella (~2 s).
+      const zadania = execFileSync('tasklist', ['/FO', 'CSV', '/NH'], {
+        encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 3000, windowsHide: true,
+      });
+      const nasze = zadania
+        .split('\n')
+        .map((l) => l.match(/^"([^"]+)","(\d+)"/))
+        .filter((m) => m && /^(node|python|pythonw|deno|bun)\.exe$/i.test(m[1]) && Number(m[2]) !== process.pid);
+      if (nasze.length === 0) return [];
+      const ps = [
+        "$ErrorActionPreference='SilentlyContinue'",
+        "$p = Get-CimInstance Win32_Process -Filter \"Name='node.exe' or Name='python.exe' or Name='pythonw.exe' or Name='deno.exe' or Name='bun.exe'\"",
+        "@($p | ForEach-Object { [pscustomobject]@{ pid = $_.ProcessId; start = $_.CreationDate.ToString('yyyy-MM-dd HH:mm'); cmd = $_.CommandLine } }) | ConvertTo-Json -Compress",
+      ].join('; ');
+      const out = execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps], {
+        encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 8000, windowsHide: true,
+      }).trim();
+      const lista = (out ? [].concat(JSON.parse(out)) : []).filter((p) => p.pid !== process.pid && pasuje(p.cmd));
+      if (lista.length === 0) return [];
+      // Porty z netstat — szybciej niż Get-NetTCPConnection.
+      const porty = {};
+      try {
+        const ns = execFileSync('netstat', ['-ano', '-p', 'TCP'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 3000, windowsHide: true });
+        for (const l of ns.split('\n')) {
+          const m = l.trim().match(/^TCP\s+\S+:(\d+)\s+\S+\s+LISTENING\s+(\d+)$/i);
+          if (m) (porty[m[2]] ||= new Set()).add(Number(m[1]));
+        }
+      } catch {
+        // Bez portów raport nadal ma sens.
+      }
+      return lista.map((p) => ({ ...p, porty: [...(porty[p.pid] || [])].sort((a, b) => a - b) }));
+    }
+    const out = execFileSync('ps', ['-eo', 'pid=,etime=,args='], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 3000 });
+    return out
+      .split('\n')
+      .map((l) => l.trim().match(/^(\d+)\s+(\S+)\s+(.*)$/))
+      .filter((m) => m && /\b(node|python3?|deno|bun)\b/.test(m[3]) && Number(m[1]) !== process.pid && pasuje(m[3]))
+      .map((m) => ({ pid: Number(m[1]), start: `działa ${m[2]}`, cmd: m[3], porty: [] }));
+  } catch {
+    return [];
+  }
+}
+
+// Linia poleceń bez długich ścieżek: zostaje nazwa pliku i argumenty.
+function krotko(cmd) {
+  const s = (cmd || '')
+    .replace(/"(?:[^"]*[\\/])?([^"\\/]+)"/g, '$1')
+    .replace(/"?(?:[A-Za-z]:)?[\\/][^\s"]*[\\/]([^\\/\s"]+)"?/g, '$1').replace(/\s+/g, ' ').trim();
+  return s.length > 90 ? `${s.slice(0, 89)}…` : s;
+}
+
+// Tylko przy nowej sesji: wznowienie i kompaktowanie widziałyby procesy uruchomione w tej samej pracy.
+const nowaSesja = !session.source || session.source === 'startup' || session.source === 'clear';
+const procesy = nowaSesja ? procesyProjektu() : [];
+if (procesy.length > 0) {
+  const zamknij = process.platform === 'win32' ? 'taskkill /PID <pid> /T /F' : 'kill <pid> (z procesami potomnymi)';
+  wyjscie.push(
+    '',
+    'Procesy z tego projektu, które wciąż działają (mogły zostać po poprzedniej sesji):',
+    ...procesy.map((p) => `- PID ${p.pid}, ${p.start}${p.porty?.length ? `, port ${p.porty.join(', ')}` : ''}: ${krotko(p.cmd)}`),
+    `Zapytaj użytkownika, czy je zamknąć (${zamknij}) — mogą być jego. Bez zgody nie zamykaj.`,
+  );
+}
+
+const smieci = (Array.isArray(warsztat.sprzatanie?.smieci) ? warsztat.sprzatanie.smieci : [])
+  .filter((w) => !/[*?[]/.test(w))
+  .filter((w) => existsSync(join(root, w.replace(/\/+$/, ''))));
+if (smieci.length > 0) {
+  wyjscie.push('', `Śmieci z listy sprzatanie.smieci na dysku: ${smieci.join(', ')} — można je usunąć.`);
+}
+
 process.stdout.write(wyjscie.join('\n') + '\n');

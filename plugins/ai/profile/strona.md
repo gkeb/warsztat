@@ -34,7 +34,7 @@
 
 ## Testy akceptacyjne
 
-Publiczny interfejs to zbudowana strona w przeglądarce. Testy idą na wyniku `astro build` + `astro preview`, nie na serwerze deweloperskim.
+Publiczny interfejs to zbudowana strona w przeglądarce. Testy idą na wyniku `astro build` + `astro preview`, nie na serwerze deweloperskim. Podgląd uruchamia sam Playwright przez `webServer` w `playwright.config` (komenda podglądu, port, `reuseExistingServer: !process.env.CI`) — po testach go zamyka, więc żaden serwer nie zostaje. `test-results/` i `playwright-report/` są na liście `sprzatanie.smieci`.
 
 - **Przepływy** — Playwright: scenariusz przechodzi zadanie użytkownika (nawigacja, formularz, wyszukiwanie) w szerokościach kontrolnych.
 - **Treść i meta** — Playwright albo test na wygenerowanym HTML: tytuł, opis, Open Graph, kanoniczny, nagłówki; schemat treści sprawdza `astro check`.
