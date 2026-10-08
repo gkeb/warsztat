@@ -49,7 +49,7 @@ Osobno oceń, czy problem jest **ogólny** — nie zależy od domeny projektu (z
 
 ## 3. Dobierz mechanizm — najmocniejszy możliwy
 
-1. **Automatyczna kontrola** — test, reguła lint albo typów, skrypt w `walidacja` w `.ai/warsztat.json`, hook. Agent nie może jej zapomnieć.
+1. **Automatyczna kontrola** — test, reguła lint albo typów, skrypt w `walidacja` w `.ai/warsztat.json`, hook. Agent nie może jej zapomnieć. Wraca ten sam zły wzorzec w kodzie (np. `console.log` zamiast Sentry)? Najtańszy automat to wpis w `hooki.zakazane` (kontrakt, „Hooki kodu”) razem z zasadą w `ZASADY.md`.
 2. **Zasada w `ZASADY.md`** (gdy dotyczy kodu) albo **reguła w `AGENTS.md`** (gdy dotyczy zachowania agenta lub projektu — poza blokiem warsztatu). Zasada twarda z `Egzekwowanie: przegląd` albo `brak`, łamana ponownie, wraca do punktu 1 — jako automat.
 3. **Zmiana w warsztacie** — skill, kontrakt albo szablon. Wybierz ją, gdy problem leży w samym procesie i dotyczy wszystkich projektów. Edytuj pliki warsztatu tylko wtedy, gdy katalog pluginu jest repozytorium źródłowym, a nie kopią w cache pluginów. W przeciwnym razie podaj gotową zmianę: plik i tekst.
 4. **Wzorzec w `wzorce/`** (katalog pluginu, sekcja „Wzorce” w kontrakcie) — dla problemu ogólnego. Łączy się z punktami 1–3: projekt dostaje mechanizm, inne projekty — wiedzę. Najpierw przeszukaj `wzorce/INDEKS.md`:

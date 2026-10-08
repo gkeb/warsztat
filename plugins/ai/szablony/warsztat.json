@@ -48,6 +48,11 @@
     "sprawdzenie": []
   },
   "pielegnacja": [],
+  "hooki": {
+    "formatowanie": true,
+    "kontrola": true,
+    "zakazane": []
+  },
   "sciezki": {
     "decyzje": ".ai/decyzje"
   },

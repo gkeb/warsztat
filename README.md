@@ -30,7 +30,9 @@ codex plugin marketplace add C:\progs\repo
 codex plugin add ai@warsztat-local
 ```
 
-Albo w aplikacji: `/plugins` → Warsztat → zainstaluj. Codex kopiuje plugin do `~/.codex/plugins/cache/warsztat-local/ai/<wersja>/`, więc **po każdej zmianie w repo** uruchom ponownie `codex plugin add ai@warsztat-local` — odświeża kopię (dodaje nowe pliki, usuwa skasowane). Przed pierwszym użyciem hooka otwórz `/hooks`, przejrzyj i zaakceptuj definicję; po zmianie jego konfiguracji Codex może poprosić o ponowne zaufanie. Sama instalacja pluginu hooka nie włącza.
+Albo w aplikacji: `/plugins` → Warsztat → zainstaluj. Codex kopiuje plugin do `~/.codex/plugins/cache/warsztat-local/ai/<wersja>/`, więc **po każdej zmianie w repo** uruchom ponownie `codex plugin add ai@warsztat-local` — odświeża kopię (dodaje nowe pliki, usuwa skasowane). Przed pierwszym użyciem hooków otwórz `/hooks`, przejrzyj i zaakceptuj definicje (stan sesji, formatowanie, kontrola, dźwięk); po zmianie ich konfiguracji Codex może poprosić o ponowne zaufanie. Sama instalacja pluginu hooków nie włącza.
+
+**Wyłączenie hooków kodu bez odinstalowania:** zmienne środowiskowe `WARSZTAT_HOOKI=0` (formatowanie i kontrola) i `WARSZTAT_DZWIEK=0` (dźwięki) — w Claude Code np. w `env` w `~/.claude/settings.json`. W jednym projekcie: `hooki` w `.ai/warsztat.json`.
 
 **Tylko rozszerzenia VS Code, bez CLI w `PATH`.** Rozszerzenia mają w sobie pełne CLI i używają tej samej konfiguracji (`~/.claude`, `~/.codex`) co wersja terminalowa — plugin zainstalowany raz działa w rozszerzeniu, terminalu i wszystkich projektach. W Claude Code wystarczą komendy `/plugin` w czacie. Do komend terminalowych użyj pliku z rozszerzenia (numer wersji w ścieżce zmienia się po aktualizacji rozszerzenia):
 
@@ -44,7 +46,7 @@ Codex:       %USERPROFILE%\.vscode\extensions\openai.chatgpt-<wersja>-win32-x64\
 | Narzędzie | Po co | Bez niego |
 | --- | --- | --- |
 | `git` | commity, gałęzie, hook skanu sekretów | `buduj` nie commituje |
-| `node` w `PATH` | hook startowy (stan projektu na starcie sesji) | skille działają, ale stan nie jest wstrzykiwany |
+| `node` w `PATH` | hooki: stan projektu na starcie sesji, formatowanie, kontrola przed końcem odpowiedzi, dźwięki | skille działają, ale stan nie jest wstrzykiwany, a formatowania i kontroli pilnują tylko reguły w `AGENTS.md` |
 | [gitleaks](https://github.com/gitleaks/gitleaks) — `winget install Gitleaks.Gitleaks` | skan sekretów przed commitem ([Bezpieczeństwo](#bezpieczeństwo--sekrety-i-dane-osobowe)) | skille przeglądają zmiany ręcznie i mówią o tym w raporcie |
 | [GitHub CLI](https://cli.github.com/) — `winget install GitHub.cli`, potem `gh auth login` | PR, Issues, ustawienia repo na GitHubie ([Git i GitHub](#git-i-github)) | skille podają komendy do ręcznego uruchomienia |
 
@@ -272,6 +274,7 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 ## Rytm pracy
 
 - **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`) oraz ostrzeżenia gita: skan sekretów niewłączony na tym komputerze, zła gałąź, niewypchnięte commity. Przy nowej sesji wypisuje też procesy projektu, które przeżyły poprzednią sesję, i śmieci z listy. W projektach bez `.ai/` hook milczy.
+- **W trakcie pracy** — hooki kodu: każdy edytowany plik przechodzi przez formater projektu (Prettier / Biome, ruff / black, rustfmt). Przed końcem odpowiedzi kontrola zmienionych plików (`tsc`, `ruff` / `mypy` / `pyright`, `cargo clippy`) i zakazane wzorce z `hooki.zakazane`. Problemy blokują zakończenie raz na odpowiedź, z listą do poprawy. Dźwięk „gotowe” po przejściu, inny, gdy agent czeka na zgodę. Hooki działają w każdym repo gita, ale tylko narzędziami, które projekt już ma. Te same reguły stoją w bloku `AGENTS.md`, więc agent zna je także wtedy, gdy hook nie działa. Szczegóły: kontrakt, sekcja „Hooki kodu”.
 - **Po przerwie** — `gdzie`.
 - **Jedna sesja = jeden ticket.** Kolejny ticket w świeżej sesji.
 - **Koniec sesji** — `przekaz`, jeśli coś zostało w połowie.
@@ -377,6 +380,8 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `wydanie.githubRelease` | `true` — przy każdej wersji GitHub Release z treścią jej sekcji w `CHANGELOG.md` |
 | `wydanie.komendy`, `wydanie.sprawdzenie` | build, publikacja, wdrożenie; kontrole po wydaniu — uruchamia `wydaj` po Twojej zgodzie |
 | `pielegnacja` | komendy tylko do odczytu dla przeglądu tygodniowego: przestarzałe zależności, audyt, martwe linki, Lighthouse |
+| `hooki.formatowanie`, `hooki.kontrola` | formater po edycji i kontrola przed końcem odpowiedzi: `true` (automatyczna), `false` albo — dla kontroli — lista szybkich komend zamiast automatycznej |
+| `hooki.zakazane` | wzorce, które nie mogą trafić do kodu: `{ "wzorzec": "console\\.log", "pliki": ["*.ts"], "pomin": ["**/*.test.ts"], "zamiast": "Sentry.captureException", "zasada": "Z07" }` |
 | `modele.claude.*`, `modele.codex.*` | model subagentów dla `przeglad` i `badanie`; `null` = domyślny |
 | `git.galezie` | `glowna` (domyślnie) albo `zdolnosc` — gałąź `zdolnosc/<slug>` i PR na zdolność |
 | `git.glowna` | nazwa gałęzi głównej; `null` = wykryj |
@@ -412,8 +417,9 @@ plugins/ai/
   szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
   profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, strona (rozwija retro)
-  hooks/hooks.json                    # SessionStart → scripts/stan.mjs
+  hooks/hooks.json                    # SessionStart → stan.mjs; PostToolUse, Stop, PermissionRequest → kod.mjs
   scripts/stan.mjs                    # zbiera „gdzie jesteśmy” (Node, bez zależności)
+  scripts/kod.mjs                     # formatowanie, kontrola przed końcem odpowiedzi, dźwięki (Node, bez zależności)
 ```
 
 Skille współdzielą rdzeń formatu Agent Skills (`name`, `description` i instrukcje); ograniczenia jawnego wywołania są ustawione osobno dla Claude i Codexa. `argument-hint` pokazuje podpowiedź argumentów w Claude Code. Aktualny parser `SKILL.md` Codexa odczytuje `name`, `description` i `metadata.short-description`, a pozostałe pola frontmattera pomija — więc hint nie pojawia się w Codexie. `disable-model-invocation` również nie ustawia polityki Codexa; robi to `agents/openai.yaml` → `policy.allow_implicit_invocation`. Zobacz [parser Codexa](https://github.com/openai/codex/blob/main/codex-rs/skills/src/parser.rs) i [dokumentację skilli Codexa](https://developers.openai.com/codex/skills). Hook odczytuje `cwd` z wejścia zdarzenia, więc działa, gdy Codex uruchomi go z katalogu pluginu lub innego katalogu roboczego.

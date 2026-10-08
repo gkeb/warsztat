@@ -8,7 +8,7 @@
     {
       "name": "ai",
       "source": "./plugins/ai",
-      "description": "Komendy /ai:* i hook stanu sesji dla kontraktu katalogów .ai/."
+      "description": "Komendy /ai:*, hook stanu sesji dla kontraktu katalogów .ai/ i hooki kodu: formatowanie, kontrola przed końcem odpowiedzi, dźwięki."
     }
   ]
 }
