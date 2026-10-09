@@ -351,10 +351,10 @@ Lekcja opisuje konkretny projekt. Ten sam problem w innym projekcie wygląda ina
 
 ## Profile — klasy aplikacji
 
-Proces jest wspólny, ale decyzje zależą od tego, co budujesz: narzędzie CLI ma kody wyjścia i instalację, strona — SEO, hosting i wygląd. Profil to **lista decyzji do podjęcia**, nie podręcznik: dzięki niemu pominięcie jest świadome, a nie przypadkowe. Wiedzę o konkretnym wyborze dostarcza rozmowa, skill `badanie` i wzorce.
+Proces jest wspólny, ale decyzje zależą od tego, co budujesz: narzędzie CLI ma kody wyjścia i instalację, statyczny HTML — metadane, dostępność i publikację plików, strona generowana — źródło treści, renderowanie i hosting. Profil to **lista decyzji do podjęcia**, nie podręcznik: dzięki niemu pominięcie jest świadome, a nie przypadkowe. Wiedzę o konkretnym wyborze dostarcza rozmowa, skill `badanie` i wzorce.
 
-- **Miejsce.** `profile/` w katalogu pluginu: `przekrojowe.md` (zawsze) i profil klasy (`cli.md`, `strona.md`, kolejne według potrzeb). Projekt wybiera profile w `warsztat.json` → `profile`; może mieć kilka (np. strona z pomocniczym CLI).
-- **Budowa profilu:** `Decyzje` (pozycje ze stałym numerem `P-xx`, `CLI-xx`, `WEB-xx`), `Doświadczenie (UX)`, `Testy akceptacyjne` (czym jest publiczny interfejs i jakimi narzędziami go testować), `Niedowiezienia` (lista dla przeglądu i weryfikacji), `Wydanie`, `Pielęgnacja`.
+- **Miejsce.** `profile/` w katalogu pluginu: `przekrojowe.md` (zawsze) i profil klasy (`cli.md`, `html.md`, `strona.md`, kolejne według potrzeb). Projekt wybiera profile w `warsztat.json` → `profile`; może mieć kilka (np. strona generowana z pomocniczym CLI).
+- **Budowa profilu:** `Decyzje` (pozycje ze stałym numerem `P-xx`, `CLI-xx`, `HTML-xx`, `WEB-xx`), `Doświadczenie (UX)`, `Testy akceptacyjne` (czym jest publiczny interfejs i jakimi narzędziami go testować), `Niedowiezienia` (lista dla przeglądu i weryfikacji), `Wydanie`, `Pielęgnacja`.
 - **Rozstrzygnięcie każdej pozycji** trafia do `.ai/profil.md` jako jedna linia: numer, nazwa, wynik. Wynik to link (`ADR NNNN`, `Zxx`, `spec szkieletu`), `pominięte: powód`, `później` (pozycja w Mgle) albo `otwarte`. Treść decyzji żyje tam, dokąd prowadzi link — `profil.md` jest tylko rejestrem.
 - **„Pominięte” to decyzja.** Mały pomocnik CLI na własny użytek nie potrzebuje publikacji ani `--json`. Wystarczy jedno zdanie powodu, żeby nikt nie wracał do pytania.
 - **Kto przechodzi listę:** `pomysl produkt` w pustym projekcie (pozycje fundamentowe od razu, reszta jako `później` albo `otwarte`), `poznaj` w zastanym (co już rozstrzygnął kod i konfiguracja — z linkiem do źródła). `gdzie tydzien` pokazuje pozycje `otwarte` i nowe pozycje profilu, których projekt jeszcze nie ma w rejestrze.

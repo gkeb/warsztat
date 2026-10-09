@@ -68,7 +68,7 @@ Gdy test akceptacyjny i wewnętrzny sprawdzałyby dokładnie to samo (mały scen
 3. Test niezmiennika zczerwieniał → cofnij krok i zrób mniejszy. **Nigdy nie poprawiasz testu niezmiennika, żeby przeszedł.**
 4. Żadnych zmian zachowania. Kusząca poprawka → zapisz ją w mapie jako pomysł na osobną zdolność.
 
-**Narzędzia testów akceptacyjnych** — według sekcji `Testy akceptacyjne` profili projektu (`warsztat.json` → `profile`, pliki w `../../profile/`): CLI uruchamiasz jak użytkownik i sprawdzasz kod wyjścia, stdout i stderr; stronę testujesz w przeglądarce na zbudowanej wersji, nie na serwerze deweloperskim.
+**Narzędzia testów akceptacyjnych** — według sekcji `Testy akceptacyjne` profili projektu (`warsztat.json` → `profile`, pliki w `../../profile/`): CLI uruchamiasz jak użytkownik i sprawdzasz kod wyjścia, stdout i stderr; stronę generowaną testujesz w przeglądarce na wyniku budowania, a pliki profilu `html` serwujesz bezpośrednio przez HTTP zgodnie z konfiguracją hostingu.
 
 **Wygląd** — logikę (formularz, filtr, nawigacja) prowadzisz pętlą jak wyżej. Dla tego, czego test nie oceni:
 

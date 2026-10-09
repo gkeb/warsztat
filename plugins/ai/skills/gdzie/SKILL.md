@@ -45,7 +45,7 @@ Niezacommitowane: … (jeśli są)
 - `.ai/ZASADY.md`: zasady twarde bez automatu (`Egzekwowanie: przegląd` albo `brak` — kandydaci do automatyzacji); zasady oparte na ADR `nieaktualna` albo `zastąpiona`; zasady z wyjątkiem przypisanym do zamkniętej zdolności (wyjątek miał się skończyć).
 - `.ai/proby.md`: liczba wpisów `nierozwiazane` i `odlozone`; wpisy, których warunek „Wróć, gdy” wygląda na spełniony (np. nowsza wersja biblioteki w lockfile).
 - Przemyślenia: `otwarte` w `.ai/przemyslenia/` nieruszane od ponad dwóch tygodni; `odłożone`, których warunek „Wróć, gdy” wygląda na spełniony; `dojrzałe → zdolność`, a zdolności nie ma w roadmapie.
-- Profile: `warsztat.json` → `profile` puste albo bez klasy aplikacji, choć kod ją zdradza (np. `astro.config.*`); pozycje `otwarte` w `.ai/profil.md`; pozycje z plików profili w `../../profile/`, których rejestr jeszcze nie ma (profil urósł) — zaproponuj ich rozstrzygnięcie.
+- Profile: `warsztat.json` → `profile` puste albo bez klasy aplikacji, choć kod ją zdradza (np. `astro.config.*` → `strona`, ręcznie utrzymywany `index.html` → `html`); pozycje `otwarte` w `.ai/profil.md`; pozycje z plików profili w `../../profile/`, których rejestr jeszcze nie ma (profil urósł) — zaproponuj ich rozstrzygnięcie.
 - Wydania: zmiany widoczne dla użytkownika od ostatniego wpisu w `.ai/wydania.md` (zdolności w Zrobione, commity `fix:`, sekcja `## Niewydane` w historii zmian) — ile i od kiedy czekają; `wydanie.komendy` puste przy profilu, który coś wydaje.
 - Punkt odniesienia walidacji: ile znanych błędów w `odniesienie.znane` i czy lista maleje (`git log -p -- .ai/warsztat.json`). Rosnąca lista to rozjazd.
 - Mapy w `.ai/obszary/` poznane na commicie, od którego obszar mocno się zmienił — zaproponuj `skill poznaj <obszar>`.

@@ -18,7 +18,7 @@ Zasada nadrzędna: **niczego nie nadpisujesz i niczego nie przenosisz bez zgody*
 - Warsztat: czy istnieją `.ai/`, `AGENTS.md`, `CLAUDE.md`.
 - Stos: `package.json` / `tsconfig.json` → TypeScript; `pyproject.toml` / `requirements*.txt` → Python.
 - Komendy, które faktycznie istnieją: skrypty `test`, `typecheck`, `lint`; `ruff`, `pytest`, `mypy`.
-- **Klasa aplikacji** (profile w `../../profile/`): `astro.config.*` albo inny generator stron → `strona`; `[project.scripts]` w `pyproject.toml`, pole `bin` w `package.json` albo parser argumentów jako punkt wejścia → `cli`. Pusty projekt — klasę ustali `pomysl produkt`, zapytaj tylko, jeśli użytkownik już ją zna.
+- **Klasa aplikacji** (profile w `../../profile/`): `astro.config.*` albo inny generator stron → `strona`; `index.html` z ręcznie utrzymywanymi plikami HTML/CSS i bez generatora lub frameworka → `html`; `[project.scripts]` w `pyproject.toml`, pole `bin` w `package.json` albo parser argumentów jako punkt wejścia → `cli`. Pusty projekt — klasę ustali `pomysl produkt`, zapytaj tylko, jeśli użytkownik już ją zna.
 - **Tryb:**
   - **pusty projekt** — brak kodu źródłowego (najwyżej README, licencja, konfiguracja);
   - **zastany kod** — wszystko inne.
@@ -60,7 +60,7 @@ Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita sk
 ## 3. Pliki warsztatu
 
 - `.ai/`: utwórz brakujące `warsztat.json`, `ROADMAP.md`, `SLOWNIK.md`, `ZASADY.md` (z `../../szablony/ZASADY.md`), `lekcje.md` i katalog `zdolnosci/` (z `.gitkeep`).
-- Profile: potwierdź klasę aplikacji z rozpoznania i wpisz ją do `warsztat.json` → `profile` obok `przekrojowe` (np. `["przekrojowe", "cli"]`). Klasa bez gotowego profilu → zostaje samo `przekrojowe`; powiedz, że brakujący profil może powstać przez `retro`. `.ai/profil.md` powstanie przy pierwszym przejściu listy (`pomysl produkt` albo `poznaj`).
+- Profile: potwierdź klasę aplikacji z rozpoznania i wpisz ją do `warsztat.json` → `profile` obok `przekrojowe` (np. `["przekrojowe", "html"]`). Klasa bez gotowego profilu → zostaje samo `przekrojowe`; powiedz, że brakujący profil może powstać przez `retro`. `.ai/profil.md` powstanie przy pierwszym przejściu listy (`pomysl produkt` albo `poznaj`).
 - `AGENTS.md` — wspólne instrukcje dla wszystkich agentów (zob. `## AGENTS.md i CLAUDE.md` w kontrakcie):
   - brak pliku → utwórz: nagłówek `# <nazwa projektu>`, jedno zdanie o projekcie, sekcja z `AGENTS-projekt.md` (w pustym projekcie pomiń), potem blok z `AGENTS-blok.md`;
   - plik jest, bez znacznika `warsztat:start` → dopisz blok na końcu. Istniejącej treści nie zmieniasz;

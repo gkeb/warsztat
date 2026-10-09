@@ -30,7 +30,7 @@ Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: w
 - **Kontekst i niezmienniki.** Wpisz kontekst zdolności (jeśli słownik ma konteksty). Niezmienniki domeny ze słownika, których dotyka zdolność, muszą mieć scenariusz, który je sprawdza.
 - **Spec już zaakceptowany i zmieniany:** numerów scenariuszy nie przesuwasz; usunięty oznaczasz, nowy dostaje kolejny wolny numer.
 - **„Poza zakresem” wypełniasz zawsze.** Tu lądują rzeczy, które padły w grillu i zostały odrzucone.
-- **Testy:** jakie zachowania, na jakim poziomie, przez jaki publiczny interfejs. Poziom i narzędzia testów akceptacyjnych bierzesz z sekcji `Testy akceptacyjne` profili (CLI: uruchomienie polecenia i kod wyjścia; strona: przeglądarka na zbudowanej stronie). Mockujemy tylko granice systemu.
+- **Testy:** jakie zachowania, na jakim poziomie, przez jaki publiczny interfejs. Poziom i narzędzia testów akceptacyjnych bierzesz z sekcji `Testy akceptacyjne` profili (CLI: uruchomienie polecenia i kod wyjścia; HTML: przeglądarka na plikach serwowanych przez HTTP; strona generowana: przeglądarka na wyniku budowania). Mockujemy tylko granice systemu.
 - **Doświadczenie.** Zdolność z interfejsem wypełnia sekcję „Doświadczenie” według `Doświadczenie (UX)` profili; przy rodzaju `wyglad` jest obowiązkowa, a scenariusze opisują przepływy w szerokościach albo środowiskach kontrolnych.
 - **Niedowiezienia z profilu**, które dotyczą tej zdolności (np. Open Graph dla nowej strony, `--help` dla nowej flagi), wpisz jako scenariusze albo kryteria — wtedy nie wyjdą dopiero w weryfikacji.
 - Decyzje z mapy przenosisz do „Decyzje projektowe” z linkami do ADR. Mapy nie kopiujesz — spec to kontrakt, mapa to dziennik.

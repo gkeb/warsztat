@@ -1,6 +1,6 @@
 # Profil: strona
 
-> Strona albo serwis WWW — wizytówka, blog, dokumentacja, landing, sklep — budowane generatorem jak Astro (podobnie: Eleventy, Hugo, Next w trybie statycznym). Używaj razem z profilem `przekrojowe`. Przy rozbudowanej aplikacji z kontami i danymi dochodzą decyzje aplikacji webowej (P-08–P-12, P-22) w pełnym zakresie. Format: sekcja „Profile” w kontrakcie warsztatu.
+> Strona albo serwis WWW — wizytówka, blog, dokumentacja, landing, sklep — budowane generatorem jak Astro (podobnie: Eleventy, Hugo, Next w trybie statycznym). Ręcznie utrzymywane pliki HTML/CSS bez generatora mają profil `html`. Używaj razem z profilem `przekrojowe`. Przy rozbudowanej aplikacji z kontami i danymi dochodzą decyzje aplikacji webowej (P-08–P-12, P-22) w pełnym zakresie. Format: sekcja „Profile” w kontrakcie warsztatu.
 > Strona żyje dłużej niż jej budowa: treść, wygląd i wdrożenia zmieniają się co tydzień. Dlatego tu ważą wydanie, historia zmian i pielęgnacja.
 
 ## Decyzje
