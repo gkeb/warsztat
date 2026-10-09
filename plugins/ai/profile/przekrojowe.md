@@ -62,7 +62,8 @@ Poziom i narzędzia określa profil klasy. Wspólne: test akceptacyjny idzie prz
 - test zostawia pliki w repo albo proces po sobie (serwer, watch, otwarte połączenie, przez które test się nie kończy);
 - działa tylko na maszynie autora: ścieżki absolutne, zależność od katalogu roboczego, brakująca zmienna środowiskowa bez komunikatu;
 - brak wpisu w historii zmian dla zmiany widocznej dla użytkownika (gdy prowadzimy `CHANGELOG.md`);
-- dokumentacja użytkownika nie opisuje nowego zachowania.
+- dokumentacja użytkownika nie opisuje nowego zachowania;
+- odczyt danych trwałych albo odpowiedzi usługi bez obsługi uszkodzonych danych: tylko błąd składni, a nie przepełnienie rekurencji przy głębokim zagnieżdżeniu ani złe kodowanie; zapis JSON dopuszczający `NaN`; luźny format daty bez strefy; zapis przez stały plik tymczasowy zamiast unikalnego z atomową podmianą.
 
 ## Wydanie
 

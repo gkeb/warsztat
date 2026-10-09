@@ -42,6 +42,7 @@ Publiczny interfejs to wywołanie polecenia. Test akceptacyjny uruchamia je tak,
 - Python: `typer.testing.CliRunner` / `click.testing.CliRunner` albo `subprocess.run` na zainstalowanym entry poincie; `pytest` z `tmp_path` jako katalogiem roboczym.
 - TypeScript: uruchomienie zbudowanego pliku (`execa` albo `node:child_process`) z `vitest`; katalog tymczasowy.
 - Pomoc i wynik tekstowy: testy migawkowe (snapshot) — zmiana jest widoczna w diffie.
+- Kolory i sterowanie terminalem: testy także z wymuszonym terminalem i kolorami (tak działa CI, np. GitHub Actions) oraz z `NO_COLOR` — biblioteki formatujące potrafią zignorować `NO_COLOR`, gdy terminal jest wymuszony. Lokalny przebieg bez TTY tego nie pokaże.
 - Co najmniej jeden test uruchamia narzędzie po instalacji z pakietu, nie z kodu źródłowego (wyłapuje brakujące pliki i entry point).
 
 ## Niedowiezienia
