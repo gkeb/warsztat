@@ -55,6 +55,7 @@ Stan projektu żyje w `.ai/`, nie w czacie. Hook może wczytać go na starcie se
 - walidacja z `.ai/warsztat.json` przechodzi (bez błędów spoza listy `odniesienie.znane`),
 - przegląd (skill `przeglad`) nie ma uwag blokujących,
 - jest commit `<slug>#<nr>: <tytuł>` (po skanie sekretów; przy trackerze GitHub z `Closes #<nr>`),
+- gdy projekt ma CI, a commit jest wypchnięty — CI dla niego jest zielone; niewypchnięty → w mapie „CI niesprawdzone”,
 - ticket ma status `zrobione` i wypełnione `budowal`, a `mapa.md` wskazuje następny krok.
 
 Zdolność jest gotowa dopiero po weryfikacji krzyżowej (skill `weryfikuj` w innym modelu) i zamknięciu.

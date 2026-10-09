@@ -113,6 +113,7 @@ Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące po
 - Sprawdź, czy każde fałszywe założenie z tej sesji ma lekcję w `.ai/lekcje.md` (krok 6). Jeśli pomógł albo nie pasował wzorzec — dopisek `Wzorzec:` w lekcji.
 - Commit tylko plików tego ticketu (kod, testy, ticket, mapa, przy ostatnim tickecie także `ROADMAP.md`): `<slug>#<nr>: <tytuł>`, według `### Commit` w kontrakcie — skan sekretów przed commitem, `Closes #<github>` przy trackerze GitHub, potem push według `git.push`.
 - Ostatni ticket i `git.galezie` = `zdolnosc` → po pushu PR w wersji roboczej z szablonu `../../szablony/pr.md` (kontrakt, `### Gałęzie i PR`). Komendę pokazujesz przed uruchomieniem, a adres PR podajesz w raporcie — nie zapisujesz go w `.ai/`, bo odnajdzie go `gh pr view zdolnosc/<slug>`.
+- Projekt ma CI (np. `.github/workflows/`), a commit jest wypchnięty → poczekaj na wynik runu dla tego commita (`gh run watch`). Czerwony → ticket wraca do `w-toku`, poprawka w tym samym tickecie; lokalnie zielona walidacja nie zastępuje CI (inny system, wymuszony terminal, kolejność bramek). Niewypchnięty → w mapie i raporcie „CI niesprawdzone dla `<hash>`”.
 
 ## 10. Sprzątanie
 
@@ -123,4 +124,4 @@ Według sekcji `## Sprzątanie` w kontrakcie, zanim napiszesz raport:
 
 ## 11. Stop
 
-Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.
+Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, wynik CI (albo „niesprawdzone”), sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.

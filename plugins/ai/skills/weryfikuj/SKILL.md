@@ -33,7 +33,7 @@ Przy dużym zakresie możesz rozdzielić czytanie na subagentów według `## Sub
 
 **Plan i spec — czy wszystko jest:**
 
-1. Każdy scenariusz specu `Sx` (przy refaktorze: każdy niezmiennik `Nx` i kryterium końca) — gdzie jest w kodzie i który test akceptacyjny go sprawdza. Szukaj po numerze w testach (`grep -rn "S3"` w katalogach testów), potem sprawdź, czy test rzeczywiście ćwiczy scenariusz: przez publiczny interfejs, z „Zakładając” odtworzonym w danych testu i ze wszystkimi przykładami z tabeli. Scenariusz bez testu akceptacyjnego albo z testem, który sprawdza coś innego niż scenariusz, to uwaga blokująca. Test z numerem, którego nie ma w specu (albo scenariusza usuniętego), to uwaga `warto`.
+1. Każdy scenariusz specu `Sx` (przy refaktorze: każdy niezmiennik `Nx` i kryterium końca) — gdzie jest w kodzie i który test akceptacyjny go sprawdza. Szukaj po numerze w testach (`grep -rn "S3"` w katalogach testów), potem sprawdź, czy test rzeczywiście ćwiczy scenariusz: przez publiczny interfejs, z „Zakładając” odtworzonym w danych testu, ze wszystkimi przykładami z tabeli i z asercją dla każdej frazy „Wtedy” / „I” — wskaż ją (plik i linię). Fraza bez asercji przez publiczny interfejs (np. sprawdzana tylko w pliku na dysku, gdy scenariusz mówi o wyjściu) to scenariusz niepokryty. Scenariusz bez testu akceptacyjnego albo z testem, który sprawdza coś innego niż scenariusz, to uwaga blokująca. Test z numerem, którego nie ma w specu (albo scenariusza usuniętego), to uwaga `warto`.
    Niezmienniki domeny ze słownika, których dotyka zdolność — czy któryś scenariusz z testem je sprawdza.
 2. Każde kryterium akceptacji każdego ticketu — spełnione, niespełnione albo bez testu. Pole `scenariusze` w ticketach pokrywa wszystkie scenariusze specu.
 3. „Poza zakresem” i decyzje z mapy — nie zostały złamane.
@@ -62,7 +62,7 @@ Każda uwaga: numer `R<runda>.<n>`, waga (`blokująca` / `warto` / `drobna`), mi
 
 Wynik rundy:
 
-- **`przeszła`** — brak otwartych uwag blokujących, walidacja zielona;
+- **`przeszła`** — brak otwartych uwag blokujących, walidacja zielona, a gdy projekt ma CI — zielony run dla weryfikowanego commita (`gh run list --commit <hash>`); brak runu albo czerwony to uwaga blokująca;
 - **`nie przeszła`** — co najmniej jedna uwaga blokująca.
 
 ## 5. Decyzja i następny krok
