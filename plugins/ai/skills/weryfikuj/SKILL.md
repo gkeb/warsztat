@@ -62,7 +62,7 @@ Każda uwaga: numer `R<runda>.<n>`, waga (`blokująca` / `warto` / `drobna`), mi
 
 Wynik rundy:
 
-- **`przeszła`** — brak otwartych uwag blokujących, walidacja zielona, a gdy projekt ma CI — zielony run dla weryfikowanego commita (`gh run list --commit <hash>`); brak runu albo czerwony to uwaga blokująca;
+- **`przeszła`** — brak otwartych uwag blokujących, walidacja zielona, a gdy projekt ma CI — zielony run dla weryfikowanego commita (`gh run list --commit <pełny hash>` — skrócony hash nic nie znajdzie); brak runu albo czerwony to uwaga blokująca;
 - **`nie przeszła`** — co najmniej jedna uwaga blokująca.
 
 ## 5. Decyzja i następny krok
