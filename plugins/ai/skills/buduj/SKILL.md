@@ -7,9 +7,11 @@ argument-hint: "[slug | slug#NN]"
 
 # Budowa ticketu
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md`. Użyj slugu lub identyfikatora ticketu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` i `../../kontrakt/praca.md` względem tego pliku `SKILL.md`. Użyj slugu lub identyfikatora ticketu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
 
-Pytania o decyzje wymagane do rozpoczęcia lub dokończenia ticketu zadawaj zgodnie z sekcją `## Jak pytać` w kontrakcie.
+Przy używaniu mapy obszaru czytaj „Aktualność map obszarów” w `../../kontrakt/poznanie.md`; przy zapisie lekcji lub próby właściwą sekcję `../../kontrakt/pamiec.md`.
+
+Pytania o decyzje wymagane do rozpoczęcia lub dokończenia ticketu zadawaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`.
 
 Jedna sesja = jeden ticket. Pracujemy razem: mówisz, co robisz, i pytasz tylko wtedy, gdy ticket jest niejasny, przeczy specowi albo ADR, albo wymaga decyzji spoza ticketu.
 
@@ -25,21 +27,22 @@ Jedna sesja = jeden ticket. Pracujemy razem: mówisz, co robisz, i pytasz tylko 
 - Zdolność w `grill` albo `spec` → zatrzymaj się i wskaż właściwą komendę.
 - Inna zdolność już w `budowa` → zatrzymaj się (limit Teraz) i zapytaj, co robimy.
 - `git status`: są niezacommitowane zmiany niezwiązane z ticketem → zapytaj, co z nimi zrobić, zanim zaczniesz.
-- Remote: `git fetch` i `git status -sb` — gałąź za zdalną → `git pull --ff-only`; rozjechana → stop i pytanie (kontrakt, `### Push`).
-- `git.galezie` = `zdolnosc` → praca na gałęzi `zdolnosc/<slug>`: pierwszy ticket ją zakłada z aktualnej gałęzi głównej, kolejne sprawdzają, że na niej są (kontrakt, `### Gałęzie i PR`).
+- Remote: `git fetch` i `git status -sb` — gałąź za zdalną → `git pull --ff-only`; rozjechana → stop i pytanie (`../../kontrakt/git.md`, `### Push`).
+- `git.galezie` = `zdolnosc` → praca na gałęzi `zdolnosc/<slug>`: pierwszy ticket ją zakłada z aktualnej gałęzi głównej, kolejne sprawdzają, że na niej są (`../../kontrakt/git.md`, `### Gałęzie i PR`).
 
 ## 3. Kontekst
 
-Wczytaj: ticket, odpowiednie fragmenty `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, `.ai/lekcje.md`, powiązane ADR z katalogu decyzji, mapę obszaru z `.ai/obszary/` (jeśli jest) i kod, którego ticket dotyka. Sprawdź `Rodzaj:` w mapie zdolności. `lekcje.md` czytasz zawsze — to są błędy, których nie wolno powtórzyć. Przed wyborem implementacji przeszukaj też `.ai/proby.md`, a gdy ticket dotyka biblioteki, protokołu, usługi zewnętrznej albo znanego rodzaju problemu — `../../wzorce/INDEKS.md` względem tego pliku. Trafienia przywołaj w planie: przy próbach ich status i warunek powrotu, przy wzorcach — czy Warunki pasują i czy nie zachodzi „Nie dotyczy”.
+Wczytaj: ticket, odpowiednie fragmenty `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, lekcje z `.ai/lekcje.md` dla zdolności i obszarów ticketu (`../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”), powiązane ADR z katalogu decyzji, mapę obszaru z `.ai/obszary/` (jeśli jest) i kod, którego ticket dotyka. Sprawdź `Rodzaj:` w mapie zdolności. Lekcje zdolności i obszarów czytasz zawsze — to są błędy, których nie wolno powtórzyć. Przed wyborem implementacji przeszukaj też `.ai/proby.md`, a gdy ticket dotyka biblioteki, protokołu, usługi zewnętrznej albo znanego rodzaju problemu — `../../wzorce/INDEKS.md` względem tego pliku. Trafienia przywołaj w planie: przy próbach ich status i warunek powrotu, przy wzorcach — czy Warunki pasują i czy nie zachodzi „Nie dotyczy”.
 
 ## 4. Start
 
 - Ticket → `w-toku`. Zdolność w `plan` → `budowa` w `ROADMAP.md`. To jedyna zmiana roadmapy, jaką wolno budowie.
 - Pokaż plan w 3–6 punktach: które scenariusze z pola `scenariusze` ticket kończy, na jakim poziomie powstaną ich testy akceptacyjne, jakie zachowania sprawdzą testy wewnętrzne i w jakiej kolejności. Idź dalej bez czekania, chyba że coś jest niejasne.
+- W tym planie wskaż istotne niesprawdzone założenia i najprostszy wariant spełniający ticket. Założenia techniczne sprawdź przed oparciem na nich implementacji; brakujące wymagania rozstrzyga użytkownik. Używaną mapę obszaru sprawdź według `## Aktualność map obszarów`; zmienione źródła wymagają sprawdzenia twierdzeń w kodzie. Nie uznawaj starej mapy za aktualną przez samo przesunięcie checkpointu.
 
 ## 5. Podwójna pętla — pionowo, jeden test naraz
 
-Zasady: sekcja „Język → zachowanie → test” w kontrakcie.
+Zasady: sekcja „Język → zachowanie → test” w `../../kontrakt/praca.md`.
 
 **Pętla zewnętrzna — scenariusz.** Dla każdego scenariusza, który ten ticket kończy:
 
@@ -82,6 +85,8 @@ Gdy test akceptacyjny i wewnętrzny sprawdzałyby dokładnie to samo (mały scen
 
 ## 6. Pilnuj zakresu
 
+Nie dodawaj abstrakcji dla hipotetycznych przyszłych zadań. Usunięcie kodu albo komentarza uzasadnij potrzebą ticketu lub potwierdzoną zbędnością w jego zakresie; porządki poza zakresem zgłoś osobno. Gdy ticket wymaga porównania wariantów wydajności lub innej mierzalnej cechy, czytaj `../../procedury/eksperyment.md`: poprawny punkt odniesienia, niezmienna ocena, ograniczony budżet i zachowane scenariusze. Nie uruchamiaj eksperymentu przy zwykłej pętli TDD.
+
 Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 
 - pojawia się nowe pojęcie → wpis w słowniku, we właściwym kontekście (za zgodą);
@@ -93,7 +98,7 @@ Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 - wybrane podejście nie działa i przechodzisz na inne → najpierw wpis w `.ai/proby.md` (`nie-dziala` z dowodem albo `odlozone`), potem zmiana kursu;
 - kod zależy od tego, jak działa biblioteka, API albo usługa, a nie jesteś pewien zachowania w używanej wersji → sprawdź w źródle (dokumentacja tej wersji, kod w `node_modules` / `site-packages`), nie z pamięci; pytanie, które wymaga więcej niż kilku minut → skill `badanie`.
 
-**Fałszywe założenie** — test czerwony z innego powodu niż przewidziałeś, kod zachowuje się inaczej, niż zakładałeś, przegląd albo użytkownik pokazał błąd w rozumowaniu. Gdy znasz już rozwiązanie, od razu wpis w `.ai/lekcje.md` według sekcji „Lekcje” w kontrakcie (ta sama przyczyna → nowe wystąpienie istniejącej lekcji). Nie czekaj do końca ticketu.
+**Fałszywe założenie** — test czerwony z innego powodu niż przewidziałeś, kod zachowuje się inaczej, niż zakładałeś, przegląd albo użytkownik pokazał błąd w rozumowaniu. Gdy znasz już rozwiązanie, od razu wpis w `.ai/lekcje.md` według zasad z `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”; format wpisu: `../../kontrakt/formaty.md` → „Lekcja — wpis w `lekcje.md`” (ta sama przyczyna → nowe wystąpienie istniejącej lekcji). Nie czekaj do końca ticketu.
 
 ## 7. Walidacja
 
@@ -111,13 +116,14 @@ Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące po
   - `weryfikacja.wymagana` w `.ai/warsztat.json` = `true` (domyślnie) → status zdolności w `ROADMAP.md` → `weryfikacja`; Następny krok: `skill weryfikuj <slug>`. Przy `weryfikacja.innyModel` = `true` (domyślnie) wskaż, że należy uruchomić go w modelu spoza listy `budowal`; przy `false` można użyć tego samego modelu, ale runda będzie nieniezależna;
   - `false` → Następny krok: `skill zamknij <slug>`.
 - Sprawdź, czy każde fałszywe założenie z tej sesji ma lekcję w `.ai/lekcje.md` (krok 6). Jeśli pomógł albo nie pasował wzorzec — dopisek `Wzorzec:` w lekcji.
-- Commit tylko plików tego ticketu (kod, testy, ticket, mapa, przy ostatnim tickecie także `ROADMAP.md`): `<slug>#<nr>: <tytuł>`, według `### Commit` w kontrakcie — skan sekretów przed commitem, `Closes #<github>` przy trackerze GitHub, potem push według `git.push`.
-- Ostatni ticket i `git.galezie` = `zdolnosc` → po pushu PR w wersji roboczej z szablonu `../../szablony/pr.md` (kontrakt, `### Gałęzie i PR`). Komendę pokazujesz przed uruchomieniem, a adres PR podajesz w raporcie — nie zapisujesz go w `.ai/`, bo odnajdzie go `gh pr view zdolnosc/<slug>`.
+- W raporcie wskaż mapy obszarów, których źródła zmienił ticket, i następny krok `skill poznaj <obszar>` do ich sprawdzenia. Nie odświeżaj specu, ADR ani checkpointów automatycznie. Wynik prowadzonego eksperymentu linkuj z Notatek ticketu; nie kopiuj dziennika iteracji.
+- Commit tylko plików tego ticketu (kod, testy, ticket, mapa, przy ostatnim tickecie także `ROADMAP.md`): `<slug>#<nr>: <tytuł>`, według `### Commit` w `../../kontrakt/git.md` — skan sekretów przed commitem, `Closes #<github>` przy trackerze GitHub, potem push według `git.push`.
+- Ostatni ticket i `git.galezie` = `zdolnosc` → po pushu PR w wersji roboczej z szablonu `../../szablony/pr.md` (`../../kontrakt/git.md`, `### Gałęzie i PR`). Komendę pokazujesz przed uruchomieniem, a adres PR podajesz w raporcie — nie zapisujesz go w `.ai/`, bo odnajdzie go `gh pr view zdolnosc/<slug>`.
 - Projekt ma CI (np. `.github/workflows/`), a commit jest wypchnięty → poczekaj na wynik runu dla tego commita (`gh run watch`). Czerwony → ticket wraca do `w-toku`, poprawka w tym samym tickecie; lokalnie zielona walidacja nie zastępuje CI (inny system, wymuszony terminal, kolejność bramek). Niewypchnięty → w mapie i raporcie „CI niesprawdzone dla `<hash>`”.
 
 ## 10. Sprzątanie
 
-Według sekcji `## Sprzątanie` w kontrakcie, zanim napiszesz raport:
+Według sekcji `## Sprzątanie — procesy i pliki tymczasowe` w `../../kontrakt/sprzatanie.md`, zanim napiszesz raport:
 
 - Procesy uruchomione w tej sesji (serwer deweloperski, podgląd, watch) zamknij razem z drzewem — chyba że użytkownik chce, żeby działały dalej.
 - `git status --short --ignored`: elementy z `sprzatanie.smieci` usuń; nowe pliki i katalogi spoza listy, które powstały w tej sesji, pokaż i zapytaj, co z nimi zrobić. Cache narzędzi zostawiasz.

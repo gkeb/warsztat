@@ -1,6 +1,6 @@
 # Wydania
 
-> Rejestr wydań i wdrożeń: co, kiedy, dokąd, czy sprawdzenie przeszło. Najnowsze na górze. Pisze skill `wydaj`. Historia dla użytkowników — w `CHANGELOG.md`, jeśli projekt go prowadzi. Format: sekcja „Wydania i pielęgnacja” w kontrakcie warsztatu.
+> Rejestr wydań i wdrożeń: co, kiedy, dokąd, czy sprawdzenie przeszło. Najnowsze na górze. Pisze skill `wydaj`. Historia dla użytkowników — w `CHANGELOG.md`, jeśli projekt go prowadzi. Format: „Wydania i pielęgnacja” w `kontrakt/profile-i-wydania.md` w katalogu pluginu warsztatu.
 
 <!--
 ## RRRR-MM-DD — v1.3.0 — produkcja — sprawdzone

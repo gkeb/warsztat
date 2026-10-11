@@ -1,6 +1,6 @@
 # Profil: cli
 
-> Narzędzie wiersza poleceń — od skryptu ułatwiającego jedno zadanie po narzędzie publikowane w rejestrze pakietów. Python albo TypeScript. Używaj razem z profilem `przekrojowe`. Format: sekcja „Profile” w kontrakcie warsztatu.
+> Narzędzie wiersza poleceń — od skryptu ułatwiającego jedno zadanie po narzędzie publikowane w rejestrze pakietów. Python albo TypeScript. Używaj razem z profilem `przekrojowe`. Format: „Profile — klasy aplikacji” w `kontrakt/profile-i-wydania.md` w katalogu pluginu warsztatu.
 > Mały pomocnik na własny użytek: wiele pozycji kończy się `pominięte: tylko lokalnie` — to też decyzja, nie przeoczenie.
 
 ## Decyzje

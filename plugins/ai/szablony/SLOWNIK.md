@@ -1,6 +1,6 @@
 # Słownik domeny
 
-> Byty, nie-byty, granice i niezmienniki. Najwyżej 1–3 strony. Poprawiaj istniejące wpisy zamiast dopisywać nowe wersje. Format: sekcja „Język → zachowanie → test” w kontrakcie warsztatu.
+> Byty, nie-byty, granice i niezmienniki. Najwyżej 1–3 strony. Poprawiaj istniejące wpisy zamiast dopisywać nowe wersje. Format: „Język → zachowanie → test” w `kontrakt/praca.md` w katalogu pluginu warsztatu.
 
 <!-- Konteksty: dopóki każde słowo znaczy w całym projekcie to samo, zostaw tylko „Pojęcia”. Gdy to samo słowo zaczyna znaczyć co innego w dwóch częściach systemu, dodaj sekcje `## Kontekst: <nazwa>` (odpowiedzialność, obszary kodu, relacje z innymi kontekstami), a w „Pojęciach” zostaw tylko to, co wspólne. -->
 

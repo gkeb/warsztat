@@ -6,9 +6,11 @@ argument-hint: "[slug | tydzien]"
 
 # Stan projektu
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md`. Użyj slugu lub argumentu `tydzien` podanego przy wywołaniu skilla albo w bieżącej wiadomości. Brak `.ai/` → zaproponuj skill `start`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` względem tego pliku `SKILL.md`. Użyj slugu lub argumentu `tydzien` podanego przy wywołaniu skilla albo w bieżącej wiadomości. Brak `.ai/` → zaproponuj skill `start`.
 
-Pytaj o zgodę na naprawienie wykrytych rozjazdów zgodnie z sekcją `## Jak pytać` w kontrakcie.
+Przy mapach i zasadach czytaj odpowiednie sekcje `../../kontrakt/poznanie.md`; przy lekcjach, próbach i wzorcach `../../kontrakt/pamiec.md`; przy profilach, wydaniach lub pielęgnacji `../../kontrakt/profile-i-wydania.md`. Raportuj tylko działy dotyczące projektu i wybranego zakresu.
+
+Pytaj o zgodę na naprawienie wykrytych rozjazdów zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`.
 
 Domyślnie **tylko czytasz**. Rozjazdy naprawiasz dopiero po zgodzie.
 
@@ -48,12 +50,13 @@ Niezacommitowane: … (jeśli są)
 - Profile: `warsztat.json` → `profile` puste albo bez klasy aplikacji, choć kod ją zdradza (np. `astro.config.*` → `strona`, ręcznie utrzymywany `index.html` → `html`); pozycje `otwarte` w `.ai/profil.md`; pozycje z plików profili w `../../profile/`, których rejestr jeszcze nie ma (profil urósł) — zaproponuj ich rozstrzygnięcie.
 - Wydania: zmiany widoczne dla użytkownika od ostatniego wpisu w `.ai/wydania.md` (zdolności w Zrobione, commity `fix:`, sekcja `## Niewydane` w historii zmian) — ile i od kiedy czekają; `wydanie.komendy` puste przy profilu, który coś wydaje.
 - Punkt odniesienia walidacji: ile znanych błędów w `odniesienie.znane` i czy lista maleje (`git log -p -- .ai/warsztat.json`). Rosnąca lista to rozjazd.
-- Mapy w `.ai/obszary/` poznane na commicie, od którego obszar mocno się zmienił — zaproponuj `skill poznaj <obszar>`.
+- Mapy w `.ai/obszary/`: skrypt `../../scripts/aktualnosc-map.mjs` rozwiąż względem tego pliku `SKILL.md` do ścieżki absolutnej. Uruchom `node`, przekazując jako osobne, cytowane argumenty tę ścieżkę i korzeń projektu (katalog zawierający `.ai/ROADMAP.md`). Nie rozwiązuj ścieżki skryptu względem katalogu powłoki ani przez zmienną środowiskową pluginu. Raport rozróżnia `zmienione`, `bez-zmian` i `nieznana` według „Aktualność map obszarów” w `../../kontrakt/poznanie.md`. Zmienione źródła → zaproponuj `skill poznaj <obszar>`; brak metadanych albo checkpointu → uzupełnienie przy sprawdzeniu mapy. Bez Node sprawdź źródła przez lokalny diff i nieśledzone pliki; brak gita oznacz jako nieznaną aktualność. `bez-zmian` dotyczy zapisanych źródeł, nie dowodzi poprawności opisu.
+- Eksperymenty w `.ai/eksperymenty/`: `w-toku` lub `przerwany` bez następnego kroku, wyczerpany budżet albo wynik `nierozstrzygniety` traktowany w mapie jako pewny fakt — pokaż ograniczenie i zaproponuj rozstrzygnięcie bez automatycznego wznawiania prób.
 - Blok warsztatu w `AGENTS.md` starszy niż plugin (wersja w znaczniku `warsztat:start` kontra `version` w `../../plugin.json`) albo `CLAUDE.md` bez importu `@AGENTS.md` — zaproponuj skill `start` (krok „Aktualizacja”).
 - **Git:** commity niewypchnięte przy `git.push` = `pytaj` albo `zawsze`; gałąź za zdalną (praca z innego komputera — `git pull --ff-only` przed zmianami). Przy `git.galezie` = `zdolnosc`: zdolność w `budowa` albo `weryfikacja`, a bieżąca gałąź to nie `zdolnosc/<slug>`; gałęzie `zdolnosc/*` i `fix/*` zdolności zamkniętych albo porzuconych; zdolność w `weryfikacja` bez PR (`gh pr view zdolnosc/<slug>`).
 - **Bezpieczeństwo:** `bezpieczenstwo.skanSekretow` = `null`, choć `gitleaks` jest dostępny; `.githooks/pre-commit` w repo, a `git config core.hooksPath` na tym komputerze pusty; brakujące wpisy w `.gitignore` albo `permissions.deny` względem szablonów pluginu; plik z listy `chronione` śledzony przez git (`git ls-files`) — to alarm, nie zwykły rozjazd.
 - **GitHub** (tylko `tracker` = `github` i działające `gh`): ticket z `github: null`; Issue otwarte przy tickecie `zrobione` albo `porzucony`; Issue zamknięte przy tickecie otwartym; w trybie `tydzien` także otwarte Issue bez ticketu (nowe zgłoszenia) — każde do decyzji: `napraw #<nr>`, `pomysl #<nr>`, Mgła albo zamknięcie.
-- **Sprzątanie** (kontrakt, `## Sprzątanie`): procesy z tego projektu, które działają dalej (lista z hooka albo `Get-CimInstance Win32_Process` / `ps` z filtrem po ścieżce projektu) — zapytaj, czy zamknąć; elementy z `sprzatanie.smieci` obecne na dysku — zaproponuj usunięcie; w trybie `tydzien` także nieśledzone i ignorowane pliki oraz katalogi spoza listy i spoza cache narzędzi (`git status --short --ignored`) — dla każdego: usunąć, na listę śmieci, do `.gitignore` czy zostawić. `sprzatanie.smieci` puste przy profilu z testami → zaproponuj listę.
+- **Sprzątanie** (`../../kontrakt/sprzatanie.md`, `## Sprzątanie — procesy i pliki tymczasowe`): procesy z tego projektu, które działają dalej (lista z hooka albo `Get-CimInstance Win32_Process` / `ps` z filtrem po ścieżce projektu) — zapytaj, czy zamknąć; elementy z `sprzatanie.smieci` obecne na dysku — zaproponuj usunięcie; w trybie `tydzien` także nieśledzone i ignorowane pliki oraz katalogi spoza listy i spoza cache narzędzi (`git status --short --ignored`) — dla każdego: usunąć, na listę śmieci, do `.gitignore` czy zostawić. `sprzatanie.smieci` puste przy profilu z testami → zaproponuj listę.
 - Pliki w `.ai/sesje/` — przerwana praca poza zdolnościami. Pokaż je w raporcie; starsze niż tydzień zaproponuj dokończyć albo usunąć.
 
 Każdy rozjazd: co się nie zgadza, które źródło wygrywa według kontraktu, proponowana poprawka. Zapytaj, czy naprawić.

@@ -7,7 +7,7 @@ argument-hint: "[podglad | wersja | tresc]"
 
 # Wydanie
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` — szczególnie `## Wydania i pielęgnacja` i `## Profile`. Profile projektu: `warsztat.json` → `profile`, pliki w `../../profile/`. Szablon rejestru: `../../szablony/wydania.md`. Pytania zadawaj zgodnie z `## Jak pytać`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/profile-i-wydania.md` i `../../kontrakt/git.md` względem tego pliku `SKILL.md`. Profile projektu: `warsztat.json` → `profile`, pliki w `../../profile/`. Szablon rejestru: `../../szablony/wydania.md`. Pytania zadawaj zgodnie z `## Jak pytać`.
 
 Wydanie wychodzi poza repozytorium: publikuje pakiet albo zmienia stronę, którą widzą ludzie. **Każdą komendę, która publikuje, wdraża, taguje albo wypycha, pokazujesz przed uruchomieniem i uruchamiasz dopiero po zgodzie.** Kodu nie zmieniasz — poza wersją i historią zmian.
 
@@ -62,5 +62,5 @@ Uruchom `wydanie.sprawdzenie` i kontrole z sekcji `Wydanie` profili — na tym, 
 
 - `.ai/wydania.md` (z szablonu, jeśli go nie ma): nowy wpis na górze — data, wersja albo commit, cel (`produkcja` | `podgląd`), co zawiera, dokąd (z adresem GitHub Release, jeśli powstał), wynik sprawdzenia, uwagi. Także dla nieudanego wydania i wycofania.
 - Commit `wydanie: <wersja albo data> — rejestr` (tylko `.ai/wydania.md`, jeśli nie wszedł do poprzedniego commita).
-- Wydanie ujawniło fałszywe założenie (np. „działa po instalacji”) → lekcja według sekcji „Lekcje” w kontrakcie; brakujący krok wydania → propozycja zmiany `wydanie.komendy` albo sprawdzeń.
+- Wydanie ujawniło fałszywe założenie (np. „działa po instalacji”) → lekcja według zasad z `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”; format wpisu: `../../kontrakt/formaty.md` → „Lekcja — wpis w `lekcje.md`”; brakujący krok wydania → propozycja zmiany `wydanie.komendy` albo sprawdzeń.
 - Raport: wersja, dokąd, wynik sprawdzenia, hash i tag.

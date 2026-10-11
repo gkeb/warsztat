@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { opisAktualnosci, sprawdzMapy } from './aktualnosc-map.mjs';
 
 const MAX_LINII_STANU_SESJI = 12;
 
@@ -158,6 +159,9 @@ if (!teraz) {
 
 const sesje = otwarteSesje();
 if (sesje.length > 0) wyjscie.push('', 'Przerwana praca poza zdolnościami:', ...sesje);
+
+const aktualnoscMap = opisAktualnosci(sprawdzMapy(root));
+if (aktualnoscMap.length > 0) wyjscie.push('', ...aktualnoscMap);
 
 // Katalog prób: same nagłówki problemów bez rozwiązania; całość agent przeszukuje sam, gdy wybiera podejście.
 const MAX_NIEROZWIAZANYCH = 5;

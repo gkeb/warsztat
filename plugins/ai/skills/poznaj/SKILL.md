@@ -6,14 +6,16 @@ argument-hint: "[ogolnie | obszar]"
 
 # Poznanie projektu
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` — szczególnie sekcję `## Zastany projekt`. Szablony: `../../szablony/obszar.md`, `../../szablony/zrodla.md`, `../../szablony/AGENTS-projekt.md`, `../../szablony/decyzja.md`. Zakres weź z wywołania skilla albo z bieżącej wiadomości. Pytania zadawaj zgodnie z `## Jak pytać`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/poznanie.md` i `../../kontrakt/pliki.md` względem tego pliku `SKILL.md`. Szablony: `../../szablony/obszar.md`, `../../szablony/zrodla.md`, `../../szablony/AGENTS-projekt.md`, `../../szablony/decyzja.md`. Zakres weź z wywołania skilla albo z bieżącej wiadomości. Pytania zadawaj zgodnie z `## Jak pytać`.
+
+W trybie `ogolnie`, przy rozstrzyganiu profilu lub inwentaryzacji wydań, czytaj odpowiednie sekcje `../../kontrakt/profile-i-wydania.md`.
 
 Poznanie **niczego nie zmienia w kodzie ani w zastanej dokumentacji**. Tylko czyta, a zapisuje wyłącznie pliki warsztatu.
 
 ## 1. Zakres
 
 - **`ogolnie`** (domyślnie przy pierwszym uruchomieniu): cały projekt, płytko. Cel: jak uruchomić, jakie są obszary, gdzie leży dokumentacja i ADR-y.
-- **`<obszar>`**: katalog, moduł albo temat (np. `platnosci`), głęboko. Jeśli `.ai/obszary/<slug>.md` istnieje, zacznij od niego i odśwież tylko to, co zmieniło się od zapisanego commita (`git log <commit>..HEAD -- <katalogi>`).
+- **`<obszar>`**: katalog, moduł albo temat (np. `platnosci`), głęboko. Jeśli `.ai/obszary/<slug>.md` istnieje, zacznij od niego i jego źródeł według `## Aktualność map obszarów` w `../../kontrakt/poznanie.md`. Sprawdź diff źródeł od `poznany-commit`, także zmiany robocze i nieśledzone; odśwież dotknięte fragmenty oraz ich zależności. Brak checkpointu lub nieosiągalny commit → sprawdź opis od źródeł, nie zakładaj aktualności.
 
 ## 2. Zbierz materiał
 
@@ -41,7 +43,7 @@ Przedstaw użytkownikowi listę zmian w plikach warsztatu, pogrupowaną. Zapisz 
 | Co | Gdzie |
 | --- | --- |
 | uruchamianie, mapa obszarów, pułapki — tylko globalne, krótko | `AGENTS.md` → `## Projekt` (z szablonu, poza blokiem warsztatu) |
-| szczegóły obszaru | `.ai/obszary/<slug>.md` (z szablonu), z commitem, na którym poznano |
+| szczegóły obszaru | `.ai/obszary/<slug>.md` (z szablonu), z `poznany-commit` i `zrodla-kodu` według kontraktu |
 | pojęcia domenowe z kodu i dokumentów (5–15 najważniejszych); niezmienniki, które kod egzekwuje (walidacje, ograniczenia bazy, wyjątki domenowe); to samo słowo modelowane różnie w różnych modułach — kandydat na konteksty | `.ai/SLOWNIK.md`, z dopiskiem źródła; konteksty tylko za zgodą użytkownika, a ich granice jako ADR `zastana` |
 | decyzje, które ograniczają dalszą pracę, a nie mają ADR | ADR `zastana` w katalogu decyzji, z polem `Źródło` |
 | zastane dokumenty, katalog ADR, ich aktualność | `.ai/zrodla.md` |
@@ -54,8 +56,10 @@ Zasady:
 - **Linkujesz, nie kopiujesz.** Każdy wpis ma źródło: plik, sekcję albo commit.
 - **Zastane ADR-y tylko dla ograniczeń.** Nie odtwarzasz każdej decyzji z historii — tylko te, których złamanie zepsułoby coś albo zaskoczyłoby autora.
 - **Krótko w AGENTS.md.** Ten plik czyta każda sesja. Szczegóły obszaru idą do `.ai/obszary/`.
-- **Bez dublowania z CLAUDE.md.** Jeśli `CLAUDE.md` zawiera już fakty o projekcie, nie powtarzasz ich w `AGENTS.md`, tylko proponujesz przeniesienie (zob. `## AGENTS.md i CLAUDE.md` w kontrakcie).
+- **Bez dublowania z CLAUDE.md.** Jeśli `CLAUDE.md` zawiera już fakty o projekcie, nie powtarzasz ich w `AGENTS.md`, tylko proponujesz przeniesienie (zob. `## AGENTS.md i CLAUDE.md` w `../../kontrakt/pliki.md`).
 - Niepewne wnioski oznaczasz „(wniosek)” albo zapisujesz jako otwarte pytanie.
+- **Źródła i checkpoint.** Wskaż kod, testy, konfiguracje i kontrakty poza katalogiem modułu, które podpierają opis. Istotne twierdzenia linkuj przy ich treści do pliku i symbolu lub sekcji. Przy odświeżeniu starej mapy przenieś commit z linii `Poznany` do frontmatteru i usuń jego duplikat; checkpoint przesuwaj dopiero po sprawdzeniu źródeł. Wersja robocza nie dostaje checkpointu udającego commit tej wersji.
+- **Opis i wymagania.** Nie zmieniaj specu ani ADR, żeby dopasować je do kodu. Zmieniony plik sygnalizuje potrzebę sprawdzenia, nie rozstrzyga, po której stronie jest błąd. Nie twórz równoległej wiki, słownika ani rejestru decyzji.
 
 ## 5. Podsumowanie
 

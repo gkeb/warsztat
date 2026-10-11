@@ -31,6 +31,7 @@
   },
   "profile": ["przekrojowe"],
   "walidacja": [],
+  "mutacje": null,
   "odniesienie": {
     "data": null,
     "znane": []
@@ -38,7 +39,8 @@
   "weryfikacja": {
     "wymagana": true,
     "innyModel": true,
-    "drugaOpinia": "zalecana"
+    "drugaOpinia": "zalecana",
+    "odbior": true
   },
   "wydanie": {
     "wersjonowanie": null,
@@ -48,6 +50,9 @@
     "sprawdzenie": []
   },
   "pielegnacja": [],
+  "przeglad": {
+    "bezpieczenstwo": "auto"
+  },
   "hooki": {
     "formatowanie": true,
     "kontrola": true,

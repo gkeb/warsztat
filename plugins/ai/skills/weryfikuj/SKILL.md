@@ -7,7 +7,7 @@ argument-hint: "[slug | slug#NN]"
 
 # Weryfikacja krzyżowa
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` — szczególnie `## Weryfikacja krzyżowa`. Szablon raportu: `../../szablony/weryfikacja.md`. Zakres weź z wywołania skilla albo z bieżącej wiadomości. Pytania zadawaj zgodnie z `## Jak pytać`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` i `../../kontrakt/praca.md` względem tego pliku `SKILL.md`. Szablon raportu: `../../szablony/weryfikacja.md`. Zakres weź z wywołania skilla albo z bieżącej wiadomości. Pytania zadawaj zgodnie z `## Jak pytać`.
 
 Jesteś **weryfikatorem, nie budującym**. Oceniasz i zapisujesz uwagi. Nie poprawiasz kodu, testów ani specu — nawet drobiazgów. Poprawki robi budujący w swojej sesji.
 
@@ -26,6 +26,7 @@ Jesteś **weryfikatorem, nie budującym**. Oceniasz i zapisujesz uwagi. Nie popr
 - `.ai/SLOWNIK.md`, ADR-y z katalogu decyzji, `.ai/obszary/` dotkniętych obszarów, `.ai/proby.md`.
 - Profile projektu (`warsztat.json` → `profile`) z `../../profile/` — sekcje `Niedowiezienia` i `Testy akceptacyjne`; `.ai/profil.md`.
 - Uruchom walidację z `.ai/warsztat.json` (z uwzględnieniem `odniesienie.znane`). Czerwona walidacja to uwaga blokująca.
+- `mutacje` ustawione → uruchom testy mutacyjne według „Weryfikacja — dowiezienie” w `../../kontrakt/praca.md`, tylko na plikach produkcyjnych z zakresu, w limicie czasu. Przekroczony limit albo błąd narzędzia → zapisz w raporcie „testy mutacyjne niewykonane” z powodem; to nie jest uwaga. Wyniki narzędzia to pliki robocze: przeżyte mutanty przepisz do uwag, a pliki usuń przed końcem weryfikacji według „Sprzątanie — procesy i pliki tymczasowe” w `../../kontrakt/sprzatanie.md` — z listy `sprzatanie.smieci` bez pytania, spoza niej po pytaniu. Plik z diffem dla `{diff}` zapisujesz poza repo i też usuwasz.
 
 Przy dużym zakresie możesz rozdzielić czytanie na subagentów według `## Subagenci i modele` — ocenę i zapis robisz sam.
 
@@ -46,7 +47,7 @@ Przy dużym zakresie możesz rozdzielić czytanie na subagentów według `## Sub
 - tylko szczęśliwa ścieżka: brak obsługi błędów, pustych danych, limitów, uprawnień opisanych w specu;
 - rzeczy niepodpięte: nowy kod, którego nic nie wywołuje — trasa, widok, komenda, handler, zadanie, rejestracja w kontenerze;
 - brakujące migracje, zmienne środowiskowe, wpisy konfiguracji, uprawnienia, dokumentacja uruchomienia;
-- testy, które niczego nie sprawdzają: brak asercji, asercje na mockach, pominięte (`skip`) albo osłabione;
+- testy, które niczego nie sprawdzają: brak asercji, asercje na mockach, pominięte (`skip`) albo osłabione. Przeżyty mutant w kodzie, który realizuje scenariusz, to uwaga `warto` z mutantem jako dowodem (plik, linia, zmiana); blokująca tylko wtedy, gdy pokazuje frazę „Wtedy” bez asercji. Najpierw oceń, czy mutant nie jest równoważny;
 - mocki zostawione w kodzie produkcyjnym;
 - scenariusz „zrobiony” tylko w teście, a nie przez publiczny interfejs;
 - każda pozycja z `Niedowiezienia` profili projektu, której dotyka zdolność;

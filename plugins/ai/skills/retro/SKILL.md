@@ -6,7 +6,9 @@ argument-hint: "[sesja]"
 
 # Retro
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md`. Pytania zadawaj zgodnie z sekcją `## Jak pytać`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/pamiec.md` względem tego pliku `SKILL.md`. Pytania zadawaj zgodnie z sekcją `## Jak pytać`.
+
+Przy propozycji kontroli hookiem czytaj „Hooki kodu” w `../../kontrakt/narzedzia.md`; przy rozwoju profilu odpowiednie sekcje `../../kontrakt/profile-i-wydania.md`.
 
 Lekcja w pliku to najsłabszy mechanizm: agent musi ją przeczytać i o niej pamiętać. Celem retro jest przesunięcie każdego powtarzalnego problemu jak najwyżej w hierarchii mechanizmów.
 
@@ -49,17 +51,19 @@ Osobno oceń, czy problem jest **ogólny** — nie zależy od domeny projektu (z
 
 ## 3. Dobierz mechanizm — najmocniejszy możliwy
 
-1. **Automatyczna kontrola** — test, reguła lint albo typów, skrypt w `walidacja` w `.ai/warsztat.json`, hook. Agent nie może jej zapomnieć. Wraca ten sam zły wzorzec w kodzie (np. `console.log` zamiast Sentry)? Najtańszy automat to wpis w `hooki.zakazane` (kontrakt, „Hooki kodu”) razem z zasadą w `ZASADY.md`.
+1. **Automatyczna kontrola** — test, reguła lint albo typów, skrypt w `walidacja` w `.ai/warsztat.json`, hook. Agent nie może jej zapomnieć. Wraca ten sam zły wzorzec w kodzie (np. `console.log` zamiast Sentry)? Najtańszy automat to wpis w `hooki.zakazane` (`../../kontrakt/narzedzia.md`, „Hooki kodu”) razem z zasadą w `ZASADY.md`.
 2. **Zasada w `ZASADY.md`** (gdy dotyczy kodu) albo **reguła w `AGENTS.md`** (gdy dotyczy zachowania agenta lub projektu — poza blokiem warsztatu). Zasada twarda z `Egzekwowanie: przegląd` albo `brak`, łamana ponownie, wraca do punktu 1 — jako automat.
 3. **Zmiana w warsztacie** — skill, kontrakt albo szablon. Wybierz ją, gdy problem leży w samym procesie i dotyczy wszystkich projektów. Edytuj pliki warsztatu tylko wtedy, gdy katalog pluginu jest repozytorium źródłowym, a nie kopią w cache pluginów. W przeciwnym razie podaj gotową zmianę: plik i tekst.
-4. **Wzorzec w `wzorce/`** (katalog pluginu, sekcja „Wzorce” w kontrakcie) — dla problemu ogólnego. Łączy się z punktami 1–3: projekt dostaje mechanizm, inne projekty — wiedzę. Najpierw przeszukaj `wzorce/INDEKS.md`:
+4. **Wzorzec w `wzorce/`** (katalog pluginu, sekcja „Wzorce — wiedza między projektami” w `../../kontrakt/pamiec.md`) — dla problemu ogólnego. Łączy się z punktami 1–3: projekt dostaje mechanizm, inne projekty — wiedzę. Najpierw przeszukaj `wzorce/INDEKS.md`:
    - jest pasujący wzorzec → dopisz wystąpienie; przypadek różnił się → wariant albo zawężenie `Warunki` / `Nie dotyczy`; drugi niezależny projekt → status `potwierdzony`;
    - wzorzec nie pasował, choć wyglądał (lekcja z `Wzorzec:` i opisem różnicy) → doprecyzuj `Nie dotyczy`; kolejne chybienia → zaproponuj `wycofany`;
    - nie ma → nowy wzorzec z `../../szablony/wzorzec.md`, status `kandydat`. Uogólniaj: nazwij problem przez mechanizm, nie przez projekt; Sygnały opisz tak, jak widać je przed znaniem przyczyny; w `Nie dotyczy` wpisz przypadki, które wyglądają podobnie, a mają inną przyczynę. Bez kodu i danych projektu.
-5. **Pozycja profilu w `profile/`** (katalog pluginu, sekcja „Profile” w kontrakcie) — gdy problem wynikał z decyzji, której nikt nie podjął, choć dotyczy całej klasy aplikacji (np. nikt nie zapytał o kodowanie konsoli Windows w CLI, o przekierowania po zmianie adresów strony). Nowa pozycja z kolejnym wolnym numerem w profilu klasy albo w `przekrojowe`; typowe niedowiezienie → sekcja `Niedowiezienia`; brakujący krok wydania albo kontrola cykliczna → `Wydanie` albo `Pielęgnacja`. Klasa aplikacji bez profilu, a w projekcie powtarzają się jej decyzje → zaproponuj nowy profil według budowy z kontraktu. Edycja i commit — jak przy wzorcach.
+5. **Pozycja profilu w `profile/`** (katalog pluginu, sekcja „Profile — klasy aplikacji” w `../../kontrakt/profile-i-wydania.md`) — gdy problem wynikał z decyzji, której nikt nie podjął, choć dotyczy całej klasy aplikacji (np. nikt nie zapytał o kodowanie konsoli Windows w CLI, o przekierowania po zmianie adresów strony). Nowa pozycja z kolejnym wolnym numerem w profilu klasy albo w `przekrojowe`; typowe niedowiezienie → sekcja `Niedowiezienia`; brakujący krok wydania albo kontrola cykliczna → `Wydanie` albo `Pielęgnacja`. Klasa aplikacji bez profilu, a w projekcie powtarzają się jej decyzje → zaproponuj nowy profil według sekcji „Profile — klasy aplikacji” w `../../kontrakt/profile-i-wydania.md`. Edycja i commit — jak przy wzorcach.
 6. **Zostaje lekcją** — gdy nic wyżej nie pasuje.
 
 ## 4. Propozycje
+
+Gdy proponujesz zmianę skilla lub kontraktu, a jej korzyść wymaga porównania, zaproponuj ograniczony eksperyment według `../../procedury/eksperyment.md`, sekcja „Eksperyment nad warsztatem”. Plan obejmuje realistyczne zadania, kryteria jakości, niezależne przypadki końcowe oraz osobne wyniki obu hostów. Oceniasz kandydata w izolowanej kopii, bez edycji używanego pluginu lub cache. Niesprawdzony host, brak niezależnej oceny albo niedostępny pomiar kosztu oznacz w propozycji. Eksperyment nie daje automatycznej zgody na wdrożenie.
 
 Najwyżej 5, od najpoważniejszego (koszt powtórki × częstość). Każda: problem, dowód (commit, lekcja, mapa), mechanizm, konkretna zmiana. Wzorzec pokaż w całości przed zapisem — uogólnienie zatwierdza użytkownik. Zapytaj, które wdrożyć.
 

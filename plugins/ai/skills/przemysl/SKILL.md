@@ -6,7 +6,9 @@ argument-hint: "[myśl | slug]"
 
 # Przemyślenie
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` — szczególnie `## Przemyślenia — metoda sokratejska`. Szablon: `../../szablony/przemyslenie.md`. Myśl albo slug weź z wywołania skilla albo z bieżącej wiadomości. Brak `.ai/` → możesz prowadzić rozmowę, ale zapis zaproponuj dopiero po skillu `start`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/rozmowa.md` względem tego pliku `SKILL.md`. Szablon: `../../szablony/przemyslenie.md`. Myśl albo slug weź z wywołania skilla albo z bieżącej wiadomości. Brak `.ai/` → możesz prowadzić rozmowę, ale zapis zaproponuj dopiero po skillu `start`.
+
+Z `../../kontrakt/rozmowa.md` potrzebna jest sekcja „Przemyślenia — metoda sokratejska”. Przy wpisie lekcji lub próby czytaj odpowiednią sekcję `../../kontrakt/pamiec.md`.
 
 W tej sesji **nie piszesz kodu, nie rekomendujesz i nie decydujesz**. Pytasz, porządkujesz i zapisujesz to, do czego dochodzi użytkownik.
 
@@ -24,7 +26,7 @@ Kontekst projektu (cel z roadmapy, słownik, zasady) czytasz, żeby pytania był
 
 ## 2. Pytania
 
-Według zasad z kontraktu. W praktyce:
+Według zasad z `../../kontrakt/rozmowa.md` → „Przemyślenia — metoda sokratejska”. W praktyce:
 
 - **Zacznij od doprecyzowania.** Pierwsze pytania: co dokładnie jest myślą i skąd się wzięła („Co sprawiło, że ta myśl się pojawiła?”). Formy neutralne płciowo — bez „pomyślałeś”, „chciałaś”. Potem po kolei to, co odpowiedzi odsłaniają: założenia, dowody, perspektywy, konsekwencje.
 - **Słuchaj, czego brakuje.** Ogólnik („lepiej”, „wszyscy”, „zawsze”) → doprecyzowanie z przykładem. „Musimy” → założenie. „Użytkownicy chcą” → dowód. Rozwiązanie zamiast problemu → „Jaki problem to rozwiązuje? Co się dzieje dziś bez tego?”.
@@ -42,7 +44,7 @@ Co 4–6 pytań — i zawsze przed końcem sesji — pokaż krótkie podsumowani
 - `## Sprzeczności` — i jak je rozstrzygnięto;
 - `## Czego nie wiemy` — z typem.
 
-Pojęcie, które w trakcie się wyklarowało i dotyczy projektu → zaproponuj wpis w `SLOWNIK.md`. Fałszywe założenie o projekcie, które się ujawniło → lekcja według sekcji „Lekcje” w kontrakcie.
+Pojęcie, które w trakcie się wyklarowało i dotyczy projektu → zaproponuj wpis w `SLOWNIK.md`. Fałszywe założenie o projekcie, które się ujawniło → lekcja według zasad z `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”; format wpisu: `../../kontrakt/formaty.md` → „Lekcja — wpis w `lekcje.md`”.
 
 ## 4. Zakończenie
 

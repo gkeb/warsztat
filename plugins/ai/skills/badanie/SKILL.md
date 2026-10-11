@@ -6,7 +6,9 @@ argument-hint: "[pytanie]"
 
 # Badanie
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md`, szczególnie sekcję `## Subagenci i modele`. Instrukcje wykonawcy leżą obok: `badacz.md`. Szablon wyniku: `../../szablony/badanie.md`. Pytanie weź z wywołania skilla albo z bieżącej wiadomości.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/narzedzia.md` względem tego pliku `SKILL.md`. Instrukcje wykonawcy leżą obok: `badacz.md`. Szablon wyniku: `../../szablony/badanie.md`. Pytanie weź z wywołania skilla albo z bieżącej wiadomości.
+
+Z `../../kontrakt/narzedzia.md` potrzebna jest sekcja „Subagenci i modele”; przy wpisie nieskutecznego podejścia czytaj „Próby — czego nie powtarzać” w `../../kontrakt/pamiec.md`.
 
 Badanie nie pisze kodu produkcyjnego i nie podejmuje decyzji. Dostarcza fakty, a decyzja zapada w `pomysl`, `decyzja` albo `spec`.
 

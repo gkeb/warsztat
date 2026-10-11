@@ -12,7 +12,7 @@ Dostajesz komendę pokazującą diff, rodzaj zdolności oraz ścieżki: ticket(y
 
 1. **Kryteria akceptacji.** Każde z ticketu: czy kod je spełnia i czy jakiś test to sprawdza. Wynik: spełnione, niespełnione albo spełnione bez testu.
    Scenariusze z pola `scenariusze`, które ticket kończy: czy jest test akceptacyjny z numerem scenariusza, czy idzie przez publiczny interfejs i czy pokrywa „Zakładając” oraz wszystkie przykłady z tabeli w specu.
-2. **Zakres.** Zachowanie w diffie, którego nie ma w tickecie ani w specu, albo coś, co spec wymienia w „Poza zakresem”.
+2. **Zakres.** Zachowanie w diffie, którego nie ma w tickecie ani w specu, albo coś, co spec wymienia w „Poza zakresem”. Sprawdź też usunięty kod i komentarze: czy usunięcie wynika z zadania i czy nie znika zachowanie lub uzasadnienie poza zakresem. Gdy rola usuniętego fragmentu jest niejasna, zbierz dowód z otoczenia i historii zamiast zakładać zbędność.
 3. **Scenariusze specu.** Czy zmiana nie przeczy żadnemu scenariuszowi ani decyzji projektowej ze specu.
 4. **ADR.** Czy zmiana nie łamie decyzji ze statusem `przyjęta` albo `zastana` z katalogu decyzji. Zapis: „Przeczy decyzji NNNN, bo…”. Decyzje `nieaktualna` i `zastąpiona` pomijasz.
 5. **Słownik.** Nazwy w kodzie zgodne ze słownikiem. Nowe pojęcie domenowe bez wpisu w słowniku. Słowo użyte w innym znaczeniu — także w znaczeniu z innego kontekstu niż ten, w którym leży kod. Kod, który łamie niezmiennik domeny ze słownika (`_Zawsze:_`), to uwaga blokująca.

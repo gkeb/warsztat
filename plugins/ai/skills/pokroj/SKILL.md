@@ -7,9 +7,9 @@ argument-hint: "[slug | slug#NN]"
 
 # Krojenie na tickety
 
-Otwórz `../../KONTRAKT.md` i szablon `../../szablony/ticket.md` względem tego pliku `SKILL.md`. Użyj slugu lub identyfikatora ticketu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` i `../../kontrakt/praca.md` względem tego pliku `SKILL.md`. Otwórz też szablon `../../szablony/ticket.md`. Użyj slugu lub identyfikatora ticketu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
 
-Pytania o zgodę na podział i kolejność zadawaj zgodnie z sekcją `## Jak pytać` w kontrakcie.
+Pytania o zgodę na podział i kolejność zadawaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`.
 
 ## 1. Wybierz zdolność
 
@@ -40,7 +40,7 @@ Wczytaj `spec.md`, `mapa.md` i kod w obszarach, których zdolność dotyka.
 
 ## 3. Uzgodnij przed zapisaniem
 
-Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności. Pod nią — pokrycie: każdy scenariusz specu i ticket, który go kończy; scenariusz bez ticketu to błąd krojenia. Zapytaj zgodnie z sekcją `## Jak pytać` w kontrakcie, czy kolejność i cięcie pasują. Jeśli lista pokrywa spec i tickety mieszczą się w jednej sesji, rekomenduj „Tak” jako pierwszą opcję. Popraw według uwag.
+Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności. Pod nią — pokrycie: każdy scenariusz specu i ticket, który go kończy; scenariusz bez ticketu to błąd krojenia. Zapytaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`, czy kolejność i cięcie pasują. Jeśli lista pokrywa spec i tickety mieszczą się w jednej sesji, rekomenduj „Tak” jako pierwszą opcję. Popraw według uwag.
 
 ## 4. Zapisz
 
@@ -48,8 +48,8 @@ Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności.
 - `mapa.md` → `## Plasterki`: lista linków w kolejności, z zależnościami, bez statusów.
 - `mapa.md` → `## Następny krok`: `skill buduj <slug>` → ticket 01.
 - `ROADMAP.md`: status `plan`.
-- `tracker` = `github` → pokaż listę Issue do utworzenia (tytuł, etykiety; treść według `### Tracker GitHub` w kontrakcie) i po zgodzie utwórz je. Numery wpisz do pola `github` w ticketach. Przy pierwszej synchronizacji w repo publicznym przypomnij, że Issues są publiczne. Bez `gh` → podaj komendy i zostaw `github: null`; `gdzie` pokaże tickety bez Issue.
-- Commit `<slug>: plan` według `### Commit` w kontrakcie, po zgodzie.
+- `tracker` = `github` → pokaż listę Issue do utworzenia (tytuł, etykiety; treść według `### Tracker GitHub — Issues jako lustro ticketów` w `../../kontrakt/git.md`) i po zgodzie utwórz je. Numery wpisz do pola `github` w ticketach. Przy pierwszej synchronizacji w repo publicznym przypomnij, że Issues są publiczne. Bez `gh` → podaj komendy i zostaw `github: null`; `gdzie` pokaże tickety bez Issue.
+- Commit `<slug>: plan` według `### Commit` w `../../kontrakt/git.md`, po zgodzie.
 
 ## Tryb podziału (`slug#NN`)
 

@@ -1,6 +1,6 @@
 # Próby
 
-> Co sprawdziliśmy w praktyce i nie zadziałało, co odłożyliśmy, czego nie rozwiązaliśmy. Przeszukaj ten plik, zanim zaproponujesz albo zaczniesz podejście. Format i statusy: sekcja „Próby” w kontrakcie warsztatu.
+> Co sprawdziliśmy w praktyce i nie zadziałało, co odłożyliśmy, czego nie rozwiązaliśmy. Przeszukaj ten plik, zanim zaproponujesz albo zaczniesz podejście. Statusy i zasady: „Próby — czego nie powtarzać” w `kontrakt/pamiec.md`; format wpisu: „Próba — wpis w `proby.md`” w `kontrakt/formaty.md` — oba w katalogu pluginu warsztatu.
 > Statusy: `nie-dziala` (z dowodem) | `odlozone` | `nierozwiazane`
 
 <!--

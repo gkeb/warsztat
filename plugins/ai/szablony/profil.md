@@ -1,6 +1,6 @@
 # Profil projektu
 
-> Rozstrzygnięcia list decyzji z profili warsztatu (`profile/` w katalogu pluginu). Tu tylko wynik i link — treść decyzji żyje w ADR, `ZASADY.md`, specu albo mapie. Format: sekcja „Profile” w kontrakcie warsztatu.
+> Rozstrzygnięcia list decyzji z profili warsztatu (`profile/` w katalogu pluginu). Tu tylko wynik i link — treść decyzji żyje w ADR, `ZASADY.md`, specu albo mapie. Format: „Profile — klasy aplikacji” w `kontrakt/profile-i-wydania.md` w katalogu pluginu warsztatu.
 > Wyniki: `ADR NNNN` | `Zxx` | `spec szkieletu` | `pominięte: powód` | `później` (Mgła) | `otwarte`
 
 Profile: {{przekrojowe, cli | html | strona}}

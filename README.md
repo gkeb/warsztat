@@ -95,10 +95,10 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | `pokroj` | `/ai:pokroj [slug\|slug#NN]` | `$pokroj [slug\|slug#NN]` | podział zaakceptowanego specu na tickety; dzielenie za dużego ticketu; przy trackerze GitHub — Issue dla każdego ticketu |
 | `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, skan sekretów, commit (i push), sprzątanie procesów i śmieci — i stop; w trybie gałęzi po ostatnim tickecie PR w wersji roboczej |
 | `weryfikuj` | `/ai:weryfikuj [slug\|slug#NN]` | `$weryfikuj [slug\|slug#NN]` | weryfikacja krzyżowa w innym modelu: czy etap dowieziono zgodnie ze specem i planem |
-| `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji) albo porzucenie zdolności; wpis w historii zmian; w trybie gałęzi scalenie PR |
+| `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji i odbiorze przez człowieka) albo porzucenie zdolności; wpis w historii zmian; w trybie gałęzi scalenie PR |
 | `wydaj` | `/ai:wydaj [podglad\|wersja\|tresc]` | `$wydaj [podglad\|wersja\|tresc]` | wydanie albo wdrożenie: wersja, historia zmian, publikacja po Twojej zgodzie, sprawdzenie na miejscu, rejestr wydań |
 | `napraw` | `/ai:napraw [objaw\|#nr]` | `$napraw [objaw\|#nr]` | bug lub regresja: czerwony test → przyczyna → poprawka → test regresji; `#nr` — zgłoszenie z GitHuba, zamykane commitem |
-| `przeglad` | `/ai:przeglad [slug\|slug#NN]` | `$przeglad [slug\|slug#NN]` | szybki niezależny review: zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu i zasady |
+| `przeglad` | `/ai:przeglad [slug\|slug#NN]` | `$przeglad [slug\|slug#NN]` | szybki niezależny review: zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu i zasady; przy wrażliwych granicach także bezpieczeństwo |
 | `decyzja` | `/ai:decyzja [temat]` | `$decyzja [temat]` | twarda decyzja architektoniczna → ADR i zasady |
 | `badanie` | `/ai:badanie [pytanie]` | `$badanie [pytanie]` | fakty ze źródeł pierwotnych do `.ai/badania/`, w tle |
 | `gdzie` | `/ai:gdzie [slug\|tydzien]` | `$gdzie [slug\|tydzien]` | stan projektu, rozjazdy (także gałęzie, niewypchnięte commity, Issues, niedziałający skan sekretów), cotygodniowy przegląd |
@@ -112,13 +112,40 @@ Pytania z wyborem używają natywnego interfejsu, jeśli agent go ma (w Claude C
 ## Cykl pracy
 
 ```text
-(przemysl) → pomysl → grill → spec → plan → budowa ⇄ weryfikacja → gotowe | porzucone
-                       pomysl   spec   pokroj  buduj ×N   weryfikuj      zamknij
-                       + druga-opinia      ↑ akceptujesz Ty
+(przemysl) → pomysl → grill → spec → plan → budowa ⇄ weryfikacja → odbiór → gotowe | porzucone
+                       pomysl   spec   pokroj  buduj ×N   weryfikuj    zamknij
+                       + druga-opinia      ↑ akceptujesz Ty            ↑ przeklikujesz Ty
                          (inny model)                     ↑ inny model
 ```
 
 Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plikach `.ai/` zapisuje nazwę skilla bez składni agenta (np. `skill buduj platnosci`), więc projekt nie zależy od narzędzia. Starsze mapy z `/ai:...` nadal są czytelne; aktualizuj je przy najbliższej zmianie danego kroku.
+
+## Aktualność wiedzy, eksperymenty i kontekst
+
+Od wersji `0.17.0` warsztat rozwija cztery mechanizmy we wspólnym kontrakcie i dotychczasowych skillach:
+
+- **Mapy powiązane ze źródłami.** `poznaj` zapisuje `poznany-commit` i `zrodla-kodu` w mapie obszaru: kod, testy i konfiguracje, także poza katalogiem modułu. Hook startowy wykrywa zmianę tych źródeł, a `gdzie` pokazuje pełny raport. Zmiana oznacza potrzebę sprawdzenia opisu; brak zmiany nie dowodzi jego poprawności. Stare mapy uzupełniamy przy poznaniu, bez masowej migracji. Spec i ADR zachowują wymagania oraz decyzje — rozjazdu nie rozstrzyga generator dokumentacji.
+- **Jawne założenia i prostota.** `pomysl`, `buduj` i `napraw` sprawdzają założenia, od których zależy rozwiązanie. `przeglad` ocenia potrzebę nowych abstrakcji oraz usunięcia kodu i komentarzy poza zakresem. Prostota dotyczy kosztu utrzymania i aktualnych wymagań, nie samej liczby linii.
+- **Ograniczone eksperymenty.** Pytanie `[prototyp]` dostaje plan: cel, zakres, poprawność, pomiar i skończony budżet. Po Twojej akceptacji agent mierzy odniesienie, porównuje warianty i sprawdza wybrany na oddzielnych przypadkach końcowych. Wynik żyje w `.ai/eksperymenty/`; kod prototypu poza repo. Eksperyment w produkcji pozostaje w zakresie ticketu albo naprawy. Procedura jest wspólna, bez nowego skilla: [procedury/eksperyment.md](plugins/ai/procedury/eksperyment.md).
+- **Kontekst dobierany do zadania.** Stałe instrukcje są oddzielone od stanu sesji. Agent czyta potrzebne materiały, linkuje szczegóły i ogranicza powtarzane logi. Cache zależy od hosta; korzyści oceniamy pomiarami. Aktualna wiedza i niezależny przegląd mają pierwszeństwo przed oszczędnością cache.
+
+Przykład: pytanie „czy skrócimy generowanie raportu bez zmiany wyniku?” → plan pomiaru i limit prób → zatwierdzony eksperyment → wynik z dowodami → decyzja albo ticket. Pętla kończy się przy celu, budżecie lub stagnacji. `retro` może tą samą procedurą porównywać kandydata zmian warsztatu w izolowanej kopii, z osobnymi wynikami Codexa i Claude Code; wdrożenie wymaga Twojej akceptacji.
+
+## Kontrola jakości — automat, recenzenci, człowiek
+
+Od wersji `0.18.0` każdy rodzaj błędu ma swojego strażnika, od najtańszego:
+
+```text
+hook Stop (typy, lint)  →  walidacja  →  przeglad (2–3 recenzentów)  →  weryfikuj (inny model, mutanty)  →  odbiór (Ty)
+0 tokenów, zawsze          przed commitem   po tickecie                       po zdolności                      przed gotowe
+```
+
+- **Najpierw automat.** Typy, lint i zakazane wzorce sprawdza hook przed końcem odpowiedzi, a pełną walidację `buduj` przed commitem. Instrukcja w pliku to prośba, którą agent może pominąć; hook i walidacja działają zawsze.
+- **Przegląd w jednym przejściu, bez pętli.** Recenzent, któremu każesz szukać błędów, zawsze coś znajdzie, a gonienie każdej uwagi daje przekombinowany kod. Dlatego `przeglad` robi jedno przejście i niczego nie poprawia, uwagi mają wagi (`blokujące`, `warto`, `drobne`), a nową rundę `weryfikuj` wyznaczają tylko uwagi blokujące. „Bez uwag” to pełnoprawny wynik.
+- **Recenzenci od jednej dziedziny.** Zgodność z ticketem i specem oraz jakość kodu sprawdza dwóch osobnych recenzentów. Trzeci — **bezpieczeństwo** — dochodzi, gdy diff dotyka wrażliwych granic: danych z zewnątrz, uprawnień, sekretów, powłoki, SQL, ścieżek plików, deserializacji, danych osobowych albo zależności (`przeglad.bezpieczenstwo`: `auto`, `zawsze`, `nigdy`). Każda jego uwaga ma drogę ataku — skąd wchodzą dane i gdzie szkodzą.
+- **Testy mutacyjne.** Zielony test nie dowodzi, że coś sprawdza. Narzędzie mutacyjne (Stryker, `mutmut`, `cargo-mutants`) celowo psuje kod, a przeżyty mutant wskazuje test do poprawy. To decyzja profilu P-24 i klucz `mutacje`; uruchamia je `weryfikuj` na plikach z zakresu, w limicie czasu. Przeżyte mutanty są dowodem w ocenie testów, nie progiem do wyzerowania.
+- **Odbiór przez człowieka.** Przed `gotowe` `zamknij` przygotowuje `odbior.md`: krótką listę tego, czego testy nie sprawdzą — scenariusze przeklikane na prawdziwym środowisku, migracje na właściwej bazie, zmienne środowiskowe, konfiguracja. Przechodzisz ją Ty; agent nie odhacza za Ciebie. Wyłączenie: `weryfikacja.odbior: false`.
+- **Lekcje według obszaru.** Długa lista pułapek wczytywana w całości zaśmieca kontekst. Skill czyta tylko lekcje swojej zdolności, dotkniętych obszarów i ogólne (`[projekt]`), a resztę przeszukuje po objawie.
 
 ## Język → zachowanie → test (DDD, BDD, TDD)
 
@@ -207,9 +234,9 @@ Modele porównujemy niezależnie od narzędzia: ten sam model uruchomiony w Clau
 **Przy dowiezieniu — `weryfikuj`:**
 
 1. `buduj` ×N w jednym modelu. Każdy ticket zapisuje, kto go zbudował (`budowal`). Po ostatnim tickecie status zdolności zmienia się na `weryfikacja`, a hook przypomina, że czas przełączyć model.
-2. `weryfikuj` w drugim modelu. Sprawdza każdy scenariusz specu, kryterium planu i zasady twarde, a przede wszystkim niedowiezienia: zaślepki, TODO, tylko szczęśliwą ścieżkę, niepodpięty kod, brakujące migracje i konfigurację, testy bez asercji. Niczego nie poprawia — zapisuje rundę w `zdolnosci/<slug>/weryfikacja.md`.
+2. `weryfikuj` w drugim modelu. Sprawdza każdy scenariusz specu, kryterium planu i zasady twarde, a przede wszystkim niedowiezienia: zaślepki, TODO, tylko szczęśliwą ścieżkę, niepodpięty kod, brakujące migracje i konfigurację, testy bez asercji — a przy `mutacje` także przeżyte mutanty. Niczego nie poprawia — zapisuje rundę w `zdolnosci/<slug>/weryfikacja.md`.
 3. Runda nie przeszła → uwagi blokujące stają się ticketami, status wraca do `budowa`, wracasz do kroku 1. Uwagi sporne rozstrzygasz Ty.
-4. Runda przeszła → `zamknij` → `gotowe`.
+4. Runda przeszła → `zamknij` → odbiór według `odbior.md` → `gotowe`.
 
 Szybki `przeglad` po każdym tickecie zostaje — łapie drobiazgi tanio, zanim dojdzie do weryfikacji krzyżowej. Nie zastępuje jej: recenzenci w Claude Code to model z tej samej rodziny.
 
@@ -239,6 +266,8 @@ luka ──→ badanie albo próba ──→ lekcja ──→ retro ──→ au
 
 **Lekcja** (`.ai/lekcje.md`) to rozwiązany problem w jednej linijce: co założyliśmy, co okazało się prawdą, jak robimy teraz. Agent zapisuje ją od razu, gdy tylko założenie okaże się fałszywe — niezależnie od tego, czy wykryłeś to Ty, test, błąd w działaniu, badanie czy przegląd. Przegląd oznacza takie uwagi jako `[założenie]`. Ta sama przyczyna nie tworzy nowej linijki, tylko dopisuje wystąpienie do istniejącej. Lekcja z dwoma wystąpieniami to wzorzec — hook pokazuje ją na starcie sesji i podpowiada `retro`.
 
+Każda lekcja ma jeden znacznik: obszar, zdolność albo `projekt` (lekcja o całym projekcie lub kilku obszarach). Skille czytają tylko lekcje pasujące do pracy — `[projekt]`, swoją zdolność i dotknięte obszary — a gdy nie wiadomo jeszcze, gdzie leży problem, przeszukują plik po objawie. Cały plik czytają tylko `zamknij`, `retro` i `gdzie`, które go porządkują.
+
 **Wzorzec** (`plugins/ai/wzorce/`) to lekcja uogólniona tak, żeby rozpoznać ją w innym projekcie, gdzie ten sam problem wygląda inaczej. Każdy wzorzec oddziela rozpoznanie od rozwiązania:
 
 - **Sygnały** — co widać, zanim znasz przyczynę; po nich szuka `napraw`;
@@ -264,7 +293,7 @@ Ten sam sposób prowadzenia działa w grillu konkretnej zdolności: `pomysl <slu
 
 Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI ma kody wyjścia, stdout kontra stderr i instalację. Strona w Astro ma tryb renderowania, SEO, hosting, dostępność i treści, które ktoś edytuje. **Profil** to lista decyzji dla klasy aplikacji, nie podręcznik: dzięki niemu nic nie umyka przypadkiem.
 
-- **Profile** w `plugins/ai/profile/`: `przekrojowe` (zawsze: środowisko, testy, CI, sekrety, RODO, błędy, logi, wersjonowanie, historia zmian, wdrożenie, wycofanie, pielęgnacja, licencja), `cli` i `strona`. Każdy ma też sekcje: doświadczenie (UX), testy akceptacyjne (jak testować publiczny interfejs), typowe niedowiezienia, wydanie i pielęgnację.
+- **Profile** w `plugins/ai/profile/`: `przekrojowe` (zawsze: środowisko, testy, CI, sekrety, RODO, błędy, logi, wersjonowanie, historia zmian, wdrożenie, wycofanie, pielęgnacja, licencja, testy mutacyjne), `cli`, `html` i `strona`. Każdy ma też sekcje: doświadczenie (UX), testy akceptacyjne (jak testować publiczny interfejs), typowe niedowiezienia, wydanie i pielęgnację.
 - **Rozstrzygnięcia** trafiają do `.ai/profil.md`: każda pozycja → ADR, zasada, `pominięte: powód`, `później` albo `otwarte`. Mały pomocnik CLI na własny użytek może pominąć połowę listy — byle świadomie. Przechodzi ją `pomysl produkt` (nowy projekt) albo `poznaj` (zastany kod, z tym, co już rozstrzygnął). `gdzie tydzien` pokazuje, co otwarte.
 - **Wygląd i UX** — rodzaj zdolności `wyglad`: przepływy jako scenariusze, stany (pusty, błąd, sukces), szerokości kontrolne, dostępność. Logika idzie przez TDD, a reszta przez kontrole automatyczne (axe, linki, Lighthouse), zrzuty ekranu i **Twoją akceptację** wpisaną w tickecie.
 - **Wydanie** — skill `wydaj`, uruchamiany tylko przez Ciebie: co wchodzi od ostatniego wydania, wersja, historia zmian, build, podgląd, publikacja albo wdrożenie (każda komenda pokazana przed uruchomieniem), sprawdzenie na produkcji, wycofanie, gdy nie przeszło. Historia zmian dla użytkowników (`CHANGELOG.md`, sekcja `Niewydane`) rośnie na bieżąco — dopisują ją `zamknij` i `napraw`. Rejestr `.ai/wydania.md` mówi, co i kiedy trafiło na produkcję, także przy samych zmianach treści.
@@ -274,6 +303,7 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 ## Rytm pracy
 
 - **Start sesji** — hook wstrzykuje stan: sekcję Teraz z roadmapy, liczniki ticketów, następny krok, stan przerwanej sesji, przerwaną pracę poza zdolnościami, nierozwiązane próby, zasady twarde i przypomnienia (druga opinia, weryfikacja, aktualizacja bloku w `AGENTS.md`) oraz ostrzeżenia gita: skan sekretów niewłączony na tym komputerze, zła gałąź, niewypchnięte commity. Przy nowej sesji wypisuje też procesy projektu, które przeżyły poprzednią sesję, i śmieci z listy. W projektach bez `.ai/` hook milczy.
+- **Aktualność map** — hook startowy zgłasza zmienione źródła i nieznaną aktualność map, z limitem pięciu wpisów. Kontrola jest lokalna, bez modelu i bez zapisu; na odczyty gita ma 3 sekundy. Pełny raport daje `gdzie`, a `poznaj` sprawdza i odświeża opis po akceptacji. Hook nie robi automatycznych commitów dokumentacji.
 - **W trakcie pracy** — hooki kodu: każdy edytowany plik przechodzi przez formater projektu (Prettier / Biome, ruff / black, rustfmt). Przed końcem odpowiedzi kontrola zmienionych plików (`tsc`, `ruff` / `mypy` / `pyright`, `cargo clippy`) i zakazane wzorce z `hooki.zakazane`. Problemy blokują zakończenie raz na odpowiedź, z listą do poprawy. Dźwięk „gotowe” po przejściu, inny, gdy agent czeka na zgodę. Hooki działają w każdym repo gita, ale tylko narzędziami, które projekt już ma. Te same reguły stoją w bloku `AGENTS.md`, więc agent zna je także wtedy, gdy hook nie działa. Szczegóły: kontrakt, sekcja „Hooki kodu”.
 - **Po przerwie** — `gdzie`.
 - **Jedna sesja = jeden ticket.** Kolejny ticket w świeżej sesji.
@@ -293,7 +323,7 @@ Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI 
 - Stan przenosi `.ai/` i hook, nie czat.
 - Priorytety i kolejność roadmapy ustalasz Ty; agent zmienia statusy.
 
-Pełny kontrakt — układ plików, statusy, formaty i kto co zmienia — jest w [plugins/ai/KONTRAKT.md](plugins/ai/KONTRAKT.md).
+Wspólny rdzeń reguł i indeks są w [plugins/ai/KONTRAKT.md](plugins/ai/KONTRAKT.md). Szczegóły — układ plików, statusy, formaty i kto co zmienia — są podzielone na działy w `plugins/ai/kontrakt/`. Każdy skill wskazuje potrzebne pliki, a dodatkowe sekcje czyta według trybu i wykonywanej operacji. Nie wczytuje całego kontraktu przy każdym wywołaniu.
 
 ## Bezpieczeństwo — sekrety i dane osobowe
 
@@ -350,16 +380,18 @@ CLAUDE.md                 # @AGENTS.md
   decyzje/                # ADR (albo zastany katalog wskazany w konfiguracji)
   obszary/<slug>.md       # mapy obszarów kodu
   badania/                # wyniki skilla badanie
+  eksperymenty/           # plany, pomiary i wyniki ograniczonych eksperymentów
   przemyslenia/           # myśli przemyślane pytaniami sokratejskimi: wniosek, dokąd trafiły albo dlaczego odrzucone
   sesje/                  # przerwana praca poza zdolnościami
   zdolnosci/<slug>/
     mapa.md               # problem, rodzaj, kto grillował, następny krok, pytania, decyzje, plasterki, stan sesji
     spec.md               # kontrakt zdolności
     weryfikacja.md        # rundy weryfikacji krzyżowej
+    odbior.md             # lista do przeklikania przez Ciebie i wynik odbioru
     tickety/NN-slug.md    # pionowe plasterki
 ```
 
-Pliki pomocnicze (`zrodla.md`, `proby.md`, `obszary/`, `badania/`, `sesje/`) powstają dopiero wtedy, gdy są potrzebne.
+Pliki pomocnicze (`zrodla.md`, `proby.md`, `obszary/`, `badania/`, `eksperymenty/`, `sesje/`) powstają dopiero wtedy, gdy są potrzebne.
 
 ### AGENTS.md i CLAUDE.md
 
@@ -374,6 +406,9 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `weryfikacja.wymagana` | czy etap wymaga weryfikacji krzyżowej przed zamknięciem (domyślnie `true`) |
 | `weryfikacja.innyModel` | czy weryfikacja i druga opinia muszą pochodzić od innego modelu niż autor (domyślnie `true`) |
 | `weryfikacja.drugaOpinia` | `zalecana` (domyślnie), `wymagana` albo `wylaczona` |
+| `weryfikacja.odbior` | czy `zamknij` wymaga odbioru przez człowieka według listy w `odbior.md` (domyślnie `true`) |
+| `przeglad.bezpieczenstwo` | `auto` (domyślnie — recenzent bezpieczeństwa, gdy diff dotyka wrażliwych granic), `zawsze` albo `nigdy` |
+| `mutacje` | testy mutacyjne w `weryfikuj` (decyzja P-24): `null` albo `{ "komenda": "…", "limitMinut": 15 }`; zakres przez `{pliki}`, `{diff}` albo konfigurację narzędzia |
 | `sciezki.decyzje` | katalog ADR — domyślnie `.ai/decyzje`, w zastanym projekcie może wskazywać istniejący |
 | `profile` | klasy aplikacji: `przekrojowe` zawsze, plus np. `cli`, `strona` |
 | `wydanie.wersjonowanie`, `wydanie.changelog` | `semver` / `data` / `brak`; ścieżka historii zmian dla użytkowników albo `null` |
@@ -394,11 +429,11 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 
 ### Subagenci
 
-`przeglad` i `badanie` — a przy dużym zakresie także `poznaj` i `weryfikuj` — mogą oddawać pracę subagentom, czyli świeżym kontekstom bez historii rozmowy. W Claude Code plugin ma gotowych subagentów (`recenzent-zgodnosci`, `recenzent-jakosci`, `badacz`) z modelem `sonnet`. Codex dostaje wspólny plik instrukcji roli; jego lokalne klienty obsługują jawny wybór modelu subagenta, a skill może przekazać tam wartość z `modele.codex.*`. Ten JSON czyta skill — Codex sam nie traktuje go jako konfiguracji. Bez jawnego wyboru subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://developers.openai.com/codex/multi-agent).
+`przeglad` i `badanie` — a przy dużym zakresie także `poznaj` i `weryfikuj` — mogą oddawać pracę subagentom, czyli świeżym kontekstom bez historii rozmowy. W Claude Code plugin ma gotowych subagentów (`recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `badacz`) z modelem `sonnet`. Codex dostaje wspólny plik instrukcji roli; jego lokalne klienty obsługują jawny wybór modelu subagenta, a skill może przekazać tam wartość z `modele.codex.*`. Ten JSON czyta skill — Codex sam nie traktuje go jako konfiguracji. Bez jawnego wyboru subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://developers.openai.com/codex/multi-agent).
 
 ## Po aktualizacji pluginu
 
-Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blok warsztatu w `AGENTS.md` na wersję z pluginu (pokazując różnice), dopisuje nowe klucze do `.ai/warsztat.json`, sprawdza import w `CLAUDE.md` i wymienia nowe elementy kontraktu. Sprawdza też git i bezpieczeństwo: brakujące wpisy w `.gitignore` i `.claude/settings.json` oraz hook skanu sekretów na tym komputerze. Przy przejściu na 0.14.0 zapyta raz o sposób pracy z gitem (gałęzie, push, tracker). Hook na starcie sesji sam przypomina, gdy blok jest starszy niż plugin.
+Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blok warsztatu w `AGENTS.md` na wersję z pluginu (pokazując różnice), dopisuje nowe klucze do `.ai/warsztat.json`, sprawdza import w `CLAUDE.md` i wymienia nowe elementy kontraktu. Sprawdza też git i bezpieczeństwo: brakujące wpisy w `.gitignore` i `.claude/settings.json` oraz hook skanu sekretów na tym komputerze. Przy przejściu na 0.14.0 zapyta raz o sposób pracy z gitem (gałęzie, push, tracker). Od 0.18.0 dochodzą klucze `mutacje`, `przeglad.bezpieczenstwo` i `weryfikacja.odbior`; brak klucza `odbior` działa jak `true`, więc najbliższe `zamknij` poprosi o odbiór. Lekcje o całym projekcie warto przy najbliższym `retro` oznaczyć `[projekt]`. Hook na starcie sesji sam przypomina, gdy blok jest starszy niż plugin.
 
 ## Struktura tego repo
 
@@ -408,7 +443,9 @@ Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blo
 plugins/ai/
   .claude-plugin/plugin.json          # manifest Claude Code
   plugin.json                         # przenośny manifest Codex / Agent Plugins
-  KONTRAKT.md                         # jedno źródło prawdy o formatach
+  KONTRAKT.md                         # wspólny rdzeń i indeks działów, czytany raz na sesję
+  kontrakt/*.md                       # szczegóły czytane według skilla, trybu i operacji
+  procedury/eksperyment.md             # wspólna procedura czytana przy mierzalnym eksperymencie
   skills/<nazwa>/SKILL.md             # siedemnaście wspólnych workflowów
   skills/<nazwa>/agents/openai.yaml   # polityka jawnego wywołania w Codexie
   skills/przeglad/recenzent-*.md      # instrukcje ról recenzentów (wspólne dla obu agentów)
@@ -416,9 +453,10 @@ plugins/ai/
   agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
   szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
-  profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, strona (rozwija retro)
+  profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, html, strona (rozwija retro)
   hooks/hooks.json                    # SessionStart → stan.mjs; PostToolUse, Stop, PermissionRequest → kod.mjs
   scripts/stan.mjs                    # zbiera „gdzie jesteśmy” (Node, bez zależności)
+  scripts/aktualnosc-map.mjs           # lokalna kontrola źródeł map; moduł hooka i raport JSON dla gdzie
   scripts/kod.mjs                     # formatowanie, kontrola przed końcem odpowiedzi, dźwięki (Node, bez zależności)
 ```
 
@@ -434,5 +472,5 @@ Chcesz zmienić sposób pracy? Edytujesz skill albo kontrakt tutaj i działa wsz
 
 - **GitHub Projects:** tablica z kolumnami według statusu zdolności, jeśli Issues przestaną wystarczać.
 - **Tryb autonomiczny** dla nudnych ticketów: `buduj` w pętli po kolejce `plan` z commitem po każdym tickecie (wzorzec `om-auto-*` z Mercato).
-- Ewentualnie skill `prototyp` dla pytań `[prototyp]`, które wymagają eksperymentu.
+- Osobny skill `prototyp` lub `eksperyment`, jeśli regularne użycie wspólnej procedury uzasadni osobną komendę.
 - Codex: opcjonalne definicje projektowych agentów `.codex/agents/*.toml`, jeśli potrzebne będą trwałe nazwane role lub ich własne ustawienia. Nie są częścią zasobów deklarowanych przez [format przenośnego pluginu](https://developers.openai.com/plugins/build/plugins); obecne skille mogą przekazywać role przez wspólne pliki instrukcji.

@@ -1,6 +1,6 @@
 # Profil: przekrojowe
 
-> Decyzje wspólne dla każdej klasy aplikacji. Obowiązuje zawsze, razem z profilem klasy. Format i użycie: sekcja „Profile” w kontrakcie warsztatu.
+> Decyzje wspólne dla każdej klasy aplikacji. Obowiązuje zawsze, razem z profilem klasy. Format i użycie: „Profile — klasy aplikacji” w `kontrakt/profile-i-wydania.md` w katalogu pluginu warsztatu.
 > Każda pozycja kończy się w projekcie jednym z wyników: ADR, zasada `Zxx`, decyzja w specu szkieletu, `pominięte: powód`, `później` (Mgła) albo `otwarte`. Numery są stałe.
 
 ## Decyzje
@@ -17,6 +17,7 @@
 - **P-05 Strategia testów** — poziomy (akceptacyjne, jednostkowe), narzędzia, co mockujemy, poziom testu akceptacyjnego z profilu klasy. Testy jednorazowe (bez watch), sprzątają pliki tymczasowe i same uruchamiają oraz zamykają potrzebne serwery; wyniki narzędzi trafiają do `sprzatanie.smieci`.
 - **P-06 Walidacja** — typy, lint, format; formatowanie automatyczne czy sprawdzane. Komendy trafiają do `walidacja` w `.ai/warsztat.json`.
 - **P-07 CI** — czy i gdzie (np. GitHub Actions), co uruchamia, na jakich systemach i wersjach.
+- **P-24 Testy mutacyjne** — czy sprawdzamy, że testy łapią zepsuty kod: narzędzie celowo psuje kod w drobnych miejscach, a przeżyty mutant wskazuje test, który niczego nie pilnuje. Narzędzie według stosu i systemu (Stryker dla JS/TS, `mutmut` dla Pythona — na Windows tylko w WSL, `cargo-mutants` dla Rusta), zakres (logika domeny, nie widoki i konfiguracja), sposób zawężenia do zmienionych plików i budżet czasu. Komenda trafia do `mutacje` w `.ai/warsztat.json`; katalogi wyników do `sprzatanie.smieci`. Mały projekt albo kod bez logiki → zwykle `pominięte`.
 
 ### Konfiguracja i bezpieczeństwo
 
@@ -41,7 +42,7 @@
 - **P-20 Dokumentacja użytkownika** — README, pomoc w programie, strona; co minimum przy każdym wydaniu.
 - **P-21 Licencja i prawa** — licencja kodu; prawa do treści, obrazów i fontów.
 - **P-22 Dane trwałe** — jeśli są: format, migracje, kopie zapasowe, odtworzenie.
-- **P-23 Git i GitHub** — gałęzie (`glowna` albo `zdolnosc` z PR), push po commicie (`pytaj`, `zawsze`, `nigdy`), scalanie (`merge` albo `rebase`, nigdy squash), tracker (`pliki` albo `github` — Issues jako lustro ticketów), ochrona gałęzi głównej i skanowanie sekretów na GitHubie. Zapis w `warsztat.json` → `git`, `tracker`, `github`; zasady w kontrakcie warsztatu, sekcja „Git i GitHub”.
+- **P-23 Git i GitHub** — gałęzie (`glowna` albo `zdolnosc` z PR), push po commicie (`pytaj`, `zawsze`, `nigdy`), scalanie (`merge` albo `rebase`, nigdy squash), tracker (`pliki` albo `github` — Issues jako lustro ticketów), ochrona gałęzi głównej i skanowanie sekretów na GitHubie. Zapis w `warsztat.json` → `git`, `tracker`, `github`; zasady: „Git i GitHub” w `kontrakt/git.md` w katalogu pluginu warsztatu.
 
 ## Doświadczenie (UX)
 
@@ -78,4 +79,5 @@ Poziom i narzędzia określa profil klasy. Wspólne: test akceptacyjny idzie prz
 - skan sekretów całej historii (`gitleaks git --redact --no-banner`) i alerty skanowania sekretów na GitHubie;
 - wersje środowiska bliskie końca wsparcia (EOL Node, Pythona);
 - wpisy „Niewydane” w historii zmian starsze niż kilka tygodni;
-- zasady twarde bez automatu, otwarte pozycje profilu.
+- zasady twarde bez automatu, otwarte pozycje profilu;
+- przy P-24 rozstrzygniętym na „tak”: pełny przebieg testów mutacyjnych raz na jakiś czas, jeśli mieści się w budżecie czasu — przeżyte mutanty w logice domeny to kandydaci na lepsze testy, nie lista do wyzerowania.

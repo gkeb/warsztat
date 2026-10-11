@@ -6,7 +6,9 @@ argument-hint: "[temat]"
 
 # Decyzja architektoniczna
 
-Otwórz `../../KONTRAKT.md` i szablon `../../szablony/decyzja.md` względem tego pliku `SKILL.md`. Użyj tematu podanego przy wywołaniu skilla albo w bieżącej wiadomości. Przejrzyj istniejące ADR w katalogu decyzji (`sciezki.decyzje` z `.ai/warsztat.json`, domyślnie `.ai/decyzje/`).
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/poznanie.md` względem tego pliku `SKILL.md`. Otwórz też szablon `../../szablony/decyzja.md`. Użyj tematu podanego przy wywołaniu skilla albo w bieżącej wiadomości. Przejrzyj istniejące ADR w katalogu decyzji (`sciezki.decyzje` z `.ai/warsztat.json`, domyślnie `.ai/decyzje/`).
+
+Z `../../kontrakt/poznanie.md` czytaj „Zasady projektu”, a przy zastanym katalogu ADR także „Zastany projekt”. Statusy ADR są w `../../kontrakt/formaty.md` → „ADR — statusy”.
 
 ## 1. Czy to w ogóle ADR?
 
@@ -26,11 +28,11 @@ Jeśli nie — to nie ADR, tylko linijka w `## Decyzje` w mapie zdolności. Zapi
 - Przeszukaj też `.ai/lekcje.md` i `../../wzorce/INDEKS.md` (względem tego pliku). Pasujący wzorzec to argument w porównaniu opcji — z oceną, czy jego Warunki dotyczą tego projektu.
 - Przedstaw 2–3 realne opcje, każdą z głównym plusem i minusem.
 - Twoja rekomendacja z uzasadnieniem.
-- Jeśli decyzja nie zapadła — przedstaw opcje zgodnie z sekcją `## Jak pytać` w kontrakcie. Rekomendację pokaż jako pierwszą; decyduje użytkownik.
+- Jeśli decyzja nie zapadła — przedstaw opcje zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`. Rekomendację pokaż jako pierwszą; decyduje użytkownik.
 
 ## 3. Zapisz
 
-- Plik w katalogu decyzji, numer = kolejny wolny. W zastanym katalogu ADR zachowujesz jego format, numerację i nazewnictwo plików (zob. `## Zastany projekt` w kontrakcie); szablon `decyzja.md` to wtedy lista treści do pokrycia, nie układ.
+- Plik w katalogu decyzji, numer = kolejny wolny. W zastanym katalogu ADR zachowujesz jego format, numerację i nazewnictwo plików (zob. `## Zastany projekt` w `../../kontrakt/poznanie.md`); szablon `decyzja.md` to wtedy lista treści do pokrycia, nie układ.
 - Decyzja odtworzona z kodu lub historii (zwykle ze skilla `poznaj`) ma status `zastana` i wypełnione pole `Źródło`.
 - Najwyżej jedna strona. Decyzja w trybie „Robimy X”, nie „Rozważamy X”.
 - Zastępuje wcześniejszy ADR → w starym zmień status na `zastąpiona przez NNNN`. Nie usuwaj go. ADR, który przestał być prawdą bez następcy, dostaje `nieaktualna`.

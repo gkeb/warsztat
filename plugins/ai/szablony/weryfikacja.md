@@ -1,6 +1,6 @@
 # {{Nazwa zdolności}} — weryfikacja
 
-> Rundy weryfikacji krzyżowej: domyślnie inny model niż budujący sprawdza dowiezienie względem specu i planu. Jeśli ustawienie dopuszcza ten sam model, oznacz rundę jako nieniezależną. Najnowsza runda na górze. Format: sekcja „Weryfikacja krzyżowa” w kontrakcie warsztatu.
+> Rundy weryfikacji krzyżowej: domyślnie inny model niż budujący sprawdza dowiezienie względem specu i planu. Jeśli ustawienie dopuszcza ten sam model, oznacz rundę jako nieniezależną. Najnowsza runda na górze. Format: „Weryfikacja krzyżowa” w `kontrakt/praca.md` w katalogu pluginu warsztatu.
 
 <!--
 ## Runda R2 — RRRR-MM-DD — przeszła | nie przeszła

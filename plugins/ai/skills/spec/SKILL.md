@@ -7,7 +7,7 @@ argument-hint: "[slug]"
 
 # Spec zdolności
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` i szablon według rodzaju zdolności (linia `Rodzaj:` w mapie, zob. `## Rodzaje zdolności` w kontrakcie): `../../szablony/spec.md` dla `funkcja`, `szkielet` i `wyglad`, `../../szablony/spec-refaktor.md` dla `refaktor`. Profile projektu: `warsztat.json` → `profile`, pliki w `../../profile/`. Użyj slugu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` i `../../kontrakt/praca.md` względem tego pliku `SKILL.md`. Szablon według rodzaju zdolności (linia `Rodzaj:` w mapie): `../../szablony/spec.md` dla `funkcja`, `szkielet` i `wyglad`, `../../szablony/spec-refaktor.md` dla `refaktor`. Profile projektu: `warsztat.json` → `profile`, pliki w `../../profile/`. Użyj slugu podanego przy wywołaniu skilla albo w bieżącej wiadomości.
 
 ## 1. Wybierz zdolność
 
@@ -25,7 +25,7 @@ Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: w
 
 - **Bez kodu i bez ścieżek plików.** Opisujesz zachowanie i granice. Moduły i interfejsy nazywasz słowami, bo ścieżki się starzeją.
 - **Pojęcia ze słownika.** Jeśli potrzebujesz nowego, najpierw dopisz je do `SLOWNIK.md`.
-- **Scenariusze = obserwowalne zachowania** w formacie z sekcji „Język → zachowanie → test” w kontrakcie: stały numer `Sx`, „Zakładając … gdy … wtedy …”. Każdy musi dać się sprawdzić testem akceptacyjnym przez publiczny interfejs albo — wyjątkowo — ręcznie, z dopiskiem „ręcznie: dlaczego”.
+- **Scenariusze = obserwowalne zachowania** w formacie z sekcji „Język → zachowanie → test” w `../../kontrakt/praca.md`: stały numer `Sx`, „Zakładając … gdy … wtedy …”. Każdy musi dać się sprawdzić testem akceptacyjnym przez publiczny interfejs albo — wyjątkowo — ręcznie, z dopiskiem „ręcznie: dlaczego”.
 - **Przykłady.** Reguła z granicą dostaje tabelę przykładów po obu stronach granicy. Przykłady z mapy przenosisz; brakujące przy granicy zaproponuj i pokaż przy akceptacji.
 - **Kontekst i niezmienniki.** Wpisz kontekst zdolności (jeśli słownik ma konteksty). Niezmienniki domeny ze słownika, których dotyka zdolność, muszą mieć scenariusz, który je sprawdza.
 - **Spec już zaakceptowany i zmieniany:** numerów scenariuszy nie przesuwasz; usunięty oznaczasz, nowy dostaje kolejny wolny numer.
@@ -46,7 +46,7 @@ Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: w
 - `wymagana` i brak drugiej opinii → nie pytasz o akceptację; ustaw Następny krok na `skill pomysl <slug> druga-opinia` i zakończ. Przy `weryfikacja.innyModel` = `true` wybierz model spoza listy `Grill:`; przy `false` ten sam model jest dozwolony, ale wynik oznacz jako nieniezależny. Wyjątek od ustawienia `true` tylko na wyraźną decyzję użytkownika, z notatką w mapie i oznaczeniem nieniezależności.
 - `wylaczona` → pomiń.
 
-Pokaż krótkie streszczenie: problem, zakres, poza zakresem, największe ryzyko. Zapytaj o akceptację zgodnie z sekcją `## Jak pytać` w kontrakcie:
+Pokaż krótkie streszczenie: problem, zakres, poza zakresem, największe ryzyko. Zapytaj o akceptację zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`:
 
 - **Akceptuję** → w `ROADMAP.md` status `spec`, w specu data akceptacji, w mapie Następny krok `skill pokroj <slug>`. Gdy spec odpowiada ustaleniom i nie ma znanych braków, rekomenduj tę opcję jako pierwszą.
 - **Poprawki** → nanieś je i zapytaj ponownie.

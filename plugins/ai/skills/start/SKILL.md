@@ -6,9 +6,11 @@ disable-model-invocation: true
 
 # Start warsztatu w tym repozytorium
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md` — szczególnie `## Zastany projekt` i `## Rodzaje zdolności`. Szablony są w `../../szablony/`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/stan.md` i `../../kontrakt/pliki.md` względem tego pliku `SKILL.md`. Szablony są w `../../szablony/`.
 
-Wszystkie pytania do użytkownika zadawaj zgodnie z sekcją `## Jak pytać` w kontrakcie.
+Przy rozpoznaniu czytaj „Rodzaje zdolności” w `../../kontrakt/praca.md` i „Zastany projekt” w `../../kontrakt/poznanie.md`; przy konfiguracji profili `../../kontrakt/profile-i-wydania.md`.
+
+Wszystkie pytania do użytkownika zadawaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`.
 
 Zasada nadrzędna: **niczego nie nadpisujesz i niczego nie przenosisz bez zgody**. Istniejące pliki zostawiasz, brakujące tworzysz z szablonów. Nie migrujesz historii projektu.
 
@@ -29,7 +31,7 @@ Pokaż wynik rozpoznania w kilku linijkach i potwierdź tryb, jeśli nie jest oc
 
 ## 2. Git i bezpieczeństwo
 
-Zasady: sekcje `## Git i GitHub` i `## Bezpieczeństwo i dane` w kontrakcie.
+Zasady: `../../kontrakt/git.md` → `## Git i GitHub` i `../../kontrakt/bezpieczenstwo.md` → `## Bezpieczeństwo i dane`.
 
 Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita skill `buduj` nie będzie commitować, a reszta tego kroku odpada.
 
@@ -37,13 +39,13 @@ Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita sk
 
 - **Tożsamość:** `git config user.name` i `user.email`. Brak → poproś o wartości, nie zgadujesz.
 - **Remote i gałąź główna:** `git remote get-url origin` → GitHub → `github.repo` (`właściciel/nazwa`); nazwa gałęzi głównej → `git.glowna`. Bez remote powiedz, że push, PR i Issues odpadają, dopóki go nie będzie. Repo na GitHubie zakładasz (`gh repo create`) tylko na prośbę.
-- **`.gitignore`:** brakujące wpisy z `../../szablony/gitignore-bezpieczenstwo` → dopisz na końcu pliku. Plik śledzony przez git, który pasuje do tych wpisów (`git ls-files` — np. `.env`, `*.pem`) → **alarm**: zatrzymaj się i postępuj według punktu „Wyciek” w kontrakcie.
+- **`.gitignore`:** brakujące wpisy z `../../szablony/gitignore-bezpieczenstwo` → dopisz na końcu pliku. Plik śledzony przez git, który pasuje do tych wpisów (`git ls-files` — np. `.env`, `*.pem`) → **alarm**: zatrzymaj się i postępuj według punktu „Wyciek” w sekcji „Bezpieczeństwo i dane” w `../../kontrakt/bezpieczenstwo.md`.
 - **Skan sekretów:** `gitleaks version`.
   - Jest → `bezpieczenstwo.skanSekretow` = `gitleaks git --pre-commit --staged --redact --no-banner` (wersja starsza niż 8.19: `gitleaks protect --staged --redact --no-banner`).
   - Brak → zaproponuj instalację: Windows `winget install Gitleaks.Gitleaks` albo `scoop install gitleaks`, macOS `brew install gitleaks`, Linux — menedżer pakietów albo plik z wydań na GitHubie. Nie instalujesz sam. Do czasu instalacji `skanSekretow` zostaje `null`, a skille skanują zmiany ręcznie.
   - Hook: projekt ma `.husky/` albo `.pre-commit-config.yaml` → dopisz gitleaks do istniejącego mechanizmu (w `pre-commit`: repo `https://github.com/gitleaks/gitleaks`, hook `gitleaks`). Inaczej skopiuj `../../szablony/pre-commit` do `.githooks/pre-commit`, dopisz do `.gitattributes` linię `.githooks/* text eol=lf` (skrypt z CRLF nie ruszy na Windowsie) i ustaw `git config core.hooksPath .githooks`.
   - Zastane repo z historią → zaproponuj jednorazowy skan całej historii: `gitleaks git --redact --no-banner`. Znaleziska pokazujesz; co z nimi zrobić, decyduje człowiek.
-- **Lista śmieci** (`sprzatanie.smieci`, kontrakt `## Sprzątanie`): zaproponuj według stosu — Playwright → `test-results/`, `playwright-report/`, `blob-report/`; pokrycie testów → `coverage/` (TypeScript), `htmlcov/` i `.coverage` (Python); zawsze `tmp/`, `.tmp/`, `npm-debug.log*`, `yarn-error.log*`. Każdy wpis musi być też w `.gitignore`. Nic, co może być pracą człowieka albo konfiguracją — w razie wątpliwości pytasz.
+- **Lista śmieci** (`sprzatanie.smieci`, `../../kontrakt/sprzatanie.md` → `## Sprzątanie — procesy i pliki tymczasowe`): zaproponuj według stosu — Playwright → `test-results/`, `playwright-report/`, `blob-report/`; pokrycie testów → `coverage/` (TypeScript), `htmlcov/` i `.coverage` (Python); testy mutacyjne (P-24) → `reports/mutation/` i `.stryker-tmp/` (Stryker), `mutants/` (mutmut), `mutants.out*/` (cargo-mutants); zawsze `tmp/`, `.tmp/`, `npm-debug.log*`, `yarn-error.log*`. Każdy wpis musi być też w `.gitignore`. Nic, co może być pracą człowieka albo konfiguracją — w razie wątpliwości pytasz.
 - **Blokada odczytu w Claude Code:** `.claude/settings.json` → `permissions.deny` — dopisz brakujące reguły z `../../szablony/claude-settings.json` (dla każdego wzorca z `bezpieczenstwo.chronione` para `Read(**/<wzorzec>)` i `Edit(**/<wzorzec>)`). Istniejących ustawień nie ruszasz. Powiedz wprost, że te reguły nie zatrzymują powłoki, a w Codexie działa tylko reguła z `AGENTS.md`.
 - **Sposób pracy** — jedno wywołanie narzędzia pytań z trzema niezależnymi pytaniami (decyzja P-23):
   1. gałęzie: `glowna` (rekomendowane przy pracy solo) albo `zdolnosc` z PR;
@@ -61,7 +63,7 @@ Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita sk
 
 - `.ai/`: utwórz brakujące `warsztat.json`, `ROADMAP.md`, `SLOWNIK.md`, `ZASADY.md` (z `../../szablony/ZASADY.md`), `lekcje.md` i katalog `zdolnosci/` (z `.gitkeep`).
 - Profile: potwierdź klasę aplikacji z rozpoznania i wpisz ją do `warsztat.json` → `profile` obok `przekrojowe` (np. `["przekrojowe", "html"]`). Klasa bez gotowego profilu → zostaje samo `przekrojowe`; powiedz, że brakujący profil może powstać przez `retro`. `.ai/profil.md` powstanie przy pierwszym przejściu listy (`pomysl produkt` albo `poznaj`).
-- `AGENTS.md` — wspólne instrukcje dla wszystkich agentów (zob. `## AGENTS.md i CLAUDE.md` w kontrakcie):
+- `AGENTS.md` — wspólne instrukcje dla wszystkich agentów (zob. `## AGENTS.md i CLAUDE.md` w `../../kontrakt/pliki.md`):
   - brak pliku → utwórz: nagłówek `# <nazwa projektu>`, jedno zdanie o projekcie, sekcja z `AGENTS-projekt.md` (w pustym projekcie pomiń), potem blok z `AGENTS-blok.md`;
   - plik jest, bez znacznika `warsztat:start` → dopisz blok na końcu. Istniejącej treści nie zmieniasz;
   - blok już jest → krok „Aktualizacja” niżej.
@@ -124,4 +126,4 @@ Podsumuj zmiany i zaproponuj commit `warsztat: aktualizacja do v<wersja>`.
 
 ## 7. Podsumowanie
 
-Lista: tryb, utworzone, pominięte (już istniały), katalog ADR, walidacja i punkt odniesienia, lista śmieci, git i bezpieczeństwo (skan sekretów: hook / ręczny; blokada odczytu; gałęzie, push, tracker; ustawienia GitHuba albo powód pominięcia), jeden skill na teraz. Zaproponuj commit `warsztat: start` (pliki warsztatu, `.gitignore`, `.gitattributes`, `.githooks/`, `.claude/settings.json` i ewentualne przeniesienie ADR-ów) — zrób go tylko po zgodzie, według `### Commit` w kontrakcie.
+Lista: tryb, utworzone, pominięte (już istniały), katalog ADR, walidacja i punkt odniesienia, lista śmieci, git i bezpieczeństwo (skan sekretów: hook / ręczny; blokada odczytu; gałęzie, push, tracker; ustawienia GitHuba albo powód pominięcia), jeden skill na teraz. Zaproponuj commit `warsztat: start` (pliki warsztatu, `.gitignore`, `.gitattributes`, `.githooks/`, `.claude/settings.json` i ewentualne przeniesienie ADR-ów) — zrób go tylko po zgodzie, według `### Commit` w `../../kontrakt/git.md`.

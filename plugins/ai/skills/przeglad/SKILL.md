@@ -1,12 +1,14 @@
 ---
 name: przeglad
-description: Niezależny przegląd zmian przez dwóch recenzentów — zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu — najlepiej jako subagenci na tańszym modelu. Weryfikuje ich uwagi i zwraca listę od najpoważniejszej. Użyj po walidacji ticketu, po naprawie, przy zamykaniu zdolności albo na prośbę o review. Sam niczego nie poprawia.
+description: Niezależny przegląd zmian przez dwóch recenzentów — zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu, a gdy diff dotyka wrażliwych granic, także przez recenzenta bezpieczeństwa — najlepiej jako subagenci na tańszym modelu. Weryfikuje ich uwagi i zwraca listę od najpoważniejszej. Użyj po walidacji ticketu, po naprawie, przy zamykaniu zdolności albo na prośbę o review. Sam niczego nie poprawia.
 argument-hint: "[slug | slug#NN]"
 ---
 
 # Przegląd zmian
 
-Otwórz `../../KONTRAKT.md` względem tego pliku `SKILL.md`, szczególnie sekcję `## Subagenci i modele`. Instrukcje recenzentów leżą obok tego pliku: `recenzent-zgodnosci.md` i `recenzent-jakosci.md`.
+Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/narzedzia.md` względem tego pliku `SKILL.md`. Instrukcje recenzentów leżą obok tego pliku: `recenzent-zgodnosci.md`, `recenzent-jakosci.md` i `recenzent-bezpieczenstwa.md`.
+
+Z `../../kontrakt/narzedzia.md` potrzebna jest sekcja „Subagenci i modele”. Dla rodzaju zdolności i oceny testów czytaj właściwe sekcje `../../kontrakt/praca.md`.
 
 Przegląd niczego nie zmienia w kodzie. Wynikiem jest lista uwag, a o poprawkach decyduje skill, który go wywołał, albo użytkownik.
 
@@ -20,20 +22,21 @@ Z wywołania albo z kontekstu:
 | `slug#NN` | commity z prefiksem `slug#NN:` (`git log --grep`) albo bieżące zmiany, jeśli ticket nie ma jeszcze commita | ten ticket i spec zdolności |
 | `slug` | wszystkie commity z prefiksem `slug#` | wszystkie tickety i cały spec zdolności |
 
-Zbierz ścieżki: ticket(y), `spec.md`, `mapa.md` (linia `Rodzaj:`), `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, katalog decyzji (`sciezki.decyzje` z `.ai/warsztat.json`), `.ai/obszary/` dotkniętych obszarów, `AGENTS.md`, `.ai/lekcje.md`, `.ai/warsztat.json` oraz pliki profili projektu (`warsztat.json` → `profile`) z `../../profile/` — pełne ścieżki, bo recenzent nie zna katalogu pluginu. Pusty diff → powiedz to i zakończ.
+Zbierz ścieżki: ticket(y), `spec.md`, `mapa.md` (linia `Rodzaj:`), `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, katalog decyzji (`sciezki.decyzje` z `.ai/warsztat.json`), `.ai/obszary/` dotkniętych obszarów, `AGENTS.md`, `.ai/lekcje.md` ze znacznikami lekcji do czytania (`projekt`, slug zdolności i obszary dotknięte diffem — `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”), `.ai/warsztat.json`, `.ai/profil.md` oraz pliki profili projektu (`warsztat.json` → `profile`) z `../../profile/` — pełne ścieżki, bo recenzent nie zna katalogu pluginu. Pusty diff → powiedz to i zakończ.
 
 ## 2. Uruchom recenzentów
 
-Dwaj recenzenci pracują niezależnie od siebie i od Ciebie. Jeśli możesz, uruchom ich równolegle:
+Recenzenci pracują niezależnie od siebie i od Ciebie. Jeśli możesz, uruchom ich równolegle:
 
 - **Zgodność** — rola `recenzent-zgodnosci`. W Claude Code subagent `recenzent-zgodnosci` z tego pluginu.
 - **Jakość** — rola `recenzent-jakosci`. W Claude Code subagent `recenzent-jakosci`.
+- **Bezpieczeństwo** — rola `recenzent-bezpieczenstwa`. W Claude Code subagent `recenzent-bezpieczenstwa`. Według `.ai/warsztat.json` → `przeglad.bezpieczenstwo`: `zawsze`, `nigdy` albo `auto` (domyślnie, także przy braku klucza). Przy `auto` uruchamiasz go, gdy diff dotyka choć jednej granicy: dane z zewnątrz (żądania, argumenty, pliki, odpowiedzi usług, treść od użytkownika), uwierzytelnianie i uprawnienia, sekrety i konfiguracja bezpieczeństwa, wywołania powłoki, zapytania SQL, ścieżki plików budowane z danych, deserializacja, dane osobowe (P-10), nowe albo podniesione zależności. Powód uruchomienia — które granice — przekaż mu jako fakt i zapisz w raporcie. Żadna granica → nie uruchamiasz i piszesz w raporcie „bezpieczeństwo: bez wrażliwych granic”.
 
-W innym agencie uruchom subagenta z pełną ścieżką do pliku roli. Model wybierz według `## Subagenci i modele` w kontrakcie (`modele.<agent>.przeglad` w `.ai/warsztat.json`).
+W innym agencie uruchom subagenta z pełną ścieżką do pliku roli. Model wybierz według `## Subagenci i modele` w `../../kontrakt/narzedzia.md` (`modele.<agent>.przeglad` w `.ai/warsztat.json`).
 
-Każdemu przekaż tylko fakty: komendę diffu, listę ścieżek z kroku 1, numer ticketu i rodzaj zdolności. Nie przekazuj streszczenia rozmowy ani swojej opinii o zmianach.
+Każdemu przekaż tylko fakty: komendę diffu, listę ścieżek z kroku 1, numer ticketu i rodzaj zdolności; recenzentowi bezpieczeństwa także powód uruchomienia. Nie przekazuj streszczenia rozmowy ani swojej opinii o zmianach.
 
-Bez możliwości uruchomienia subagentów wykonaj obie role sam, po kolei, i zaznacz w raporcie „przegląd nieniezależny”.
+Bez możliwości uruchomienia subagentów wykonaj wybrane role sam, po kolei, i zaznacz w raporcie „przegląd nieniezależny”.
 
 ## 3. Zweryfikuj
 
