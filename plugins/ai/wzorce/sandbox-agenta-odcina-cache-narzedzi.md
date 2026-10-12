@@ -1,6 +1,6 @@
 # Sandbox agenta blokuje narzędziom dostęp do cache i katalogów tymczasowych poza repozytorium
 
-- Status: kandydat
+- Status: potwierdzony
 - Hasła: sandbox, uprawnienia, PermissionError, access denied, cache menedżera pakietów, uv, pip, npm, pytest, tmp_path, basetemp, TEMP
 
 ## Sygnały
@@ -38,3 +38,4 @@ Narzędzia wyliczają domyślne katalogi z profilu użytkownika, a sandbox ich n
 ## Wystąpienia
 
 - 2026-10-08–09 — harness — lekcje [warsztat] (10 wystąpień) — Codex na Windows, uv 0.7, pytest 9 — wariant: cache uv, basetemp, `.venv`, podprocesy uv w teście instalacji
+- 2026-10-12 — node4j (biblioteka Python) — lekcja [projekt] (5 wystąpień) — Codex i Claude Code na Windows, uv 0.12, pytest 9 — wariant: cache uv przy `uv run`/`uv tree`, `tmp_path` bez `--basetemp`, test poza workspace skanujący katalogi nadrzędne (`--rootdir`, `--confcutdir`); przepis trafił do `AGENTS.md` projektu

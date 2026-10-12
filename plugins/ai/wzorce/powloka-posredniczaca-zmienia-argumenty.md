@@ -1,6 +1,6 @@
 # Powłoka pośrednicząca (cmd.exe, heredoc w narzędziu agenta) zmienia argumenty, zanim dotrą do programu
 
-- Status: kandydat
+- Status: potwierdzony
 - Hasła: cmd.exe, PowerShell, heredoc, cytowanie, zmienne środowiskowe, Windows, launcher agenta, argumenty ze spacjami, ukośnik wsteczny
 
 ## Sygnały
@@ -41,3 +41,4 @@ Każda warstwa powłoki parsuje cytowanie i znaki specjalne po swojemu. cmd.exe 
 ## Wystąpienia
 
 - 2026-10-08–09 — harness — lekcje [warsztat] (12 wystąpień) — Codex na Windows, launcher przez cmd.exe; git, pytest, uv — wariant: rozbite argumenty, spacja w zmiennej, heredoc, przeciek zmiennej
+- 2026-10-11–12 — node4j (biblioteka Python) — lekcje [projekt] (2) — PowerShell 5.1 na Windows, Docker, ruff — wariant: JSON w argumencie `-e NEO4J_PLUGINS=["apoc"]` dotarł do Dockera zniekształcony (rozwiązanie: zmienna środowiskowa i sama nazwa w `-e`); przekierowanie `>` zapisało wyjście narzędzia jako UTF-16 z BOM (rozwiązanie: narzędzie uruchamiane przez skrypt w `subprocess`, bez przekierowania powłoki)
