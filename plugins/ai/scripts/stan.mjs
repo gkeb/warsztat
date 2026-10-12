@@ -42,6 +42,12 @@ try {
 }
 const drugaOpiniaWlaczona = warsztat.weryfikacja?.drugaOpinia !== 'wylaczona';
 const innyModelWymagany = warsztat.weryfikacja?.innyModel !== false;
+const weryfikacjaWymagana = warsztat.weryfikacja?.wymagana !== false;
+
+// Status w linii roadmapy: kanonicznie `— status — opis` (formaty.md); tolerujemy też status na końcu i w backtickach.
+function maStatus(linia, ...statusy) {
+  return new RegExp(`—\\s*\`?(?:${statusy.join('|')})\`?\\s*(?:—|$)`).test(linia);
+}
 
 // Treść sekcji `## tytuł` bez komentarzy HTML i pustych linii.
 function sekcja(md, tytul) {
@@ -132,7 +138,7 @@ if (!teraz) {
     const liniaRoadmapy = teraz.split('\n').find((l) => l.includes(`zdolnosci/${slug}/`)) || '';
     const grill = mapa.match(/^Grill:\s*(.+)$/m)?.[1]?.trim();
     const bezDrugiejOpinii = /^Druga opinia:\s*(—|-)?\s*$/m.test(mapa);
-    if (drugaOpiniaWlaczona && /—\s*grill\s*—/.test(liniaRoadmapy) && bezDrugiejOpinii && /skill spec\b/.test(nastepny)) {
+    if (drugaOpiniaWlaczona && maStatus(liniaRoadmapy, 'grill') &&bezDrugiejOpinii && /skill spec\b/.test(nastepny)) {
       const wskazowkaOpinii = innyModelWymagany
         ? `użyj modelu spoza grilla${grill ? ` (${grill})` : ''}`
         : 'ten sam model jest dozwolony, ale oznacz opinię jako nieniezależną';
@@ -140,7 +146,14 @@ if (!teraz) {
         `  Grill skończony, brak drugiej opinii: skill pomysl ${slug} druga-opinia — ${wskazowkaOpinii}.`,
       );
     }
-    if (/—\s*weryfikacja\s*—/.test(liniaRoadmapy)) {
+    const liczniki = statusyTicketow(slug) || {};
+    const otwarte = Object.keys(liczniki).filter((s) => s !== 'zrobione' && s !== 'porzucony');
+    if (weryfikacjaWymagana && liczniki.zrobione > 0 && otwarte.length === 0 && maStatus(liniaRoadmapy, 'budowa')) {
+      wyjscie.push(
+        '  Wszystkie tickety zrobione, a status to budowa — przestaw na weryfikacja w ROADMAP.md (skill buduj, ostatni ticket).',
+      );
+    }
+    if (maStatus(liniaRoadmapy, 'weryfikacja')) {
       const kto = budujacy(slug);
       const wskazowkaModelu = innyModelWymagany
         ? `użyj modelu spoza listy budujących${kto.length ? ` (${kto.join(', ')})` : ''}`
@@ -326,7 +339,11 @@ if (git('rev-parse', '--is-inside-work-tree') === 'true') {
   }
   const galaz = git('branch', '--show-current');
   if (warsztat.git?.galezie === 'zdolnosc' && galaz) {
-    const wBudowie = [...teraz.matchAll(/zdolnosci\/([a-z0-9-]+)\/[^\n]*—\s*(?:budowa|weryfikacja)\s*—/g)].map((m) => m[1]);
+    const wBudowie = teraz
+      .split('\n')
+      .filter((l) => maStatus(l, 'budowa', 'weryfikacja'))
+      .map((l) => l.match(/zdolnosci\/([a-z0-9-]+)\//)?.[1])
+      .filter(Boolean);
     for (const slug of wBudowie) {
       if (galaz !== `zdolnosc/${slug}`) uwagiGit.push(`- ${slug} jest w budowie, a bieżąca gałąź to ${galaz} (oczekiwana: zdolnosc/${slug}).`);
     }
