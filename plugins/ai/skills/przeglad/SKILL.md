@@ -24,6 +24,8 @@ Z wywołania albo z kontekstu:
 
 Zbierz ścieżki: ticket(y), `spec.md`, `mapa.md` (linia `Rodzaj:`), `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, katalog decyzji (`sciezki.decyzje` z `.ai/warsztat.json`), `.ai/obszary/` dotkniętych obszarów, `AGENTS.md`, `.ai/lekcje.md` ze znacznikami lekcji do czytania (`projekt`, slug zdolności i obszary dotknięte diffem — `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”), `.ai/warsztat.json`, `.ai/profil.md` oraz pliki profili projektu (`warsztat.json` → `profile`) z `../../profile/` — pełne ścieżki, bo recenzent nie zna katalogu pluginu. Pusty diff → powiedz to i zakończ.
 
+Usunięte asercje: skrypt `../../scripts/usuniete-asercje.mjs` rozwiąż względem tego pliku `SKILL.md` do ścieżki absolutnej. Uruchom `node` z korzeniem projektu i zakresem diffu (`a..b`, commit albo nic dla bieżących zmian) jako osobnymi, cytowanymi argumentami. Wynik — listę usuniętych i zmienionych linii asercji w testach — przekaż recenzentom jako fakt. W raporcie każda pozycja dostaje klasę: zastąpiona równoważną lub mocniejszą, przeniesiona (gdzie) albo osłabiona. Osłabiona bez zgody człowieka zapisanej w tickecie to uwaga blokująca. Skrypt widzi tylko linie z asercją; listy pozycji, po których asercja iteruje, sprawdza recenzent zgodności. Bez Node przejrzyj usunięte linie testów w `git diff -U0` ręcznie i zaznacz to w raporcie.
+
 ## 2. Uruchom recenzentów
 
 Recenzenci pracują niezależnie od siebie i od Ciebie. Jeśli możesz, uruchom ich równolegle:

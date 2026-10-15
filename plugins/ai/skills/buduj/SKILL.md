@@ -102,7 +102,7 @@ Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 
 ## 7. Walidacja
 
-Uruchom wszystkie komendy z `walidacja` w `.ai/warsztat.json` i poprawiaj, aż przejdą. Jeśli `odniesienie.znane` nie jest puste, „przechodzą” znaczy: brak błędów spoza tej listy. Znany błąd, który przy okazji zniknął, usuń z listy; lista nie może rosnąć. Nie wyłączasz testów, nie osłabiasz typów, nie dodajesz `ignore`, żeby było zielono. Jeśli się nie da — zatrzymaj się i opisz problem.
+Uruchom wszystkie komendy z `walidacja` w `.ai/warsztat.json` i poprawiaj, aż przejdą. Jeśli `odniesienie.znane` nie jest puste, „przechodzą” znaczy: brak błędów spoza tej listy. Znany błąd, który przy okazji zniknął, usuń z listy; lista nie może rosnąć. Nie wyłączasz testów, nie osłabiasz typów, nie dodajesz `ignore`, żeby było zielono. Asercji testu akceptacyjnego nie usuwasz ani nie osłabiasz, także przy poprawce uwagi z przeglądu albo weryfikacji. Zmiana wymaga zmiany specu albo zgody człowieka zapisanej w Notatkach ticketu. Jeśli się nie da — zatrzymaj się i opisz problem.
 
 ## 8. Przegląd
 

@@ -92,6 +92,20 @@ function budujacy(slug) {
   return [...new Set(wartosci)];
 }
 
+// Tickety, których `budowal` nie ma formatu `<narzędzie> / <model>` (np. data na początku):
+// taki wpis wygląda na innego budującego i psuje porównanie modeli w weryfikacji.
+function zlyFormatBudowal(slug) {
+  const dir = join(ai, 'zdolnosci', slug, 'tickety');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .filter((f) => {
+      const b = czytaj(join(dir, f)).match(/^budowal:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
+      return b && b !== 'null' && !/^(?!\d{4}-)[^/—]+ \/ [^/—]+$/.test(b);
+    })
+    .map((f) => f.replace(/\.md$/, ''));
+}
+
 function opisTicketow(liczniki) {
   if (!liczniki) return null;
   const aktywne = Object.entries(liczniki).filter(([s]) => s !== 'porzucony');
@@ -151,6 +165,12 @@ if (!teraz) {
     if (weryfikacjaWymagana && liczniki.zrobione > 0 && otwarte.length === 0 && maStatus(liniaRoadmapy, 'budowa')) {
       wyjscie.push(
         '  Wszystkie tickety zrobione, a status to budowa — przestaw na weryfikacja w ROADMAP.md (skill buduj, ostatni ticket).',
+      );
+    }
+    const zleBudowal = zlyFormatBudowal(slug);
+    if (zleBudowal.length) {
+      wyjscie.push(
+        `  Pole budowal poza formatem "<narzędzie> / <model>": ${zleBudowal.join(', ')} — popraw, zanim weryfikacja porówna modele.`,
       );
     }
     if (maStatus(liniaRoadmapy, 'weryfikacja')) {
