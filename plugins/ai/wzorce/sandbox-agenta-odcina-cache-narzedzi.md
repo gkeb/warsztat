@@ -39,3 +39,4 @@ Narzędzia wyliczają domyślne katalogi z profilu użytkownika, a sandbox ich n
 
 - 2026-10-08–09 — harness — lekcje [warsztat] (10 wystąpień) — Codex na Windows, uv 0.7, pytest 9 — wariant: cache uv, basetemp, `.venv`, podprocesy uv w teście instalacji
 - 2026-10-12 — node4j (biblioteka Python) — lekcja [projekt] (5 wystąpień) — Codex i Claude Code na Windows, uv 0.12, pytest 9 — wariant: cache uv przy `uv run`/`uv tree`, `tmp_path` bez `--basetemp`, test poza workspace skanujący katalogi nadrzędne (`--rootdir`, `--confcutdir`); przepis trafił do `AGENTS.md` projektu
+- 2026-10-14 — node4j (biblioteka Python) — lekcja [readme-aktualne] — Codex na Windows, pytest 9 — wariant: `--basetemp` w systemowym katalogu tymczasowym (`C:\Windows\Temp`) odrzucony `PermissionError`; rozwiązanie: dedykowany katalog w dozwolonym katalogu tymczasowym agenta
