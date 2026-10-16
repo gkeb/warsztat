@@ -19,7 +19,7 @@ Wczytaj `mapa.md`, `.ai/SLOWNIK.md`, powiązane ADR i kod w obszarach, których 
 
 Jeśli `## Problem` wskazuje `Źródło:` w pliku z zamiarem, przeczytaj ten fragment i sprawdź, czy nic z niego nie zginęło po drodze: każde wymaganie z fragmentu trafia do scenariuszy, do „Poza zakresem” (świadomie odrzucone w grillu) albo jest otwartym pytaniem. Gdy plik lub sekcja zostały usunięte, odzyskaj wersję źródłową z historii gita — dla zatwierdzonego usunięcia całego pliku użyj commita usunięcia z `.ai/zrodla.md` i `git show <commit>^:<plik>`. Wymaganie, które zniknęło bez śladu, pokaż użytkownikowi przed bramką akceptacji.
 
-Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: wypisz te pytania i zaproponuj skill `pomysl <slug>`. Nie zgaduj odpowiedzi.
+Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: wypisz te pytania i dla każdego zaproponuj komendę według typu — `[grill]` → skill `pomysl <slug>`, `[badanie]` → skill `badanie`, `[prototyp]` → skill `prototyp <slug>`. Pytanie z linkiem do badania albo eksperymentu w toku — pokaż, gdzie jest odpowiedź. Nie zgaduj odpowiedzi.
 
 ## 3. Napisz `spec.md`
 

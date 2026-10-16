@@ -101,6 +101,7 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | `przeglad` | `/ai:przeglad [slug\|slug#NN]` | `$przeglad [slug\|slug#NN]` | szybki niezależny review: zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu i zasady; przy wrażliwych granicach także bezpieczeństwo |
 | `decyzja` | `/ai:decyzja [temat]` | `$decyzja [temat]` | twarda decyzja architektoniczna → ADR i zasady |
 | `badanie` | `/ai:badanie [pytanie]` | `$badanie [pytanie]` | fakty ze źródeł pierwotnych do `.ai/badania/`, w tle |
+| `prototyp` | `/ai:prototyp [slug\|slug pytanie\|pytanie]` | `$prototyp [slug\|slug pytanie\|pytanie]` | pytanie `[prototyp]` z mapy: plan z budżetem do Twojej akceptacji, próby poza repo, niezależna ocena, odpowiedź w mapie |
 | `gdzie` | `/ai:gdzie [slug\|tydzien]` | `$gdzie [slug\|tydzien]` | stan projektu, rozjazdy (także gałęzie, niewypchnięte commity, Issues, niedziałający skan sekretów), cotygodniowy przegląd |
 | `przekaz` | `/ai:przekaz` | `$przekaz` | koniec sesji albo przerwa: stan do `mapa.md` albo `.ai/sesje/` |
 | `retro` | `/ai:retro [sesja]` | `$retro [sesja]` | lekcje → automatyczne kontrole, zasady, zmiany warsztatu albo wzorce wspólne dla projektów; `sesja` — rozbiór bieżącej sesji |
@@ -126,7 +127,7 @@ Od wersji `0.17.0` warsztat rozwija cztery mechanizmy we wspólnym kontrakcie i 
 
 - **Mapy powiązane ze źródłami.** `poznaj` zapisuje `poznany-commit` i `zrodla-kodu` w mapie obszaru: kod, testy i konfiguracje, także poza katalogiem modułu. Hook startowy wykrywa zmianę tych źródeł, a `gdzie` pokazuje pełny raport. Zmiana oznacza potrzebę sprawdzenia opisu; brak zmiany nie dowodzi jego poprawności. Stare mapy uzupełniamy przy poznaniu, bez masowej migracji. Spec i ADR zachowują wymagania oraz decyzje — rozjazdu nie rozstrzyga generator dokumentacji.
 - **Jawne założenia i prostota.** `pomysl`, `buduj` i `napraw` sprawdzają założenia, od których zależy rozwiązanie. `przeglad` ocenia potrzebę nowych abstrakcji oraz usunięcia kodu i komentarzy poza zakresem. Prostota dotyczy kosztu utrzymania i aktualnych wymagań, nie samej liczby linii.
-- **Ograniczone eksperymenty.** Pytanie `[prototyp]` dostaje plan: cel, zakres, poprawność, pomiar i skończony budżet. Po Twojej akceptacji agent mierzy odniesienie, porównuje warianty i sprawdza wybrany na oddzielnych przypadkach końcowych. Wynik żyje w `.ai/eksperymenty/`; kod prototypu poza repo. Eksperyment w produkcji pozostaje w zakresie ticketu albo naprawy. Procedura jest wspólna, bez nowego skilla: [procedury/eksperyment.md](plugins/ai/procedury/eksperyment.md).
+- **Ograniczone eksperymenty.** Pytanie `[prototyp]` dostaje plan: cel, zakres, poprawność, pomiar i skończony budżet. Po Twojej akceptacji agent mierzy odniesienie, porównuje warianty i sprawdza wybrany na oddzielnych przypadkach końcowych. Wynik żyje w `.ai/eksperymenty/`; kod prototypu poza repo. Eksperyment w produkcji pozostaje w zakresie ticketu albo naprawy. Pytanie z mapy prowadzi skill `prototyp` (od `0.19.0`): plan, próby w subagencie `eksperymentator`, ocena w świeżym kontekście (`oceniajacy`) i link w mapie, dzięki któremu pytanie nie wisi bez właściciela. Procedura jest wspólna z porównywaniem wariantów w `buduj`, `napraw` i `retro`: [procedury/eksperyment.md](plugins/ai/procedury/eksperyment.md).
 - **Kontekst dobierany do zadania.** Stałe instrukcje są oddzielone od stanu sesji. Agent czyta potrzebne materiały, linkuje szczegóły i ogranicza powtarzane logi. Cache zależy od hosta; korzyści oceniamy pomiarami. Aktualna wiedza i niezależny przegląd mają pierwszeństwo przed oszczędnością cache.
 
 Przykład: pytanie „czy skrócimy generowanie raportu bez zmiany wyniku?” → plan pomiaru i limit prób → zatwierdzony eksperyment → wynik z dowodami → decyzja albo ticket. Pętla kończy się przy celu, budżecie lub stagnacji. `retro` może tą samą procedurą porównywać kandydata zmian warsztatu w izolowanej kopii, z osobnymi wynikami Codexa i Claude Code; wdrożenie wymaga Twojej akceptacji.
@@ -261,7 +262,7 @@ Każdy problem ma jedną drogę:
 ```text
 luka ──→ badanie albo próba ──→ lekcja ──→ retro ──→ automat | zasada | zmiana warsztatu | wzorzec
 (proby.md: nierozwiazane,       (lekcje.md)
- mapa: [badanie])
+ mapa: [badanie], [prototyp])
 ```
 
 **Lekcja** (`.ai/lekcje.md`) to rozwiązany problem w jednej linijce: co założyliśmy, co okazało się prawdą, jak robimy teraz. Agent zapisuje ją od razu, gdy tylko założenie okaże się fałszywe — niezależnie od tego, czy wykryłeś to Ty, test, błąd w działaniu, badanie czy przegląd. Przegląd oznacza takie uwagi jako `[założenie]`. Ta sama przyczyna nie tworzy nowej linijki, tylko dopisuje wystąpienie do istniejącej. Lekcja z dwoma wystąpieniami to wzorzec — hook pokazuje ją na starcie sesji i podpowiada `retro`.
@@ -276,6 +277,8 @@ Każda lekcja ma jeden znacznik: obszar, zdolność albo `projekt` (lekcja o ca�
 - **Warianty** i **Wystąpienia** — czym różniły się przypadki w kolejnych projektach.
 
 Wzorce tworzy i rozwija tylko `retro`, a uogólnienie zatwierdzasz Ty. Status rośnie z dowodami: `kandydat` (jeden projekt) → `potwierdzony` (dwa lub więcej). `napraw`, `buduj`, `pomysl` i `decyzja` przeszukują indeks wzorców i przywołują trafienie z oceną dopasowania. Wynik — pasował albo czym się różnił — wraca do lekcji projektu, a `retro` przenosi go do wzorca. Tak wzorzec uczy się z każdego użycia. We wzorcach nie ma kodu ani danych projektów.
+
+**Zgłoszenie warsztatu** ([ZGLOSZENIA.md](ZGLOSZENIA.md) w korzeniu tego repo) to problem samego procesu: skill pominął krok, szablon nie ma miejsca na ważną rzecz, instrukcja okazała się niejasna. `retro` w projekcie, który wdraża zmianę od razu, commituje ją tutaj; jeśli nie — dopisuje zgłoszenie (albo nowe wystąpienie istniejącego), zamiast zostawiać propozycję w czacie. `gdzie tydzien` pokazuje, ile zgłoszeń i niewydanych zmian czeka, a `retro` uruchomione w tym repo wdraża je w komplecie i proponuje podbicie wersji.
 
 ## Przemyślenia — zanim myśl stanie się pomysłem
 
@@ -417,7 +420,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `pielegnacja` | komendy tylko do odczytu dla przeglądu tygodniowego: przestarzałe zależności, audyt, martwe linki, Lighthouse |
 | `hooki.formatowanie`, `hooki.kontrola` | formater po edycji i kontrola przed końcem odpowiedzi: `true` (automatyczna), `false` albo — dla kontroli — lista szybkich komend zamiast automatycznej |
 | `hooki.zakazane` | wzorce, które nie mogą trafić do kodu: `{ "wzorzec": "console\\.log", "pliki": ["*.ts"], "pomin": ["**/*.test.ts"], "zamiast": "Sentry.captureException", "zasada": "Z07" }` |
-| `modele.claude.*`, `modele.codex.*` | model subagentów dla `przeglad` i `badanie`; `null` = domyślny |
+| `modele.claude.*`, `modele.codex.*` | model subagentów dla `przeglad`, `badanie` i `prototyp`; `null` = domyślny |
 | `git.galezie` | `glowna` (domyślnie) albo `zdolnosc` — gałąź `zdolnosc/<slug>` i PR na zdolność |
 | `git.glowna` | nazwa gałęzi głównej; `null` = wykryj |
 | `git.push` | `pytaj` (domyślnie), `zawsze`, `nigdy` — push bieżącej gałęzi po commicie |
@@ -429,7 +432,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 
 ### Subagenci
 
-`przeglad` i `badanie` — a przy dużym zakresie także `poznaj` i `weryfikuj` — mogą oddawać pracę subagentom, czyli świeżym kontekstom bez historii rozmowy. W Claude Code plugin ma gotowych subagentów (`recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `badacz`) z modelem `sonnet`. Codex dostaje wspólny plik instrukcji roli; jego lokalne klienty obsługują jawny wybór modelu subagenta, a skill może przekazać tam wartość z `modele.codex.*`. Ten JSON czyta skill — Codex sam nie traktuje go jako konfiguracji. Bez jawnego wyboru subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://developers.openai.com/codex/multi-agent).
+`przeglad`, `badanie` i `prototyp` — a przy dużym zakresie także `poznaj` i `weryfikuj` — mogą oddawać pracę subagentom, czyli świeżym kontekstom bez historii rozmowy. W Claude Code plugin ma gotowych subagentów (`recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `badacz`, `eksperymentator`, `oceniajacy`) z modelem `sonnet`. Codex dostaje wspólny plik instrukcji roli; jego lokalne klienty obsługują jawny wybór modelu subagenta, a skill może przekazać tam wartość z `modele.codex.*`. Ten JSON czyta skill — Codex sam nie traktuje go jako konfiguracji. Bez jawnego wyboru subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://developers.openai.com/codex/multi-agent).
 
 ## Po aktualizacji pluginu
 
@@ -440,16 +443,18 @@ Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blo
 ```text
 .claude-plugin/marketplace.json       # lokalny marketplace Claude Code
 .agents/plugins/marketplace.json      # lokalny marketplace Codex
+ZGLOSZENIA.md                         # kolejka zmian warsztatu z projektów (pisze i wdraża retro; poza pluginem)
 plugins/ai/
   .claude-plugin/plugin.json          # manifest Claude Code
   plugin.json                         # przenośny manifest Codex / Agent Plugins
   KONTRAKT.md                         # wspólny rdzeń i indeks działów, czytany raz na sesję
   kontrakt/*.md                       # szczegóły czytane według skilla, trybu i operacji
   procedury/eksperyment.md             # wspólna procedura czytana przy mierzalnym eksperymencie
-  skills/<nazwa>/SKILL.md             # siedemnaście wspólnych workflowów
+  skills/<nazwa>/SKILL.md             # osiemnaście wspólnych workflowów
   skills/<nazwa>/agents/openai.yaml   # polityka jawnego wywołania w Codexie
   skills/przeglad/recenzent-*.md      # instrukcje ról recenzentów (wspólne dla obu agentów)
   skills/badanie/badacz.md            # instrukcje roli badacza
+  skills/prototyp/*.md                # instrukcje ról eksperymentatora i oceniającego eksperyment
   agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
   szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
@@ -472,5 +477,4 @@ Chcesz zmienić sposób pracy? Edytujesz skill albo kontrakt tutaj i działa wsz
 
 - **GitHub Projects:** tablica z kolumnami według statusu zdolności, jeśli Issues przestaną wystarczać.
 - **Tryb autonomiczny** dla nudnych ticketów: `buduj` w pętli po kolejce `plan` z commitem po każdym tickecie (wzorzec `om-auto-*` z Mercato).
-- Osobny skill `prototyp` lub `eksperyment`, jeśli regularne użycie wspólnej procedury uzasadni osobną komendę.
 - Codex: opcjonalne definicje projektowych agentów `.codex/agents/*.toml`, jeśli potrzebne będą trwałe nazwane role lub ich własne ustawienia. Nie są częścią zasobów deklarowanych przez [format przenośnego pluginu](https://developers.openai.com/plugins/build/plugins); obecne skille mogą przekazywać role przez wspólne pliki instrukcji.

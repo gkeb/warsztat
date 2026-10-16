@@ -53,7 +53,7 @@ W tej sesji **nie piszesz kodu**, nie tworzysz specu ani ticketów. Wynikiem jes
 - `mapa.md` → `## Decyzje`: `RRRR-MM-DD — decyzja — dlaczego`.
 - `mapa.md` → `## Otwarte pytania`: pytanie z typem `[grill]`, `[badanie]` albo `[prototyp]` i informacją, czy blokuje spec (format: `../../kontrakt/formaty.md` → „Otwarte pytania w mapie”).
 - Pytanie `[badanie]` → zaproponuj skill `badanie`. Może pracować w tle, a my rozmawiamy dalej.
-- Pytanie `[prototyp]` → czytaj `../../procedury/eksperyment.md` i zaproponuj cel, zakres, ocenę oraz skończony budżet. Grill kończy się planem bez kodu; po jego akceptacji agent prowadzi eksperyment jako osobne zadanie według procedury, z wynikiem w `.ai/eksperymenty/`. Odnotuj w mapie następny krok i link do planu; nie zamykaj pytania na podstawie propozycji bez wyniku.
+- Pytanie `[prototyp]` → zaproponuj skill `prototyp <slug>`. Ułoży plan, poprosi o akceptację celu, zakresu i budżetu i poprowadzi próby poza repo, a my możemy rozmawiać dalej o innych pytaniach. Grill nie pisze kodu prototypu; nie zamykaj pytania na podstawie propozycji bez wyniku.
 - `SLOWNIK.md`: poprawiaj istniejące wpisy, dopisuj brakujące pojęcia i zdania „X nie jest Y”. Bez duplikatów, bez rozrastania się ponad 1–3 strony.
 
 ## 4. Za duże na jedną rozmowę
@@ -63,7 +63,7 @@ Sygnały: ponad ~10 otwartych decyzji, kilka niezależnych części albo odpowie
 - zaproponuj podział na kilka zdolności, albo
 - przenieś zdolność do Mgły (status `pomysl`) i wpisz pod jej linią 1–3 kluczowe decyzje do rozstrzygnięcia.
 
-Kolejne sesje skilla `pomysl <slug>` rozstrzygają po 1–3 decyzje. Jeśli coś wymaga prototypu albo sprawdzenia w dokumentacji, zapisz to jako otwarte pytanie z dopiskiem „do sprawdzenia: …”.
+Kolejne sesje skilla `pomysl <slug>` rozstrzygają po 1–3 decyzje. Jeśli coś wymaga prototypu albo sprawdzenia w dokumentacji, zapisz to jako otwarte pytanie `[prototyp]` albo `[badanie]`.
 
 ## Tryb z pliku — `pomysl <plik.md>` i `pomysl produkt <plik.md>`
 

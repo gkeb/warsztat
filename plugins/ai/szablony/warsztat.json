@@ -62,8 +62,8 @@
     "decyzje": ".ai/decyzje"
   },
   "modele": {
-    "claude": { "przeglad": null, "badanie": null },
-    "codex": { "przeglad": null, "badanie": null }
+    "claude": { "przeglad": null, "badanie": null, "prototyp": null },
+    "codex": { "przeglad": null, "badanie": null, "prototyp": null }
   },
   "github": {
     "repo": null

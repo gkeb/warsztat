@@ -40,6 +40,7 @@ Niezacommitowane: … (jeśli są)
 - Slug w roadmapie bez folderu (poza `pomysl`) albo folder bez linii w roadmapie.
 - Ticket `w-toku` bez `Stan sesji` przy niezacommitowanych zmianach — ryzyko zgubionej pracy.
 - Następny krok w mapie wskazuje ticket, który jest już zrobiony albo zablokowany.
+- Pytanie `[prototyp]` albo `[badanie]` blokujące spec bez linku do eksperymentu lub badania — nikt go nie prowadzi; zaproponuj skill `prototyp <slug>` albo `badanie`. Pytanie wciąż otwarte, choć eksperyment z linku jest `rozstrzygniety` albo badanie odpowiedziało — wynik niepodpięty (skill `prototyp <slug>`, krok 5).
 - `lekcje.md` ma ponad ~40 linijek albo lekcje z co najmniej dwoma wystąpieniami — czas na skill `retro`. Wypisz te lekcje.
 - `proby.md` ma wpis `nierozwiazane`, który w międzyczasie rozwiązano (kod, commit, lekcja) — zamień go w lekcję.
 - Otwarte rozjazdy w `.ai/zrodla.md` — pokaż ich liczbę; czekają na decyzję człowieka.
@@ -71,7 +72,7 @@ Prowadź krótko, jedno pytanie naraz:
 4. Czy coś z Dalej albo Mgły porzucić?
 5. Czy któraś decyzja z Mgły dojrzała do skilla `pomysl`? Przemyślenia `otwarte` — które kontynuujemy (`skill przemysl <slug>`), które odrzucamy albo odkładamy?
    Przy okazji: wpisy `nierozwiazane` z `.ai/proby.md` — który zamieniamy w zdolność albo naprawę, a który zostaje? Wpisy `odlozone` — czy któryś warto wznowić?
-6. Jeśli `lekcje.md` urósł, któraś lekcja ma co najmniej dwa wystąpienia albo wygląda na problem ogólny (kandydat na wzorzec) — zaproponuj skill `retro`.
+6. Jeśli `lekcje.md` urósł, któraś lekcja ma co najmniej dwa wystąpienia albo wygląda na problem ogólny (kandydat na wzorzec) — zaproponuj skill `retro`. Lekcje `[warsztat]` → `retro` przeniesie je do zgłoszeń warsztatu. Repozytorium warsztatu dostępne (według „Zgłoszenia warsztatu” w `../../kontrakt/pamiec.md`) → pokaż liczbę zgłoszeń w `ZGLOSZENIA.md`, najstarsze z nich i liczbę commitów w `plugins/ai` od ostatniego podbicia wersji; przy kilku zaproponuj `retro` w repozytorium warsztatu.
 7. Zasady: ile twardych bez automatu? Czy któraś jest masowo łamana — poprawiamy kod czy zmieniamy zasadę?
 8. **Pielęgnacja.** Uruchom komendy z `warsztat.json` → `pielegnacja` (tylko te, które niczego nie zmieniają — instalacja, aktualizacja i wdrożenie nie są pielęgnacją) i przejdź listy `Pielęgnacja` z profili projektu. Pokaż znaleziska krótko: zależności przestarzałe i z podatnościami, martwe linki, wyniki Lighthouse, daty wygaśnięcia, treści do odświeżenia. Dla każdego zapytaj: poprawka teraz (skill `napraw`), zdolność (np. aktualizacja wersji głównej jako `refaktor`), Mgła czy nic. Pozycji listy, której nie da się sprawdzić komendą, nie zgadujesz — pytasz albo pomijasz z notatką. Brak komend przy pozycjach, które da się zautomatyzować → zaproponuj wpis w `pielegnacja`.
 9. **Wydanie.** Zmiany czekają na wydanie dłużej niż tydzień → zaproponuj skill `wydaj`. Pozycje `otwarte` w `.ai/profil.md` — który rozstrzygamy, który zostaje.

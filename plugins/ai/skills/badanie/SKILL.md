@@ -31,5 +31,6 @@ Badanie nie pisze kodu produkcyjnego i nie podejmuje decyzji. Dostarcza fakty, a
 - Podepnij wynik tam, skąd przyszło pytanie:
   - pytanie z mapy → przenieś je do `## Decyzje` albo zostaw otwarte z linkiem do badania, jeśli decyzja wymaga jeszcze rozmowy;
   - pytanie z `decyzja` → link w sekcji „Kontekst” ADR.
+- Źródła nie rozstrzygają, a odpowiedź da się sprawdzić w praktyce (zależy od danych, środowiska albo wydajności) → zaproponuj pytanie `[prototyp]` w mapie z linkiem do badania i skill `prototyp`.
 - Badanie potwierdza, że podejście nie zadziała (np. biblioteka nie obsługuje przypadku) → wpis `nie-dziala` w `.ai/proby.md` z linkiem do badania.
 - Podsumuj użytkownikowi odpowiedź w 2–4 zdaniach, z niepewnościami.

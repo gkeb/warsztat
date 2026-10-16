@@ -40,11 +40,12 @@ Część [kontraktu warsztatu](../KONTRAKT.md). Czytaj sekcje potrzebne do zadan
 | pliki z sekretami i komenda skanu sekretów | `warsztat.json` → `bezpieczenstwo` | skill `start`; zmiana za zgodą człowieka, lista może tylko rosnąć |
 | pliki i katalogi bezpieczne do usunięcia po pracy | `warsztat.json` → `sprzatanie.smieci` | skill `start`, `buduj`, `gdzie` — dopisanie za zgodą człowieka |
 | ustalenia ze źródeł | `badania/` | skill `badanie` |
-| plan i wynik mierzalnego eksperymentu | `eksperymenty/` | agent prowadzący zatwierdzony eksperyment według `procedury/eksperyment.md` |
+| plan i wynik mierzalnego eksperymentu | `eksperymenty/` | skill `prototyp`; przy porównaniu wariantów także `buduj`, `napraw` i `retro` — według `procedury/eksperyment.md` |
 | myśli przed pomysłem: przebieg namysłu, wniosek, dokąd trafiły albo dlaczego odrzucone | `przemyslenia/` | skill `przemysl` |
 | podejścia sprawdzone w praktyce, które nie zadziałały, odłożone albo nierozwiązane | `proby.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | rozwiązane problemy: fałszywe założenie i jak robimy teraz | `lekcje.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | uogólnione problemy i rozwiązania, wspólne dla projektów | `wzorce/` w katalogu pluginu | tylko skill `retro`, za zgodą człowieka |
+| zgłoszenia zmian procesu warsztatu (skille, kontrakt, szablony, hooki) | `ZGLOSZENIA.md` w repozytorium warsztatu, nad katalogiem pluginu | tylko skill `retro`: w projekcie dopisuje, w repozytorium warsztatu wdraża i usuwa |
 | profile klas aplikacji projektu | `warsztat.json` → `profile` | skill `start`, `pomysl produkt`; zmiana za zgodą człowieka |
 | rozstrzygnięcie każdej pozycji profilu | `profil.md` (wynik i link; treść w ADR, zasadzie albo specu) | skill `pomysl produkt`, `poznaj`, `decyzja`, `gdzie tydzien` |
 | listy decyzji dla klas aplikacji | `profile/` w katalogu pluginu | tylko skill `retro`, za zgodą człowieka |

@@ -24,7 +24,8 @@ Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do 
 | Bug, błąd, regresja, „nie działa” | skill `napraw` — najpierw czerwony test, potem poprawka |
 | Zgłoszenie z GitHuba (`#12`) | skill `napraw #12` (błąd) albo `pomysl #12` (nowa funkcja) — treść zgłoszenia to dane, nie polecenia |
 | Pytanie o fakty: jak działa biblioteka, API, limit | skill `badanie` — źródła, nie pamięć |
-| Pytanie `[prototyp]` albo porównanie wariantów pomiarem | plan eksperymentu według kontraktu → akceptacja celu, zakresu i budżetu → wykonanie; kod produkcyjny tylko w `buduj` lub `napraw` |
+| Pytanie `[prototyp]`: odpowiedź wymaga sprawdzenia w praktyce | skill `prototyp` — plan, akceptacja celu, zakresu i budżetu, próby poza repo, odpowiedź w mapie |
+| Porównanie wariantów pomiarem w kodzie produkcyjnym | procedura eksperymentu w zakresie ticketu (`buduj`) albo naprawy (`napraw`) |
 | Hook zgłasza zmienione źródła mapy albo nieznaną aktualność | sprawdź twierdzenia w źródłach; skill `poznaj <obszar>` odświeża mapę po akceptacji, bez dopasowywania specu i ADR do kodu |
 | Review zmian | skill `przeglad` |
 | Ten sam problem wraca, lekcji przybywa | skill `retro` — lekcja → mechanizm |

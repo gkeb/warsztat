@@ -37,7 +37,7 @@ Przy eksperymencie linkuj plan i wynik w `.ai/eksperymenty/`; zapisz wybrany war
 
 - Jeśli zmienił się następny krok, zaktualizuj `## Następny krok`.
 - Jeśli ticket okazał się za duży, Następny krok = `skill pokroj <slug>#NN`.
-- Fałszywe założenia z tej sesji, które już mają rozwiązanie i jeszcze nie mają lekcji → wpis w `.ai/lekcje.md` (ta sama przyczyna → nowe wystąpienie). Bez rozwiązania → `proby.md` jako `nierozwiazane` albo `[badanie]` w mapie.
+- Fałszywe założenia z tej sesji, które już mają rozwiązanie i jeszcze nie mają lekcji → wpis w `.ai/lekcje.md` (ta sama przyczyna → nowe wystąpienie). Bez rozwiązania → `proby.md` jako `nierozwiazane` albo `[badanie]` / `[prototyp]` w mapie.
 - Ślepe uliczki i odłożone ścieżki z tej sesji, których jeszcze nie ma w `.ai/proby.md` → dopisz je tam. `Stan sesji` jest kasowany po zamknięciu ticketu; `proby.md` zostaje. W `Nieoczywiste` tylko linkujesz wpisy.
 - Kodu w połowie nie commitujesz. Zapytaj zgodnie z sekcją `## Jak pytać`, czy zrobić commit roboczy. Domyślnie rekomenduj brak commita. Zmiany w `.ai/` możesz zacommitować jako `<slug>: przekazanie`, jeśli użytkownik chce — według `### Commit` w `../../kontrakt/git.md`. Gdy praca będzie kontynuowana na innym komputerze, rekomenduj commit `.ai/` i push; inaczej stan sesji zostanie na tym komputerze.
 

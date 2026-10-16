@@ -19,7 +19,7 @@ Wspólny rdzeń reguł i indeks szczegółów. Każdy skill przestrzega tego rdz
 | [Budowa i weryfikacja](kontrakt/praca.md) | Rodzaje zdolności; Język → zachowanie → test; Weryfikacja krzyżowa; Odbiór — sprawdzenie przez człowieka; Poprawki (bugi); Eksperymenty i prototypy |
 | [Rozmowa i materiały z zamiarem](kontrakt/rozmowa.md) | Przemyślenia — metoda sokratejska; Plik z zamiarem — pomysł spisany przez użytkownika |
 | [Poznanie kodu i aktualność wiedzy](kontrakt/poznanie.md) | Zastany projekt; Aktualność map obszarów; Zasady projektu |
-| [Lekcje, próby i wzorce](kontrakt/pamiec.md) | Lekcje — czego się nauczyliśmy; Próby — czego nie powtarzać; Wzorce — wiedza między projektami |
+| [Lekcje, próby i wzorce](kontrakt/pamiec.md) | Lekcje — czego się nauczyliśmy; Próby — czego nie powtarzać; Wzorce — wiedza między projektami; Zgłoszenia warsztatu — zmiany procesu |
 | [Profile, wydania i pielęgnacja](kontrakt/profile-i-wydania.md) | Profile — klasy aplikacji; Wydania i pielęgnacja |
 | [Git, GitHub i commity](kontrakt/git.md) | Git i GitHub; Commit |
 | [Bezpieczeństwo i dane](kontrakt/bezpieczenstwo.md) | Bezpieczeństwo i dane |
@@ -30,6 +30,8 @@ Wspólny rdzeń reguł i indeks szczegółów. Każdy skill przestrzega tego rdz
 ## Nazwy skilli i zgodność wsteczna
 
 W plikach `.ai/` następny krok zapisuj jako `skill <nazwa> [argument]`, bez składni konkretnego agenta. Użytkownik wywołuje tę samą nazwę przez `/ai:<nazwa>` w Claude Code albo `$<nazwa>` w Codex. Istniejące mapy z `/ai:<nazwa>` nadal oznaczają ten sam skill; aktualizuj je przy najbliższej zmianie następnego kroku, nie migruj całego projektu.
+
+Lista skilli, którą widzisz jako model, nie jest pełna: skille uruchamiane tylko przez człowieka (`start`, `spec`, `pokroj`, `buduj`, `weryfikuj`, `zamknij`, `wydaj`) mogą na niej nie występować. Gdy komenda `/ai:<nazwa>` albo `$<nazwa>` nie zadziałała, najpierw sprawdź pisownię i katalog `skills/` pluginu — nie wnioskuj z listy skilli modelu, że skilla nie ma.
 
 ## Jak pytać
 
@@ -54,7 +56,7 @@ Najpierw sprawdź, czy odpowiedź da się znaleźć w kodzie, plikach projektu a
 
 ## Reguły, których pilnuje każdy skill
 
-1. Kod produkcyjny powstaje tylko w ramach ticketu `w-toku` albo naprawy prowadzonej skillem `napraw`. Grill, spec, badanie i poznanie nie piszą ani nie commitują kodu produkcyjnego.
+1. Kod produkcyjny powstaje tylko w ramach ticketu `w-toku` albo naprawy prowadzonej skillem `napraw`. Grill, spec, badanie, prototyp i poznanie nie piszą ani nie commitują kodu produkcyjnego.
 2. Budowa nie zmienia specu ani kolejności roadmapy. Wolno jej tylko przestawić status `plan` → `budowa` i `budowa` → `weryfikacja`.
 3. Spec nie zawiera kodu ani ścieżek plików — opisuje zachowanie.
 4. Nowe pojęcie w kodzie → wpis w `SLOWNIK.md`, w znaczeniu z właściwego kontekstu. Nowa twarda decyzja → ADR. Nie odwrotnie w specu.

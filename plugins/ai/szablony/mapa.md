@@ -16,7 +16,7 @@ Spec: [spec.md](spec.md) — _powstanie po grillu_
 
 ## Otwarte pytania
 
-<!-- - [ ] [grill|badanie|prototyp] pytanie — blokuje spec / nie blokuje -->
+<!-- - [ ] [grill|badanie|prototyp] pytanie — blokuje spec / nie blokuje [— badanie: [wynik](…) | — eksperyment: [plan](…)] -->
 
 ## Decyzje
 

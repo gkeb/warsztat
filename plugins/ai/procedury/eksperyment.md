@@ -1,6 +1,6 @@
 # Mierzalny eksperyment
 
-Czytaj tę procedurę, gdy pytanie `[prototyp]` wymaga sprawdzenia w praktyce albo zadanie wymaga porównania wariantów. Obowiązuje wspólny rdzeń `../KONTRAKT.md`; dodatkowo czytaj „Eksperymenty i prototypy” w `../kontrakt/praca.md`, `../kontrakt/bezpieczenstwo.md` i `../kontrakt/sprzatanie.md`, a przy zapisie wyniku „Jedno źródło prawdy” w `../kontrakt/stan.md`. Ścieżki względem tego pliku. Zwykłe TDD ani sprawdzenie jednej hipotezy naprawy nie wymagają osobnego eksperymentu.
+Czytaj tę procedurę, gdy pytanie `[prototyp]` wymaga sprawdzenia w praktyce (prowadzi je skill `prototyp`) albo zadanie wymaga porównania wariantów. Obowiązuje wspólny rdzeń `../KONTRAKT.md`; dodatkowo czytaj „Eksperymenty i prototypy” w `../kontrakt/praca.md`, `../kontrakt/bezpieczenstwo.md` i `../kontrakt/sprzatanie.md`, a przy zapisie wyniku „Jedno źródło prawdy” w `../kontrakt/stan.md`. Ścieżki względem tego pliku. Zwykłe TDD ani sprawdzenie jednej hipotezy naprawy nie wymagają osobnego eksperymentu.
 
 ## Ustal plan
 
@@ -31,7 +31,7 @@ W raporcie: odpowiedź, odniesienie i wynik końcowy, zakres obowiązywania, kon
 
 Zapisz wersję źródeł, parametry i komendy wystarczające do odtworzenia pomiaru. Gdy wynikiem jest propozycja zmiany kodu lub instrukcji, przedstaw jej konkretny diff przed usunięciem roboczego wariantu. Wynik nie może opierać się wyłącznie na odnośniku do logu, który zostanie usunięty.
 
-Nie przenoś kodu prototypu automatycznie do produkcji. Rozstrzygnięte pytanie z mapy → decyzja z linkiem do wyniku; twardy wybór → `decyzja`; istotna ślepa uliczka → `proby.md`; fałszywe założenie ze znanym rozwiązaniem → `lekcje.md`. Te pliki linkują wynik, nie kopiują dziennika iteracji. Przerwanie → `przekaz` z pozostałym budżetem, wersją wariantu i miejscem artefaktów. Posprzątaj własne procesy i pliki robocze według kontraktu.
+Nie przenoś kodu prototypu automatycznie do produkcji. Rozstrzygnięte pytanie z mapy → decyzja z linkiem do wyniku; nierozstrzygnięte zostaje otwarte z linkiem do wyniku i warunkiem powrotu; twardy wybór → `decyzja`; istotna ślepa uliczka → `proby.md`; fałszywe założenie ze znanym rozwiązaniem → `lekcje.md`. Te pliki linkują wynik, nie kopiują dziennika iteracji. Przerwanie → `przekaz` z pozostałym budżetem, wersją wariantu i miejscem artefaktów. Posprzątaj własne procesy i pliki robocze według kontraktu.
 
 ## Eksperyment nad warsztatem
 

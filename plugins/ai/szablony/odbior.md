@@ -15,6 +15,7 @@
 <!-- Migracje na właściwej bazie, zmienne środowiskowe, konfiguracja, usługi zewnętrzne, uprawnienia — wszystko, co zmienia się poza kodem.
 - [ ] migracja 0007 jest na bazie dev — <jak sprawdzić>
 - [ ] zmienna PDF_WORKER_URL ustawiona na dev
+- [ ] pierwsze uruchomienie według README, w domyślnej konfiguracji i w katalogu projektu — <komenda> → <czego się spodziewać>
 -->
 
 ## Czego nie da się sprawdzić tutaj

@@ -99,7 +99,7 @@ Jeśli użytkownik oczekuje czegoś innego, niż mówi spec, to nie jest bug, ty
 
 ## Eksperymenty i prototypy
 
-`[badanie]` rozstrzygają źródła, `[prototyp]` — sprawdzenie w praktyce. Prototyp odpowiada na pytanie; optymalizacja porównuje warianty według pomiaru. Pełna procedura: [eksperyment.md](../procedury/eksperyment.md), czytana tylko przy prowadzeniu eksperymentu. Wynik: `.ai/eksperymenty/RRRR-MM-DD-slug.md` z [szablonu](../szablony/eksperyment.md).
+`[badanie]` rozstrzygają źródła, `[prototyp]` — sprawdzenie w praktyce. Prototyp odpowiada na pytanie; optymalizacja porównuje warianty według pomiaru. Pytanie `[prototyp]` z mapy prowadzi skill `prototyp`: plan, akceptacja, pętla prób (subagent `eksperymentator`), niezależna ocena (subagent `oceniajacy`) i podpięcie wyniku w mapie. Ta sama procedura obowiązuje przy porównywaniu wariantów w `buduj` i `napraw` (w ich zakresie) oraz przy eksperymencie nad warsztatem w `retro`. Pełna procedura: [eksperyment.md](../procedury/eksperyment.md), czytana tylko przy prowadzeniu eksperymentu. Wynik: `.ai/eksperymenty/RRRR-MM-DD-slug.md` z [szablonu](../szablony/eksperyment.md).
 
 Grill zapisuje pytanie i proponuje plan bez kodu. Eksperyment uruchamia agent po zaakceptowaniu przez użytkownika celu, zakresu i skończonego budżetu; wcześniej udzielona zgoda wystarcza. Kod prototypu i warianty warsztatu powstają w osobnym katalogu roboczym poza repo. Eksperyment w kodzie produkcyjnym odbywa się wyłącznie w tickecie `w-toku` przez `buduj` albo w naprawie przez `napraw`, w ich zakresie i z ich kontrolami. Wynik prototypu nie zastępuje budowy, przeglądu ani akceptacji decyzji.
 

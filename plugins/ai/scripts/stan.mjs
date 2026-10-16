@@ -232,6 +232,16 @@ if (lekcje.length > 0) {
   }
 }
 
+// Lekcje o samym warsztacie (także w starszym formacie `RRRR-MM-DD — [warsztat] — …`): bez retro zostają w projekcie
+// i nie trafiają do zgłoszeń warsztatu.
+const lekcjeWarsztatu = czytaj(join(ai, 'lekcje.md'))
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .split('\n')
+  .filter((l) => /^(?:- |\d{4}-\d{2}-\d{2}\s+—\s+)\[warsztat\]/.test(l)).length;
+if (lekcjeWarsztatu > 0) {
+  wyjscie.push(`Lekcje o warsztacie ([warsztat]): ${lekcjeWarsztatu} — skill retro przeniesie je do zgłoszeń warsztatu.`);
+}
+
 // Zasady twarde z .ai/ZASADY.md: same nagłówki, żeby były w kontekście każdej sesji bez kopiowania ich do AGENTS.md.
 const MAX_ZASAD = 10;
 const zasady = czytaj(join(ai, 'ZASADY.md'))

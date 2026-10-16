@@ -56,10 +56,12 @@ Jedna linijka: `[znacznik] problem — założyliśmy X, okazało się Y → ter
 ```markdown
 - [ ] [grill] Czy faktura korygująca jest osobnym bytem? — blokuje spec
 - [ ] [badanie] Jakie limity ma webhook dostawcy płatności? — nie blokuje
-- [ ] [prototyp] Czy podgląd PDF w przeglądarce wystarczy? — blokuje spec
+- [ ] [prototyp] Czy podgląd PDF w przeglądarce wystarczy? — blokuje spec — eksperyment: [plan](../../eksperymenty/2026-10-16-podglad-pdf.md)
 ```
 
-Typ mówi, co rozstrzyga pytanie: `[grill]` rozmowa z użytkownikiem (skill `pomysl`), `[badanie]` źródła (skill `badanie`), `[prototyp]` eksperyment według `## Eksperymenty i prototypy`, którego kod roboczy wyrzucamy po odpowiedzi. Rozstrzygnięte pytanie przenosisz do `## Decyzje` z linkiem do badania, wyniku eksperymentu albo ADR.
+Typ mówi, co rozstrzyga pytanie i która komenda je prowadzi: `[grill]` rozmowa z użytkownikiem (skill `pomysl`), `[badanie]` źródła (skill `badanie`), `[prototyp]` sprawdzenie w praktyce (skill `prototyp`, procedura `procedury/eksperyment.md`), którego kod roboczy wyrzucamy po odpowiedzi.
+
+Pytanie w toku dostaje na końcu link do pracy, która je rozstrzyga — `badanie: [wynik](…)` albo `eksperyment: [plan](…)` — bez statusu: status żyje w pliku badania albo eksperymentu. Pytanie z linkiem nie wisi: wiadomo, gdzie szukać odpowiedzi. Rozstrzygnięte pytanie przenosisz do `## Decyzje` z linkiem do badania, wyniku eksperymentu albo ADR. Wynik nierozstrzygnięty zostawia pytanie otwarte z linkiem — nie zapisujesz go jako faktu.
 
 ### Scenariusz — wpis w `spec.md`
 

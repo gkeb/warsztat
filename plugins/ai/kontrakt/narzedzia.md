@@ -15,13 +15,14 @@ Plugin ma hooki, które pilnują kodu bez pamięci agenta (`scripts/kod.mjs`, Cl
 
 ## Subagenci i modele
 
-Skille `przeglad` i `badanie` (a przy dużych obszarach także `poznaj`) oddają część pracy subagentom, czyli świeżym kontekstom, które nie znają przebiegu rozmowy. Tak jak przy pytaniach, korzystasz tylko z możliwości, które bieżący agent faktycznie ma.
+Skille `przeglad`, `badanie` i `prototyp` (a przy dużych obszarach także `poznaj`) oddają część pracy subagentom, czyli świeżym kontekstom, które nie znają przebiegu rozmowy. Tak jak przy pytaniach, korzystasz tylko z możliwości, które bieżący agent faktycznie ma.
 
 - **Jedno źródło instrukcji.** Instrukcje każdej roli leżą w pliku obok skilla (np. `skills/przeglad/recenzent-zgodnosci.md`). Obowiązują w każdym agencie.
-- **Claude Code.** Plugin ma gotowe definicje subagentów w `agents/`: `recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa` i `badacz`, z domyślnym modelem `sonnet` i narzędziami dobranymi do roli. Uruchamiasz je po nazwie.
+- **Claude Code.** Plugin ma gotowe definicje subagentów w `agents/`: `recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `badacz`, `eksperymentator` i `oceniajacy`, z domyślnym modelem `sonnet` i narzędziami dobranymi do roli. Uruchamiasz je po nazwie.
 - **Codex.** Wtyczka udostępnia wspólne pliki instrukcji ról, a skill uruchamia subagenta z odpowiednim plikiem i faktami. Definicje w `plugins/ai/agents/` są dla Claude Code; przenośny manifest pluginu nie deklaruje agentów. Codex ma własne definicje projektowe w `.codex/agents/*.toml`, ale nie są one wymagane do przekazania roli z pliku.
 - **Model.** `.ai/warsztat.json` nie jest konfiguracją Codexa; skill odczytuje `modele.<agent>.<skill>` i przekazuje tę wartość w polu modelu przy uruchamianiu subagenta, jeśli bieżący agent udostępnia taki wybór. W przeciwnym razie subagent dziedziczy model rodzica (w Claude Code domyślna definicja ma `sonnet`). Nie raportuj użycia tańszego modelu, jeśli nie został faktycznie wybrany.
 - **Tylko fakty na wejściu.** Subagentowi przekazujesz ścieżki i zakres (komendę diffu, ticket, spec, pytanie), nie streszczenie rozmowy. Jego wartością jest niezależność.
 - **Świeży kontekst.** Jeśli narzędzie delegowania domyślnie dziedziczy rozmowę, wyłącz to przy uruchomieniu recenzenta lub oceniającego eksperyment (np. `fork_turns: "none"`, gdy taki parametr jest dostępny). Samo pominięcie streszczenia nie usuwa odziedziczonej historii. Gdy host nie pozwala zapewnić świeżego kontekstu, zaznacz brak niezależności; oszczędność cache nie zmienia tej oceny.
+- **Subagent, który zapisuje.** Tylko `eksperymentator` uruchamia komendy i zapisuje pliki: plik eksperymentu i katalog roboczy poza repo, nic więcej. W tle uruchamiasz go tylko wtedy, gdy host pozwala subagentowi w tle wykonywać komendy bez pytań o uprawnienia.
 - **Bez subagentów.** Wykonaj instrukcje ról sam, po kolei, i napisz w raporcie, że przegląd nie był niezależny.
 - **Weryfikacja.** Ustalenia subagenta sprawdzasz w kodzie lub w źródle, zanim je przekażesz użytkownikowi. Fałszywe alarmy odrzucasz.

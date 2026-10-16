@@ -48,6 +48,7 @@ Przy dużym zakresie możesz rozdzielić czytanie na subagentów według `## Sub
 - tylko szczęśliwa ścieżka: brak obsługi błędów, pustych danych, limitów, uprawnień opisanych w specu;
 - rzeczy niepodpięte: nowy kod, którego nic nie wywołuje — trasa, widok, komenda, handler, zadanie, rejestracja w kontenerze;
 - brakujące migracje, zmienne środowiskowe, wpisy konfiguracji, uprawnienia, dokumentacja uruchomienia;
+- ścieżka uruchomienia z README niesprawdzona w domyślnej konfiguracji: testy i sprawdzenia w katalogach tymczasowych nie zastępują pierwszego uruchomienia tak, jak zrobi to użytkownik — w katalogu projektu, z domyślnymi ścieżkami i ustawieniami, na maszynie autora. Uruchom ją, jeśli jest lokalna i bezpieczna; inaczej trafia do odbioru;
 - testy, które niczego nie sprawdzają: brak asercji, asercje na mockach, pominięte (`skip`) albo osłabione. Przeżyty mutant w kodzie, który realizuje scenariusz, to uwaga `warto` z mutantem jako dowodem (plik, linia, zmiana); blokująca tylko wtedy, gdy pokazuje frazę „Wtedy” bez asercji. Najpierw oceń, czy mutant nie jest równoważny;
 - mocki zostawione w kodzie produkcyjnym;
 - scenariusz „zrobiony” tylko w teście, a nie przez publiczny interfejs;
