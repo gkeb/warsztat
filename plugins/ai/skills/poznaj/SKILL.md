@@ -1,6 +1,6 @@
 ---
 name: poznaj
-description: Poznaje zastany projekt albo jego obszar — kod, dokumentację, ADR-y i historię gita — sprawdza dokumenty z kodem i zapisuje wiedzę w plikach warsztatu (mapa obszaru, AGENTS.md, słownik, zastane ADR-y, rozjazdy) z linkami do źródeł. Nie pisze kodu i nie przenosi dokumentacji. Użyj przed pracą w nieznanym obszarze, po starcie warsztatu w istniejącym repo albo gdy użytkownik pyta „jak to działa i dlaczego tak”.
+description: Poznaje zastany projekt lub jego obszar w tym repozytorium na podstawie kodu, dokumentacji, ADR-ów i historii gita; zapisuje mapę oraz wnioski z linkami do źródeł. Użyj, gdy pytanie dotyczy tego, jak działa ten kod lub dlaczego projekt tak robi. Dla zewnętrznego faktu o bibliotece, API, limicie lub standardzie użyj `badanie`. Nie pisze kodu i nie przenosi dokumentacji.
 argument-hint: "[ogolnie | obszar]"
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: napraw
-description: Diagnozuje i naprawia bug albo regresję wydajności w zdyscyplinowanej pętli — odtworzenie (czerwony sygnał), zawężenie, hipoteza, instrumentacja, poprawka przyczyny, test regresji — i ustala, czy wystarczy commit fix, ticket w zdolności, czy trzeba wrócić do grilla. Użyj przy zgłoszeniu błędu, stack trace, regresji albo gdy coś nie działa lub działa wolniej.
+description: Diagnozuje zgłoszony defekt albo regresję, także wydajności, w zachowaniu, które powinno już działać. Nowa zdolność lub zachowanie zgodne ze specem, które użytkownik chce zmienić, należy do `pomysl` albo `spec`. Używaj tylko po jawnym poleceniu naprawy; przebieg kończy się poprawką, testem regresji i commitem.
+disable-model-invocation: true
 argument-hint: "[objaw]"
 ---
 

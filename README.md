@@ -88,19 +88,19 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | Skill | Claude Code | Codex | Kiedy |
 | --- | --- | --- | --- |
 | `start` | `/ai:start` | `$start` | raz na projekt (i po aktualizacji pluginu, i na każdym nowym komputerze): rozpoznaje pusty projekt albo zastany kod, zakłada `.ai/`, `AGENTS.md`, `CLAUDE.md`, zabezpieczenia (skan sekretów, `.gitignore`, blokada odczytu) i sposób pracy z gitem |
-| `poznaj` | `/ai:poznaj [ogolnie\|obszar]` | `$poznaj [ogolnie\|obszar]` | zastany kod: kod, dokumentacja, ADR i historia → mapa obszaru, słownik, zastane ADR i zasady, rozjazdy |
-| `przemysl` | `/ai:przemysl [myśl\|slug]` | `$przemysl [myśl\|slug]` | luźna myśl przemyślana pytaniami sokratejskimi, bez podsuwania odpowiedzi — dojrzewa do pomysłu, decyzji albo badania, albo zostaje odrzucona |
-| `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill produktu albo zdolności (`funkcja` / `refaktor` / `wyglad`); z plikiem — rozbiór spisanego pomysłu; `#nr` — zgłoszenie z GitHuba jako materiał; `druga-opinia` — podważenie grilla w innym modelu; `sokratejsko` — pytania zamiast rekomendacji |
+| `poznaj` | `/ai:poznaj [ogolnie\|obszar]` | `$poznaj [ogolnie\|obszar]` | zastany kod tego repo: kod, dokumentacja, ADR i historia → mapa obszaru, słownik, zastane ADR i zasady, rozjazdy; zewnętrzne fakty → `badanie` |
+| `przemysl` | `/ai:przemysl [myśl\|slug]` | `$przemysl [myśl\|slug]` | luźna myśl przed określeniem celu lub kierunku; gdy wiadomo już, jakiej zdolności dotyczy temat → `pomysl` |
+| `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill nowej zdolności, gdy wiadomo już, czego dotyczy; luźna myśl bez celu → `przemysl`; obsługuje produkt, plik, Issue, drugą opinię i tryb sokratejski |
 | `spec` | `/ai:spec [slug]` | `$spec [slug]` | spec i Twoja akceptacja |
 | `pokroj` | `/ai:pokroj [slug\|slug#NN]` | `$pokroj [slug\|slug#NN]` | podział zaakceptowanego specu na tickety; dzielenie za dużego ticketu; przy trackerze GitHub — Issue dla każdego ticketu |
 | `buduj` | `/ai:buduj [slug\|slug#NN]` | `$buduj [slug\|slug#NN]` | jeden ticket: TDD, walidacja, przegląd, skan sekretów, commit (i push), sprzątanie procesów i śmieci — i stop; w trybie gałęzi po ostatnim tickecie PR w wersji roboczej |
 | `weryfikuj` | `/ai:weryfikuj [slug\|slug#NN]` | `$weryfikuj [slug\|slug#NN]` | weryfikacja krzyżowa w innym modelu: czy etap dowieziono zgodnie ze specem i planem |
 | `zamknij` | `/ai:zamknij [slug] [porzuc]` | `$zamknij [slug] [porzuc]` | ukończenie (po weryfikacji i odbiorze przez człowieka) albo porzucenie zdolności; wpis w historii zmian; w trybie gałęzi scalenie PR |
 | `wydaj` | `/ai:wydaj [podglad\|wersja\|tresc]` | `$wydaj [podglad\|wersja\|tresc]` | wydanie albo wdrożenie: wersja, historia zmian, publikacja po Twojej zgodzie, sprawdzenie na miejscu, rejestr wydań |
-| `napraw` | `/ai:napraw [objaw\|#nr]` | `$napraw [objaw\|#nr]` | bug lub regresja: czerwony test → przyczyna → poprawka → test regresji; `#nr` — zgłoszenie z GitHuba, zamykane commitem |
+| `napraw` | `/ai:napraw [objaw\|#nr]` | `$napraw [objaw\|#nr]` | jawnie zlecona naprawa defektu lub regresji; nowa zdolność albo zmiana zachowania zgodnego ze specem → `pomysl` / `spec`; kończy się commitem |
 | `przeglad` | `/ai:przeglad [slug\|slug#NN]` | `$przeglad [slug\|slug#NN]` | szybki niezależny review: zgodność z ticketem, specem, ADR i słownikiem oraz jakość kodu i zasady; przy wrażliwych granicach także bezpieczeństwo |
 | `decyzja` | `/ai:decyzja [temat]` | `$decyzja [temat]` | twarda decyzja architektoniczna → ADR i zasady |
-| `badanie` | `/ai:badanie [pytanie]` | `$badanie [pytanie]` | fakty ze źródeł pierwotnych do `.ai/badania/`, w tle |
+| `badanie` | `/ai:badanie [pytanie]` | `$badanie [pytanie]` | zewnętrzny fakt o bibliotece, API, limicie lub standardzie ze źródeł pierwotnych; kod i historia tego repo → `poznaj` |
 | `prototyp` | `/ai:prototyp [slug\|slug pytanie\|pytanie]` | `$prototyp [slug\|slug pytanie\|pytanie]` | pytanie `[prototyp]` z mapy: plan z budżetem do Twojej akceptacji, próby poza repo, niezależna ocena, odpowiedź w mapie |
 | `gdzie` | `/ai:gdzie [slug\|tydzien]` | `$gdzie [slug\|tydzien]` | stan projektu, rozjazdy (także gałęzie, niewypchnięte commity, Issues, niedziałający skan sekretów), cotygodniowy przegląd |
 | `przekaz` | `/ai:przekaz` | `$przekaz` | koniec sesji albo przerwa: stan do `mapa.md` albo `.ai/sesje/` |

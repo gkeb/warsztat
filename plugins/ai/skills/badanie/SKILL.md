@@ -1,6 +1,6 @@
 ---
 name: badanie
-description: Odpowiada na pytanie faktograficzne (jak działa biblioteka, API, limit, standard) na podstawie źródeł pierwotnych i zapisuje wynik z cytatami w .ai/badania/. Użyj dla otwartego pytania [badanie], przed decyzją lub ADR, albo gdy użytkownik prosi o sprawdzenie działania lub limitów. Może pracować w tle jako subagent.
+description: Ustala fakt o zewnętrznej bibliotece, API, limicie lub standardzie na podstawie źródeł pierwotnych i zapisuje wynik z cytatami w .ai/badania/. Gdy pytanie dotyczy kodu, dokumentów lub historii tego repozytorium, użyj `poznaj`. Użyj przed decyzją lub ADR; może pracować w tle jako subagent.
 argument-hint: "[pytanie]"
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: przemysl
-description: Pomaga przemyśleć luźną myśl o projekcie pytaniami sokratejskimi — bez podsuwania odpowiedzi — aż dojrzeje do pomysłu, decyzji albo badania, albo zostanie świadomie odrzucona. Prowadzi zbiór przemyśleń w .ai/przemyslenia/. Użyj, gdy pada „zastanawiam się, czy…”, „mam taką myśl…”, przed pomysłem, którego cel jest jeszcze niejasny, albo gdy użytkownik chce zrozumieć koncepcję, zanim cokolwiek zdecyduje.
+description: Pomaga przemyśleć luźną myśl, zanim zostanie określony cel lub kierunek, pytaniami sokratejskimi — bez podsuwania odpowiedzi — aż dojrzeje do pomysłu, decyzji albo badania, albo zostanie świadomie odrzucona. Gdy wiadomo już, jakiej zdolności lub zmiany dotyczy temat i trzeba doprecyzować wymagania, użyj `pomysl`. Prowadzi zbiór przemyśleń w .ai/przemyslenia/.
 argument-hint: "[myśl | slug]"
 ---
 
