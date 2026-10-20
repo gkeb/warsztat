@@ -446,6 +446,8 @@ Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blo
 .claude-plugin/marketplace.json       # lokalny marketplace Claude Code
 .agents/plugins/marketplace.json      # lokalny marketplace Codex
 ZGLOSZENIA.md                         # kolejka zmian warsztatu z projektów (pisze i wdraża retro; poza pluginem)
+docs/zasady-rodzin.md                 # rdzeń zasad wspólny dla rodzin pluginów i sposób zakładania nowej rodziny
+docs/skille-i-hooki.md                # model skilli i hooków w Claude Code i Codexie, ocena pluginu
 plugins/ai/
   .claude-plugin/plugin.json          # manifest Claude Code
   plugin.json                         # przenośny manifest Codex / Agent Plugins
@@ -474,6 +476,8 @@ Skille współdzielą rdzeń formatu Agent Skills (`name`, `description` i instr
 Przy zmianie wersji podbij ją w obu manifestach: `plugins/ai/plugin.json` i `plugins/ai/.claude-plugin/plugin.json`. Znacznik bloku w `AGENTS.md` projektów bierze wersję z manifestu sam.
 
 Chcesz zmienić sposób pracy? Edytujesz skill albo kontrakt tutaj i działa wszędzie. System ma pasować do Ciebie, nie odwrotnie.
+
+Nowa rodzina pluginów (marketing, prowadzenie firmy) nie kopiuje warsztatu, tylko jego rdzeń: zasady i sposób powstania opisane w [Zasadach rodzin pluginów](docs/zasady-rodzin.md).
 
 ## Na później
 
