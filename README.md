@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.19.1` granice między skillami są jawne w ich opisach: `pomysl` dotyczy określonej już zdolności lub zmiany, a `przemysl` luźnej myśli bez celu; `poznaj` bada to repozytorium, a `badanie` zewnętrzne fakty. `napraw` wymaga jawnego uruchomienia, bo może zmieniać kod i commitować. Procedury trybów `pomysl` są wczytywane z osobnych plików według argumentu.
+
 Od wersji `0.17.0` warsztat rozwija cztery mechanizmy we wspólnym kontrakcie i dotychczasowych skillach:
 
 - **Mapy powiązane ze źródłami.** `poznaj` zapisuje `poznany-commit` i `zrodla-kodu` w mapie obszaru: kod, testy i konfiguracje, także poza katalogiem modułu. Hook startowy wykrywa zmianę tych źródeł, a `gdzie` pokazuje pełny raport. Zmiana oznacza potrzebę sprawdzenia opisu; brak zmiany nie dowodzi jego poprawności. Stare mapy uzupełniamy przy poznaniu, bez masowej migracji. Spec i ADR zachowują wymagania oraz decyzje — rozjazdu nie rozstrzyga generator dokumentacji.
