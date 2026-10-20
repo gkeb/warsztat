@@ -144,6 +144,7 @@ Pluginy nie wywołują się nawzajem. Współpracują przez stan w plikach i prz
 - **Rodzina działa także bez sąsiadów.** Gdy brak cudzego stanu, pyta albo pracuje na tym, co ma — nie zakłada, że inny plugin jest zainstalowany.
 - **Skille odsyłają do siebie po nazwie** na końcu pracy („następny krok: `skill <nazwa>` z rodziny X”), tak jak `pomysl` odsyła do `przemysl`.
 - **Wspólne mechanizmy** (stan sesji, przekaz, retro, kontrakt `.ai/`) na razie każda rodzina ma własne. Do wspólnego rdzenia wydziela się je dopiero wtedy, gdy w co najmniej dwóch rodzinach działają tak samo — wcześniej nie wiadomo, co jest naprawdę wspólne.
+- **Do ustalenia przy pierwszej rodzinie piszącej treść produktu:** własność ścieżek poza `.ai/` (np. `src/content/` w Astro), ze schematem kolekcji jako umową między rodzinami — treść należy do jednej, komponenty i schemat do drugiej.
 
 Rodziny w tym repozytorium leżą obok siebie w `plugins/` i w jednym [marketplace.json](../.claude-plugin/marketplace.json). Rodzina z innymi wymaganiami co do danych (np. firma) może mieć własne repozytorium i własny marketplace.
 
