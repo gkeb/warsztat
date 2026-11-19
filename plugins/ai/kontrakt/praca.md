@@ -42,6 +42,7 @@ Trzy poziomy, każdy zakotwiczony w poprzednim: **język** domeny (lekkie, strat
 ### Test — podwójna pętla
 
 - **Ticket wskazuje scenariusze** w polu `scenariusze` (np. `["S1", "S3"]`). Każdy scenariusz specu trafia do co najmniej jednego ticketu. Scenariusz rozłożony na kilka ticketów jest gotowy wtedy, gdy przechodzi jego test akceptacyjny.
+- **Odkładasz wiersze, nie zabezpieczenia.** Scenariusz rozłożony na tickety może odłożyć wiersze tabeli i warianty wejścia. Niezmienniki słownika, zasady twarde (np. trwały zapis i obsługa błędu zapisu) oraz komendy w podpowiedziach obowiązują od pierwszego ticketu, który dotyka danej ścieżki, i mają w nim test. Test scenariusza odtwarza jego „Zakładając” także wtedy, gdy kończy go późniejszy ticket.
 - **Pętla zewnętrzna.** Budowa zaczyna od testu akceptacyjnego scenariusza — przez publiczny interfejs, na najwyższym sensownym poziomie (API, CLI, UI, publiczna funkcja modułu). Jest czerwony do końca pracy nad scenariuszem.
 - **Pętla wewnętrzna.** Zwykłe TDD: jeden test jednego zachowania naraz, aż test akceptacyjny przejdzie.
 - **Ślad w nazwie.** Test akceptacyjny ma numer scenariusza w nazwie albo opisie (`it("S3: …")`, `def test_s3_…`, `@pytest.mark.scenariusz("S3")`), tak żeby `grep S3` w testach go znalazł. Przy refaktorze — numer niezmiennika.

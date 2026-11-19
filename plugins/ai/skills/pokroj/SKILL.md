@@ -23,6 +23,7 @@ Wczytaj `spec.md`, `mapa.md` i kod w obszarach, których zdolność dotyka.
 - **Pierwszy ticket to najcieńsza ścieżka od początku do końca** — przechodzi przez cały system, nawet jeśli robi mało. Pierwszy ticket w projekcie bez testów stawia też infrastrukturę testów.
 - **Jedna sesja.** Diff da się przejrzeć w kilka minut. Ticket, którego opis wymaga „oraz… oraz…”, dzielisz.
 - **Scenariusze w tickecie.** Pole `scenariusze` wskazuje numery scenariuszy specu, które ten ticket dowozi albo posuwa. Każdy scenariusz trafia do co najmniej jednego ticketu. Gdy scenariusz jest rozłożony na kilka ticketów (np. szczęśliwa ścieżka, potem błędy), w Notatkach napisz, który ticket go kończy — tam test akceptacyjny ma przejść.
+- **Zabezpieczenia od pierwszego ticketu.** Odkładasz wiersze tabeli i warianty wejścia, nie niezmienniki, zasady twarde ani komendy z podpowiedzi — według „Odkładasz wiersze, nie zabezpieczenia” w `../../kontrakt/praca.md`. Ticket, który pierwszy dotyka ścieżki zapisu albo niezmiennika, ma ich test w kryteriach.
 - **Kryteria akceptacji** sprawdzalne, w języku słownika: najpierw „Sx: test akceptacyjny przechodzi” dla scenariuszy kończonych w tym tickecie, potem kryteria specyficzne dla plastra.
 - **Zależności jawnie** w `blokowany-przez`. Tam, gdzie się da, tickety niezależne.
 - Zwykle wychodzi 3–8 ticketów. Więcej niż ~10 → zdolność jest za duża; zaproponuj podział na dwie.
