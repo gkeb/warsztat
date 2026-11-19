@@ -62,8 +62,16 @@
     "decyzje": ".ai/decyzje"
   },
   "modele": {
-    "claude": { "przeglad": null, "badanie": null, "prototyp": null },
-    "codex": { "przeglad": null, "badanie": null, "prototyp": null }
+    "claude": {
+      "czytanie": { "model": "haiku", "wysilek": "medium" },
+      "recenzja": { "model": "sonnet", "wysilek": null },
+      "badanie": { "model": "sonnet", "wysilek": null }
+    },
+    "codex": {
+      "czytanie": { "model": "gpt-6.1-terra", "wysilek": "medium" },
+      "recenzja": { "model": "gpt-6.2-sol", "wysilek": "medium" },
+      "badanie": { "model": "gpt-6.2-sol", "wysilek": "medium" }
+    }
   },
   "github": {
     "repo": null

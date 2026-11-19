@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.20.0` subagenci dostają model i wysiłek według poziomu pracy (`czytanie`, `recenzja`, `badanie`), a nowa rola `czytelnik` na tańszym modelu przejmuje czytanie kodu i streszczanie testów w `buduj`, `napraw`, `poznaj` i `weryfikuj`. Stary format `modele` (per skill) `start` przenosi przy aktualizacji.
+
 Od wersji `0.19.2` rekomendowane wersje środowiska i zależności agent sprawdza w źródle (harmonogram wydań, rejestr pakietów), nie z pamięci, a recenzent jakości sprawdza, czy atrapy testowe na granicy odróżniają poprawną implementację od błędnej.
 
 Od wersji `0.19.1` granice między skillami są jawne w ich opisach: `pomysl` dotyczy określonej już zdolności lub zmiany, a `przemysl` luźnej myśli bez celu; `poznaj` bada to repozytorium, a `badanie` zewnętrzne fakty. `napraw` wymaga jawnego uruchomienia, bo może zmieniać kod i commitować. Procedury trybów `pomysl` są wczytywane z osobnych plików według argumentu.
@@ -424,7 +426,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `pielegnacja` | komendy tylko do odczytu dla przeglądu tygodniowego: przestarzałe zależności, audyt, martwe linki, Lighthouse |
 | `hooki.formatowanie`, `hooki.kontrola` | formater po edycji i kontrola przed końcem odpowiedzi: `true` (automatyczna), `false` albo — dla kontroli — lista szybkich komend zamiast automatycznej |
 | `hooki.zakazane` | wzorce, które nie mogą trafić do kodu: `{ "wzorzec": "console\\.log", "pliki": ["*.ts"], "pomin": ["**/*.test.ts"], "zamiast": "Sentry.captureException", "zasada": "Z07" }` |
-| `modele.claude.*`, `modele.codex.*` | model subagentów dla `przeglad`, `badanie` i `prototyp`; `null` = domyślny |
+| `modele.claude.<poziom>`, `modele.codex.<poziom>` | `{ "model": …, "wysilek": … }` subagentów dla poziomów `czytanie`, `recenzja`, `badanie`; `null` = domyślny. Po zmianie `modele.codex` uruchom `start`, żeby odświeżył `.codex/agents/warsztat-*.toml` |
 | `git.galezie` | `glowna` (domyślnie) albo `zdolnosc` — gałąź `zdolnosc/<slug>` i PR na zdolność |
 | `git.glowna` | nazwa gałęzi głównej; `null` = wykryj |
 | `git.push` | `pytaj` (domyślnie), `zawsze`, `nigdy` — push bieżącej gałęzi po commicie |
@@ -436,7 +438,15 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 
 ### Subagenci
 
-`przeglad`, `badanie` i `prototyp` — a przy dużym zakresie także `poznaj` i `weryfikuj` — mogą oddawać pracę subagentom, czyli świeżym kontekstom bez historii rozmowy. W Claude Code plugin ma gotowych subagentów (`recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `badacz`, `eksperymentator`, `oceniajacy`) z modelem `sonnet`. Codex dostaje wspólny plik instrukcji roli; jego lokalne klienty obsługują jawny wybór modelu subagenta, a skill może przekazać tam wartość z `modele.codex.*`. Ten JSON czyta skill — Codex sam nie traktuje go jako konfiguracji. Bez jawnego wyboru subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://developers.openai.com/codex/multi-agent).
+`przeglad`, `badanie` i `prototyp` oddają pracę subagentom, czyli świeżym kontekstom bez historii rozmowy, a `buduj`, `napraw`, `poznaj` i `weryfikuj` mogą oddać czytanie kodu i uruchamianie testów roli `czytelnik`. Model zależy od rodzaju pracy, nie od skilla — trzy poziomy:
+
+| Poziom | Role | Claude | Codex |
+| --- | --- | --- | --- |
+| `czytanie` | `czytelnik` | `haiku`, effort `medium` | `gpt-6.1-terra`, `medium` |
+| `recenzja` | recenzenci, `oceniajacy` | `sonnet` | `gpt-6.2-sol`, `medium` |
+| `badanie` | `badacz`, `eksperymentator` | `sonnet` | `gpt-6.2-sol`, `medium` |
+
+Pisanie kodu i decyzje zostają w głównym modelu. W Claude Code plugin ma gotowych subagentów z tymi wartościami; `effort` w definicji agenta działa od Claude Code 2.1.293 (Haiku 5.5). W Codexie model i wysiłek niosą definicje `.codex/agents/warsztat-<poziom>.toml`, które `start` generuje z `warsztat.json` — sam JSON nie jest konfiguracją Codexa. Bez nich subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://learn.chatgpt.com/docs/agent-configuration/subagents).
 
 ## Po aktualizacji pluginu
 

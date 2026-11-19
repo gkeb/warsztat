@@ -34,6 +34,8 @@ Jedna sesja = jeden ticket. Pracujemy razem: mówisz, co robisz, i pytasz tylko 
 
 Wczytaj: ticket, odpowiednie fragmenty `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, lekcje z `.ai/lekcje.md` dla zdolności i obszarów ticketu (`../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”), powiązane ADR z katalogu decyzji, mapę obszaru z `.ai/obszary/` (jeśli jest) i kod, którego ticket dotyka. Sprawdź `Rodzaj:` w mapie zdolności. Lekcje zdolności i obszarów czytasz zawsze — to są błędy, których nie wolno powtórzyć. Przed wyborem implementacji przeszukaj też `.ai/proby.md`, a gdy ticket dotyka biblioteki, protokołu, usługi zewnętrznej albo znanego rodzaju problemu — `../../wzorce/INDEKS.md` względem tego pliku. Trafienia przywołaj w planie: przy próbach ich status i warunek powrotu, przy wzorcach — czy Warunki pasują i czy nie zachodzi „Nie dotyczy”.
 
+**Delegowanie czytania.** Gdy kod, którego ticket dotyka, jest duży albo nieznany, możesz oddać jego przeszukanie roli `czytelnik` (poziom `czytanie`, `## Subagenci i modele` w `../../kontrakt/narzedzia.md`): gdzie co jest, konwencje, podobne miejsca, testy obszaru — z odnośnikami. Kilka niezależnych pytań możesz zadać równolegle. Plan, kod ticketu i decyzje zostają u Ciebie; subagenci nie piszą w drzewie roboczym.
+
 ## 4. Start
 
 - Ticket → `w-toku`. Zdolność w `plan` → `budowa` w `ROADMAP.md`. To jedyna zmiana roadmapy, jaką wolno budowie.
@@ -102,7 +104,7 @@ Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 
 ## 7. Walidacja
 
-Uruchom wszystkie komendy z `walidacja` w `.ai/warsztat.json` i poprawiaj, aż przejdą. Jeśli `odniesienie.znane` nie jest puste, „przechodzą” znaczy: brak błędów spoza tej listy. Znany błąd, który przy okazji zniknął, usuń z listy; lista nie może rosnąć. Nie wyłączasz testów, nie osłabiasz typów, nie dodajesz `ignore`, żeby było zielono. Asercji testu akceptacyjnego nie usuwasz ani nie osłabiasz, także przy poprawce uwagi z przeglądu albo weryfikacji. Zmiana wymaga zmiany specu albo zgody człowieka zapisanej w Notatkach ticketu. Jeśli się nie da — zatrzymaj się i opisz problem.
+Uruchom wszystkie komendy z `walidacja` w `.ai/warsztat.json` i poprawiaj, aż przejdą. Przy długim wyniku możesz oddać uruchomienie roli `czytelnik`: zwraca kod wyjścia, porażki z `plik:linia` i pierwszą istotną linią komunikatu oraz ścieżkę pełnego logu. Poprawki robisz sam, a końcowy przebieg, który potwierdza zieloną walidację, sprawdzasz po jego wyniku albo uruchamiasz sam. Jeśli `odniesienie.znane` nie jest puste, „przechodzą” znaczy: brak błędów spoza tej listy. Znany błąd, który przy okazji zniknął, usuń z listy; lista nie może rosnąć. Nie wyłączasz testów, nie osłabiasz typów, nie dodajesz `ignore`, żeby było zielono. Asercji testu akceptacyjnego nie usuwasz ani nie osłabiasz, także przy poprawce uwagi z przeglądu albo weryfikacji. Zmiana wymaga zmiany specu albo zgody człowieka zapisanej w Notatkach ticketu. Jeśli się nie da — zatrzymaj się i opisz problem.
 
 ## 8. Przegląd
 

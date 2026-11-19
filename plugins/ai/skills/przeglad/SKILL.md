@@ -34,7 +34,7 @@ Recenzenci pracują niezależnie od siebie i od Ciebie. Jeśli możesz, uruchom 
 - **Jakość** — rola `recenzent-jakosci`. W Claude Code subagent `recenzent-jakosci`.
 - **Bezpieczeństwo** — rola `recenzent-bezpieczenstwa`. W Claude Code subagent `recenzent-bezpieczenstwa`. Według `.ai/warsztat.json` → `przeglad.bezpieczenstwo`: `zawsze`, `nigdy` albo `auto` (domyślnie, także przy braku klucza). Przy `auto` uruchamiasz go, gdy diff dotyka choć jednej granicy: dane z zewnątrz (żądania, argumenty, pliki, odpowiedzi usług, treść od użytkownika), uwierzytelnianie i uprawnienia, sekrety i konfiguracja bezpieczeństwa, wywołania powłoki, zapytania SQL, ścieżki plików budowane z danych, deserializacja, dane osobowe (P-10), nowe albo podniesione zależności. Powód uruchomienia — które granice — przekaż mu jako fakt i zapisz w raporcie. Żadna granica → nie uruchamiasz i piszesz w raporcie „bezpieczeństwo: bez wrażliwych granic”.
 
-W innym agencie uruchom subagenta z pełną ścieżką do pliku roli. Model wybierz według `## Subagenci i modele` w `../../kontrakt/narzedzia.md` (`modele.<agent>.przeglad` w `.ai/warsztat.json`).
+W innym agencie uruchom subagenta z pełną ścieżką do pliku roli. Model i wysiłek — poziom `recenzja` według `## Subagenci i modele` w `../../kontrakt/narzedzia.md` (`modele.<agent>.recenzja` w `.ai/warsztat.json`).
 
 Każdemu przekaż tylko fakty: komendę diffu, listę ścieżek z kroku 1, numer ticketu i rodzaj zdolności; recenzentowi bezpieczeństwa także powód uruchomienia. Nie przekazuj streszczenia rozmowy ani swojej opinii o zmianach.
 

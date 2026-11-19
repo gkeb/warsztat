@@ -1,0 +1,9 @@
+# Wygenerowane przez skill start warsztatu z .ai/warsztat.json → modele.codex.{{poziom}}.
+# Zmieniaj wartości w warsztat.json i uruchom start ponownie, nie edytuj tego pliku.
+name = "warsztat-{{poziom}}"
+description = "Subagent warsztatu, poziom {{poziom}}. Instrukcje roli w pliku wskazanym w wiadomości."
+model = "{{model}}"
+model_reasoning_effort = "{{wysilek}}"
+developer_instructions = """
+Jesteś subagentem warsztatu. Wiadomość podaje pełną ścieżkę do pliku Twojej roli — przeczytaj go najpierw i trzymaj się go. Wynik zwracasz głównemu agentowi.
+"""

@@ -33,7 +33,7 @@ Pytania zadawaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`. Nie zmi
 
 ## 3. Zawęź
 
-Zmniejszaj przypadek: mniej danych, mniej kroków, izolowany moduł. Jeśli w historii jest wersja, w której działało — `git bisect` z sygnałem z kroku 2.
+Zmniejszaj przypadek: mniej danych, mniej kroków, izolowany moduł. Przeszukanie kodu i historii (gdzie powstaje wartość, kto woła funkcję, które commity dotykały obszaru) i uruchomienia z długim logiem możesz oddać roli `czytelnik` (poziom `czytanie`, `## Subagenci i modele` w `../../kontrakt/narzedzia.md`); hipotezę i poprawkę prowadzisz sam. Jeśli w historii jest wersja, w której działało — `git bisect` z sygnałem z kroku 2.
 
 ## 4. Hipoteza → instrumentacja
 

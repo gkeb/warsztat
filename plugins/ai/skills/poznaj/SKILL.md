@@ -27,7 +27,7 @@ Czytaj w tej kolejności — od najbardziej wiarygodnego:
 4. **Dokumentacja**: README, ARCHITECTURE, dokumenty projektowe, komentarze modułów.
 5. **Historia gita**, wybiórczo: najczęściej zmieniane pliki, duże zmiany, commity i opisy PR-ów (`gh pr view`, jeśli dostępne) przy kluczowych modułach — tam często jest „dlaczego”.
 
-Przy dużym obszarze możesz, jeśli agent na to pozwala, czytać równolegle subagentami (np. kod, dokumentacja, historia) według `## Subagenci i modele`. Każdy zwraca fakty z odnośnikami, a scalasz i sprawdzasz Ty.
+Przy dużym obszarze możesz, jeśli agent na to pozwala, czytać równolegle subagentami roli `czytelnik` (np. kod, dokumentacja, historia) według `## Subagenci i modele`, poziom `czytanie`. Każdy zwraca fakty z odnośnikami, a scalasz i sprawdzasz Ty.
 
 ## 3. Sprawdź dokumenty w kodzie
 

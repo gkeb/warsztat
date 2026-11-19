@@ -27,14 +27,14 @@ Prototyp odpowiada na pytanie — nie dostarcza funkcji. Nie pisze kodu produkcy
 ## 3. Pętla prób
 
 - Katalog roboczy poza repo (katalog tymczasowy agenta albo systemowy). Zapisz go w pliku eksperymentu.
-- Jeśli możesz, uruchom subagenta: w Claude Code `eksperymentator` z tego pluginu, w innym agencie subagent z pełną ścieżką do `eksperymentator.md`. Model według kontraktu (`modele.<agent>.prototyp`). Przekaż tylko fakty: ścieżkę pliku eksperymentu, katalog roboczy, korzeń projektu (do odczytu) i pozostały budżet. W tle tylko wtedy, gdy host pozwala subagentowi w tle uruchamiać komendy bez pytania; inaczej na pierwszym planie.
+- Jeśli możesz, uruchom subagenta: w Claude Code `eksperymentator` z tego pluginu, w innym agencie subagent z pełną ścieżką do `eksperymentator.md`. Model i wysiłek — poziom `badanie` według kontraktu (`modele.<agent>.badanie`). Przekaż tylko fakty: ścieżkę pliku eksperymentu, katalog roboczy, korzeń projektu (do odczytu) i pozostały budżet. W tle tylko wtedy, gdy host pozwala subagentowi w tle uruchamiać komendy bez pytania; inaczej na pierwszym planie.
 - Bez subagenta wykonaj `eksperymentator.md` sam.
 - Eksperymentator kończy przy celu, budżecie albo stagnacji i nie rozszerza zakresu. Prośbę o więcej budżetu albo szerszy zakres przedstaw użytkownikowi jako nową zgodę.
 
 ## 4. Niezależna ocena
 
 - Wybrany wariant oceniasz na przypadkach końcowych, niewykorzystanych do doboru wariantu (procedura, „Oceń wynik i przekaż”).
-- Jeśli możesz, uruchom subagenta `oceniajacy` (albo subagenta z pełną ścieżką do `oceniajacy.md`) ze świeżym kontekstem: surowe wyniki przypadków końcowych, kryteria z planu i minimum kontekstu — bez hipotezy i oczekiwanej odpowiedzi. Model według `modele.<agent>.prototyp`.
+- Jeśli możesz, uruchom subagenta `oceniajacy` (albo subagenta z pełną ścieżką do `oceniajacy.md`) ze świeżym kontekstem: surowe wyniki przypadków końcowych, kryteria z planu i minimum kontekstu — bez hipotezy i oczekiwanej odpowiedzi. Model i wysiłek — poziom `recenzja` (`modele.<agent>.recenzja`).
 - Bez subagenta albo bez świeżego kontekstu oceń sam i zapisz w wyniku, że ocena nie była niezależna.
 - Sprawdź ustalenia oceniającego w danych, zanim je przyjmiesz. Ustal status: `rozstrzygniety`, `nierozstrzygniety` albo `przerwany`.
 

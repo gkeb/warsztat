@@ -29,7 +29,7 @@ Jesteś **weryfikatorem, nie budującym**. Oceniasz i zapisujesz uwagi. Nie popr
 - Usunięte asercje: uruchom `../../scripts/usuniete-asercje.mjs` (ścieżka względem tego `SKILL.md`, `node` z korzeniem projektu i zakresem hashy zdolności jako osobnymi argumentami). Zaklasyfikuj każdą pozycję jak w skillu `przeglad`. Asercja testu akceptacyjnego osłabiona bez zmiany specu albo zgody człowieka w tickecie to uwaga blokująca, także gdy przegląd ticketu jej nie zgłosił. Listy pozycji, po których iterują asercje (wykazy, przypadki), porównaj ze specem.
 - `mutacje` ustawione → uruchom testy mutacyjne według „Weryfikacja — dowiezienie” w `../../kontrakt/praca.md`, tylko na plikach produkcyjnych z zakresu, w limicie czasu. Przekroczony limit albo błąd narzędzia → zapisz w raporcie „testy mutacyjne niewykonane” z powodem; to nie jest uwaga. Wyniki narzędzia to pliki robocze: przeżyte mutanty przepisz do uwag, a pliki usuń przed końcem weryfikacji według „Sprzątanie — procesy i pliki tymczasowe” w `../../kontrakt/sprzatanie.md` — z listy `sprzatanie.smieci` bez pytania, spoza niej po pytaniu. Plik z diffem dla `{diff}` zapisujesz poza repo i też usuwasz.
 
-Przy dużym zakresie możesz rozdzielić czytanie na subagentów według `## Subagenci i modele` — ocenę i zapis robisz sam.
+Przy dużym zakresie możesz rozdzielić czytanie i uruchomienie testów na subagentów roli `czytelnik` według `## Subagenci i modele` (poziom `czytanie`) — ocenę i zapis robisz sam.
 
 ## 3. Co sprawdzasz
 

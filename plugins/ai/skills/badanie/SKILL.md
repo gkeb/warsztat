@@ -21,7 +21,7 @@ Badanie nie pisze kodu produkcyjnego i nie podejmuje decyzji. Dostarcza fakty, a
 ## 2. Zleć badanie
 
 - Plik wyniku: `.ai/badania/RRRR-MM-DD-slug.md`.
-- Jeśli możesz, uruchom subagenta **w tle**: w Claude Code `badacz` z tego pluginu, w innym agencie subagent z pełną ścieżką do `badacz.md`. Model wybierz według kontraktu (`modele.<agent>.badanie`). Przekaż: pytanie, kontekst z kroku 1 i ścieżkę pliku wyniku.
+- Jeśli możesz, uruchom subagenta **w tle**: w Claude Code `badacz` z tego pluginu, w innym agencie subagent z pełną ścieżką do `badacz.md`. Model i wysiłek — poziom `badanie` według kontraktu (`modele.<agent>.badanie`). Przekaż: pytanie, kontekst z kroku 1 i ścieżkę pliku wyniku.
 - Bez subagenta wykonaj `badacz.md` sam.
 - W tle użytkownik może rozmawiać dalej, np. w `pomysl`. Gdy wynik przyjdzie, wróć do kroku 3.
 
