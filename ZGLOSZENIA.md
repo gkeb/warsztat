@@ -25,3 +25,10 @@ Statusy: `nowe` (zapisane, nieocenione) · `przyjete` (wiadomo, co zmienić, cze
 - Wystąpienia: 2026-11-19 (przy wdrożeniu Z06, warsztat 0.20.0)
 - Problem: poziom `recenzja` w Claude to `sonnet`. W testach Bito Haiku 5.5 (67.4%, $0.69 za sesję) nie ustępuje Sonnetowi 5.5 (65.7%, $1.28), ale bez osobnych wyników recenzji kodu ([Bito](https://bito.ai/blog/gpt-6-2-sol-astra-vs-claude-opus-fable-gpt-6-1-sol/), 2026-11-18, 4 przebiegi, sprzedawca narzędzi).
 - Propozycja: eksperyment według `procedury/eksperyment.md` („Eksperyment nad warsztatem”) — ten sam diff z prawdziwego projektu przez `przeglad` na Haiku i na Sonnecie, porównanie potwierdzonych uwag i kosztu. Wynik zmienia domyślne `modele.claude.recenzja` i `model` w definicjach recenzentów.
+
+## Z08 — Numery scenariuszy kolidują między zdolnościami w jednym pliku testów
+
+- Status: do-dyskusji
+- Wystąpienia: 2026-11-19 tenta (weryfikacja `rejestr-projektow` R1.5: `grep S20` w jednym pliku testów zwraca scenariusz szkieletu i scenariusz rejestru)
+- Problem: „Ślad w nazwie” (`kontrakt/praca.md`, „Test — podwójna pętla”) zakłada, że `grep Sx` znajduje test scenariusza. Numery są unikalne tylko w specu jednej zdolności, więc gdy kolejne zdolności dopisują testy akceptacyjne do tego samego pliku, ślad wskazuje kilka różnych scenariuszy, a `weryfikuj` musi rozróżniać je ręcznie.
+- Propozycja: rozstrzygnąć konwencję w `kontrakt/praca.md` → „Ślad w nazwie” i w `skills/weryfikuj/SKILL.md` (wyszukiwanie po numerze): (a) prefiks slugu zdolności w nazwie testu (`it("rejestr-projektow S3: …")`, `grep "rejestr-projektow S3"`), albo (b) osobny plik testów akceptacyjnych na zdolność. Istniejących testów nie przemianowywać hurtem — jak przy starszych specach, przy najbliższej zmianie.
