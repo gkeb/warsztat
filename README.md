@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.19.2` rekomendowane wersje środowiska i zależności agent sprawdza w źródle (harmonogram wydań, rejestr pakietów), nie z pamięci, a recenzent jakości sprawdza, czy atrapy testowe na granicy odróżniają poprawną implementację od błędnej.
+
 Od wersji `0.19.1` granice między skillami są jawne w ich opisach: `pomysl` dotyczy określonej już zdolności lub zmiany, a `przemysl` luźnej myśli bez celu; `poznaj` bada to repozytorium, a `badanie` zewnętrzne fakty. `napraw` wymaga jawnego uruchomienia, bo może zmieniać kod i commitować. Procedury trybów `pomysl` są wczytywane z osobnych plików według argumentu.
 
 Od wersji `0.17.0` warsztat rozwija cztery mechanizmy we wspólnym kontrakcie i dotychczasowych skillach:
