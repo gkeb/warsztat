@@ -15,6 +15,9 @@ Plugin, który obsługuje marketing stron i produktów budowanych warsztatem: SE
 ## Realne przypadki
 
 1. **Domy na wynajem — redesign.** Migracja z WordPressa na Astro. Potrzeba na już: spis istniejących treści, zachowanie pozycji w wyszukiwarce (mapa starych adresów na nowe, przekierowania, meta), przeniesienie i poprawa tekstów.
+   - 5 identycznych domków w Międzyzdrojach — jedna oferta, nie katalog. Wyróżnik (hipoteza): spokój i relaks zamiast dużych obiektów. Konkurencja: hotele i inne obiekty w okolicy — do zbadania.
+   - **Biznes lokalny:** widoczność to nie tylko strona — wizytówka w mapach, opinie, portale rezerwacyjne. Portale są jednocześnie kanałem i konkurencją dla rezerwacji bezpośrednich.
+   - **Lokalizacja, nie tłumaczenie:** wielu gości z Niemiec. Niemiecki gość szuka innymi słowami (np. „Misdroy”), ma inne oczekiwania i pytania — treść i słowa kluczowe osobno na język.
 2. **Strona fotografa — od zera.** Całość w Astro. Treść tworzona od podstaw: teksty, zdjęcia, głos marki, wpisy.
 
 Pierwsze komendy mają wynikać z tych dwóch przypadków.
@@ -74,5 +77,7 @@ Inne nazwy niż w warsztacie (bez drugiego `badanie` czy `pomysl`). Każdy opis 
 - **Migracja z WordPressa:** kto robi spis treści i mapę adresów — marketing (treść, priorytety SEO) czy warsztat (eksport, przekierowania), i jak dzielą pracę.
 - **Social:** które platformy i czy plugin przygotowuje tylko tekst, czy także format (długość, grafika, hashtagi).
 - **Przepisy:** RODO przy formularzach i mailingu, oznaczanie treści reklamowych. `[badanie]`.
+- **Poza obiema rodzinami:** cennik i warunki najmu jako decyzja biznesowa, umowy, obsługa rezerwacji — potwierdzić.
+- **Domy na wynajem:** kim są dzisiejsi goście i skąd rezerwują? Wersja DE w pierwszym wydaniu nowej strony czy później? Gdzie leży projekt Astro i czy ma `.ai/` warsztatu?
 - **Stan ponad projektem:** czy głos marki albo wspólne zasady SEO mają kiedyś żyć poza repo pojedynczej strony. Na razie: wszystko w repo projektu.
 - **Pierwsze 2–3 komendy:** wynikają z przypadków — kandydaci: start marketingu w projekcie, spis treści i plan SEO przy migracji, pisanie treści z niezależną oceną względem pozycjonowania i person.
