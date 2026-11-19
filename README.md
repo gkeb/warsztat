@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.21.0` scenariusz rozłożony na kilka ticketów odkłada tylko wiersze tabeli i warianty wejścia — niezmienniki, zasady twarde i komendy z podpowiedzi mają test od pierwszego ticketu, który ich dotyka; log z porażką agent usuwa dopiero po odczytaniu błędu.
+
 Od wersji `0.20.0` subagenci dostają model i wysiłek według poziomu pracy (`czytanie`, `recenzja`, `badanie`), a nowa rola `czytelnik` na tańszym modelu przejmuje czytanie kodu i streszczanie testów w `buduj`, `napraw`, `poznaj` i `weryfikuj`. Stary format `modele` (per skill) `start` przenosi przy aktualizacji.
 
 Od wersji `0.19.2` rekomendowane wersje środowiska i zależności agent sprawdza w źródle (harmonogram wydań, rejestr pakietów), nie z pamięci, a recenzent jakości sprawdza, czy atrapy testowe na granicy odróżniają poprawną implementację od błędnej.
