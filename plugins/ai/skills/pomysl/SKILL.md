@@ -37,7 +37,7 @@ W zwykłym grillu przy ustalaniu języka i rodzaju zdolności czytaj odpowiednie
   - albo odłożyć tamtą zdolność do Dalej i zająć się tą.
 - Nowa zdolność w Teraz: zaproponuj slug, utwórz `zdolnosci/<slug>/mapa.md` z szablonu, dopisz linię w Teraz ze statusem `grill`. W linii `Grill:` wpisz siebie: `<narzędzie> / <model>` (modelu nie zgadujesz — nieznany zapisz jako `nieznany`). Kolejne sesje grilla dopisują brakujące pary po przecinku.
 - Pierwsza rzecz w nowej zdolności: `## Problem` — 1–3 zdania, co boli i kogo, bez rozwiązania. Od niego zaczyna druga opinia, więc ma być samodzielny.
-- **Rodzaj** (linia `Rodzaj:` w mapie): `funkcja`, gdy powstaje nowe zachowanie; `refaktor`, gdy zmienia się struktura, a zachowanie ma zostać takie samo; `wyglad`, gdy chodzi głównie o doświadczenie, wygląd albo treść (nowa strona, przeprojektowanie, przepływ). Jeśli to niejasne, zapytaj. Zmiana zachowania „przy okazji” refaktoryzacji to osobna zdolność.
+- **Rodzaj** (linia `Rodzaj:` w mapie): `funkcja`, gdy powstaje nowe zachowanie; `refaktor`, gdy zmienia się struktura, a zachowanie ma zostać takie samo; `wyglad`, gdy chodzi głównie o doświadczenie, wygląd albo treść (nowa strona, przeprojektowanie, przepływ); `szkielet`, gdy to pierwsza działająca ścieżka w pustym projekcie (zwykle zakłada ją `pomysl produkt`). Znaczenie etapów dla każdego rodzaju: „Rodzaje zdolności” w `kontrakt/praca.md`. Jeśli to niejasne, zapytaj. Zmiana zachowania „przy okazji” refaktoryzacji to osobna zdolność.
 - Zdolność dotyka obszaru kodu bez mapy w `.ai/obszary/` → zaproponuj najpierw skill `poznaj <obszar>`. Grill na nieznanym kodzie kończy się zgadywaniem.
 
 ## 2. Przesłuchanie

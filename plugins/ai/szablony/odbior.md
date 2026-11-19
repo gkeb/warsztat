@@ -7,6 +7,7 @@
 ## Przeklikaj
 
 <!-- Scenariusze specu przez prawdziwy interfejs, jak użytkownik — nie przez test.
+Każdy krok to pełna komenda do skopiowania, z przedrostkiem uruchomienia (np. `node dist/cli.js daemon start`, nie „→ `daemon start`”) — człowiek wpisze dokładnie to, co widzi.
 - [ ] S2: <co zrobić> → <czego się spodziewać>
 -->
 
