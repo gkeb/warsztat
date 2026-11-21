@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.23.0` plan czyta świeży kontekst bez rozmowy, w której powstał: `recenzent-planu` przed akceptacją specu (parafraza, pojęcia spoza słownika, twierdzenia o kodzie sprawdzone w kodzie) i przed uzgodnieniem ticketów (zero decyzji projektowych zostawionych budującemu). Gdy budowa, przegląd albo weryfikacja rozjadą się z planem, `architekt` ocenia, czy myli się kod, czy plan, a rozstrzyga człowiek. Druga opinia dostała szerszą krytykę (czy to musi powstać, założenia bez dowodu, fałszywe kompromisy), uwagę recenzenta odpiera się tylko sprawdzalnym śladem, a przy decyzjach zależnych od priorytetu użytkownika agent nie rekomenduje, tylko nazywa priorytet, który rozstrzyga. Pomysł zaczerpnięty z [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model).
+
 Od wersji `0.22.0` agent wybiera rozwiązanie drabinką (czy to musi powstać → co już jest w projekcie → biblioteka standardowa → zainstalowana zależność → minimum własnego kodu), przed edycją wypisuje zasięg zmiany, zatrzymuje się po dwóch nieudanych poprawkach tego samego błędu, fakty o uruchamianiu narzędzi zapisuje w `AGENTS.md` zamiast w lekcjach, a raport po zmianie kodu kończy linią `Pominięte i ryzyko:`.
 
 Od wersji `0.21.0` scenariusz rozłożony na kilka ticketów odkłada tylko wiersze tabeli i warianty wejścia — niezmienniki, zasady twarde i komendy z podpowiedzi mają test od pierwszego ticketu, który ich dotyka; log z porażką agent usuwa dopiero po odczytaniu błędu.
@@ -419,6 +421,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `weryfikacja.wymagana` | czy etap wymaga weryfikacji krzyżowej przed zamknięciem (domyślnie `true`) |
 | `weryfikacja.innyModel` | czy weryfikacja i druga opinia muszą pochodzić od innego modelu niż autor (domyślnie `true`) |
 | `weryfikacja.drugaOpinia` | `zalecana` (domyślnie), `wymagana` albo `wylaczona` |
+| `weryfikacja.recenzjaPlanu` | czy `spec` i `pokroj` uruchamiają przed bramką świeżego recenzenta planu (domyślnie `true`, także przy braku klucza) |
 | `weryfikacja.odbior` | czy `zamknij` wymaga odbioru przez człowieka według listy w `odbior.md` (domyślnie `true`) |
 | `przeglad.bezpieczenstwo` | `auto` (domyślnie — recenzent bezpieczeństwa, gdy diff dotyka wrażliwych granic), `zawsze` albo `nigdy` |
 | `mutacje` | testy mutacyjne w `weryfikuj` (decyzja P-24): `null` albo `{ "komenda": "…", "limitMinut": 15 }`; zakres przez `{pliki}`, `{diff}` albo konfigurację narzędzia |
@@ -447,7 +450,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | Poziom | Role | Claude | Codex |
 | --- | --- | --- | --- |
 | `czytanie` | `czytelnik` | `haiku`, effort `medium` | `gpt-6.1-terra`, `medium` |
-| `recenzja` | recenzenci, `oceniajacy` | `sonnet` | `gpt-6.2-sol`, `medium` |
+| `recenzja` | recenzenci, `recenzent-planu`, `architekt`, `oceniajacy` | `sonnet` | `gpt-6.2-sol`, `medium` |
 | `badanie` | `badacz`, `eksperymentator` | `sonnet` | `gpt-6.2-sol`, `medium` |
 
 Pisanie kodu i decyzje zostają w głównym modelu. W Claude Code plugin ma gotowych subagentów z tymi wartościami; `effort` w definicji agenta działa od Claude Code 2.1.293 (Haiku 5.5). W Codexie model i wysiłek niosą definicje `.codex/agents/warsztat-<poziom>.toml`, które `start` generuje z `warsztat.json` — sam JSON nie jest konfiguracją Codexa. Bez nich subagent dziedziczy model rodzica. Bez subagentów skill wykonuje role sam i oznacza przegląd jako nieniezależny. Zobacz [dokumentację subagentów Codexa](https://learn.chatgpt.com/docs/agent-configuration/subagents).
@@ -470,12 +473,12 @@ plugins/ai/
   KONTRAKT.md                         # wspólny rdzeń i indeks działów, czytany raz na sesję
   kontrakt/*.md                       # szczegóły czytane według skilla, trybu i operacji
   procedury/eksperyment.md             # wspólna procedura czytana przy mierzalnym eksperymencie
+  procedury/czytelnik.md, recenzent-planu.md, architekt.md  # role wspólne dla kilku skilli
   skills/<nazwa>/SKILL.md             # osiemnaście wspólnych workflowów
   skills/<nazwa>/agents/openai.yaml   # polityka jawnego wywołania w Codexie
   skills/przeglad/recenzent-*.md      # instrukcje ról recenzentów (wspólne dla obu agentów)
   skills/badanie/badacz.md            # instrukcje roli badacza
-  skills/prototyp/*.md                # instrukcje ról eksperymentatora i oceniającego eksperyment
-  agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
+  skills/prototyp/*.md                # instrukcje ról eksperymentatora i oceniającego eksperyment  agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
   szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
   profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, html, strona (rozwija retro)

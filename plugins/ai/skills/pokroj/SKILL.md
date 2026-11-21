@@ -39,13 +39,19 @@ Wczytaj `spec.md`, `mapa.md` i kod w obszarach, których zdolność dotyka.
 
 **Szkielet** — pierwszy ticket to stos + jedna ścieżka + infrastruktura testów (także testów akceptacyjnych z profilu: np. Playwright dla strony, uruchamianie polecenia dla CLI) + walidacja w `.ai/warsztat.json`, w tym automaty dla twardych zasad z `.ai/ZASADY.md` (np. kontrola kierunku zależności) i aktualizacja ich pola `Egzekwowanie`. Kolejne (lint, CI) tylko jeśli spec ich wymaga.
 
-## 3. Uzgodnij przed zapisaniem
+## 3. Szkic i recenzja planu
 
-Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności. Pod nią — pokrycie: każdy scenariusz specu i ticket, który go kończy; scenariusz bez ticketu to błąd krojenia. Zapytaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`, czy kolejność i cięcie pasują. Jeśli lista pokrywa spec i tickety mieszczą się w jednej sesji, rekomenduj „Tak” jako pierwszą opcję. Popraw według uwag.
+Zapisz szkice ticketów w `tickety/NN-slug.md` z szablonu, status `do-zrobienia` — tylko pliki ticketów; mapy, roadmapy i trackera jeszcze nie ruszasz. Szkic to jeszcze nie plan: do akceptacji możesz go zmieniać i usuwać bez śladu.
 
-## 4. Zapisz
+Przy `weryfikacja.recenzjaPlanu` różnym od `false` (domyślnie, także przy braku klucza) uruchom rolę `recenzent-planu` w trybie `tickety`. W Claude Code to subagent `recenzent-planu` z tego pluginu; w innym agencie subagent poziomu `recenzja` z pełną ścieżką do `../../procedury/recenzent-planu.md` (względem tego pliku). Przekaż tylko ścieżki: szkice ticketów, `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, ADR-y linkowane w specu, mapy obszarów i katalogi kodu — bez `mapa.md` i streszczenia rozmowy. Uwagi rozstrzygnij według „Rozstrzyganie uwag” w `../../kontrakt/narzedzia.md` i popraw szkice. Uwaga, której nie da się usunąć bez decyzji projektowej spoza specu, oznacza lukę specu: zatrzymaj się i zaproponuj „Zmianę zaakceptowanego specu” w skillu `spec`, zamiast wpisywać decyzję do ticketu. Bez subagentów — zasady z „Recenzja planu — świeży czytelnik” w `../../kontrakt/praca.md`.
 
-- `tickety/NN-slug.md` z szablonu, status `do-zrobienia`.
+## 4. Uzgodnij przed zapisaniem
+
+Pokaż listę: numer, tytuł, scenariusze, co widać po zrobieniu, zależności. Pod nią — pokrycie: każdy scenariusz specu i ticket, który go kończy; scenariusz bez ticketu to błąd krojenia. Dalej wynik recenzji planu: uwagi naniesione, odparte (jedno zdanie dlaczego) i otwarte. Zapytaj zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`, czy kolejność i cięcie pasują. Jeśli lista pokrywa spec, tickety mieszczą się w jednej sesji i recenzja planu nie zostawiła otwartej uwagi blokującej, rekomenduj „Tak” jako pierwszą opcję. Popraw szkice według uwag. Rezygnacja z krojenia → usuń szkice.
+
+## 5. Zapisz
+
+- Szkice z kroku 3 w uzgodnionej postaci zostają jako tickety; odparte uwagi recenzji planu zapisz w mapie (`RRRR-MM-DD — podtrzymane po recenzji planu: …`).
 - `mapa.md` → `## Plasterki`: lista linków w kolejności, z zależnościami, bez statusów.
 - `mapa.md` → `## Następny krok`: `skill buduj <slug>` → ticket 01.
 - `ROADMAP.md`: status `plan`.

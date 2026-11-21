@@ -72,6 +72,8 @@ Wynik rundy:
 
 Pokaż użytkownikowi podsumowanie: wynik, liczba uwag według wagi, najważniejsze trzy.
 
+**Rozjazd z planem.** Uwaga blokująca, której przyczyna może leżeć w specu, tickecie albo ADR (scenariusz niejednoznaczny, plan zakłada coś, czego kod nie może spełnić, kod świadomie odszedł od decyzji), zanim stanie się ticketem → rola `architekt` („Rozjazd z planem — architekt” w `../../kontrakt/praca.md`; w Claude Code subagent `architekt`, w innym agencie subagent poziomu `recenzja` z pełną ścieżką do `../../procedury/architekt.md`). Jego diagnozę dopisz pod uwagą w `weryfikacja.md`. Diagnoza `plan błędny`, `plan niepełny` albo `plan niejednoznaczny` → zamiast ticketu naprawczego zaproponuj „Zmianę zaakceptowanego specu” w skillu `spec` albo skill `decyzja`; decyduje użytkownik.
+
 - **Przeszła (cała zdolność)** → status zostaje `weryfikacja`, `mapa.md` → Następny krok: `skill zamknij <slug>`. Uwagi `warto` i `drobna` — zapytaj, które zamienić w tickety, a które zostawić.
 - **Nie przeszła (cała zdolność)** → zaproponuj tickety z uwag blokujących (jeden ticket może objąć kilka powiązanych uwag). Po zgodzie: tickety z szablonu, tytuł „Po weryfikacji R<runda>: …”, w Notatkach numery uwag; status zdolności → `budowa`; Następny krok: `skill buduj <slug>`. Po poprawkach i ukończeniu ticketów ponownie uruchom `skill weryfikuj <slug>` zgodnie z `weryfikacja.innyModel` (domyślnie w innym modelu).
 - **Uwaga sporna** — budujący albo użytkownik się z nią nie zgadza → rozstrzyga użytkownik. Odrzucona dostaje status `odrzucona` i jedno zdanie uzasadnienia.

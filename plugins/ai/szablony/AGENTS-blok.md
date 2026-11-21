@@ -31,6 +31,7 @@ Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do 
 | Ten sam problem wraca, lekcji przybywa | skill `retro` — lekcja → mechanizm |
 | Koniec sesji, przerwa, przed czyszczeniem kontekstu | skill `przekaz` |
 | Weryfikacja przeszła albo rezygnujemy | skill `zamknij` |
+| Kod rozjeżdża się ze specem albo ADR, przegląd zgłasza sprzeczność z planem | rola `architekt` (świeży kontekst) — czy myli się kod, czy plan; plan zmienia tylko człowiek przez skill `spec` albo `decyzja` |
 | Nowa strona, przeprojektowanie, przepływ, „żeby lepiej wyglądało” | skill `pomysl` z rodzajem `wyglad` — doświadczenie, stany, akceptacja na zrzutach |
 | Decyzja zależna od klasy aplikacji (kody wyjścia, SEO, hosting, wersjonowanie) | `.ai/profil.md` i profile warsztatu (ścieżkę podaje hook) — rozstrzygnięte czy otwarte |
 | Wydanie, publikacja, wdrożenie, „wypuść to” | skill `wydaj` — uruchamia go tylko człowiek; nigdy nie publikujesz ani nie wdrażasz sam |

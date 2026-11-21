@@ -40,6 +40,7 @@
     "wymagana": true,
     "innyModel": true,
     "drugaOpinia": "zalecana",
+    "recenzjaPlanu": true,
     "odbior": true
   },
   "wydanie": {

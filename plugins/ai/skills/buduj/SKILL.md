@@ -97,7 +97,7 @@ Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 - pojawia się twarda decyzja → skill `decyzja`;
 - ticket da się zrobić tylko łamiąc zasadę twardą z `.ai/ZASADY.md` → stop: wyjątek wpisany w zasadzie (za zgodą) albo zmiana zasady przez skill `decyzja`. Nigdy po cichu;
 - ticket nie zmieści się w tej sesji → skill `przekaz`, potem skill `pokroj <slug>#NN`;
-- kod przeczy specowi albo ADR → powiedz to wprost i zapytaj;
+- kod przeczy specowi albo ADR, albo scenariusz okazał się niejednoznaczny → powiedz to wprost i uruchom rolę `architekt` („Rozjazd z planem — architekt” w `../../kontrakt/praca.md`; w Claude Code subagent `architekt`, w innym agencie subagent poziomu `recenzja` z pełną ścieżką do `../../procedury/architekt.md`). Pokaż użytkownikowi jego diagnozę i propozycję i zapytaj, którą drogą idziemy. Sam nie zmieniasz specu ani ADR;
 - wybrane podejście nie działa i przechodzisz na inne → najpierw wpis w `.ai/proby.md` (`nie-dziala` z dowodem albo `odlozone`), potem zmiana kursu; ten sam błąd po dwóch kolejnych poprawkach to sygnał do zatrzymania („Pętla porażek” w `../../KONTRAKT.md`);
 - kod zależy od tego, jak działa biblioteka, API albo usługa, a nie jesteś pewien zachowania w używanej wersji → sprawdź w źródle (dokumentacja tej wersji, kod w `node_modules` / `site-packages`), nie z pamięci; pytanie, które wymaga więcej niż kilku minut → skill `badanie`.
 
@@ -109,7 +109,7 @@ Uruchom wszystkie komendy z `walidacja` w `.ai/warsztat.json` i poprawiaj, aż p
 
 ## 8. Przegląd
 
-Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące poprawiasz i ponownie uruchamiasz walidację. Uwaga oznaczona `[założenie]` po poprawce staje się lekcją. Pozostałe pokazujesz użytkownikowi; poprawiasz te, które wybierze. Przy trywialnym diffie (kilka linii, bez logiki) możesz przejrzeć zmiany sam — napisz to w raporcie.
+Uruchom skill `przeglad` dla bieżących zmian tego ticketu. Uwagi blokujące poprawiasz i ponownie uruchamiasz walidację. Uwaga blokująca o sprzeczności ze specem, ADR albo zakresem, z którą się nie zgadzasz, nie jest do odparcia ani do cichego obejścia — to rozjazd z planem: rola `architekt` jak w kroku 6, decyzja użytkownika. Uwaga oznaczona `[założenie]` po poprawce staje się lekcją. Pozostałe pokazujesz użytkownikowi; poprawiasz te, które wybierze. Przy trywialnym diffie (kilka linii, bez logiki) możesz przejrzeć zmiany sam — napisz to w raporcie.
 
 ## 9. Zamknięcie ticketu
 

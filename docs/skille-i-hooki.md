@@ -110,7 +110,7 @@ Siedem bramek uruchamia tylko człowiek. Są zamknięte po obu stronach.
 
 Pozostałe dziesięć (`pomysl`, `napraw`, `gdzie`, `poznaj`, `decyzja`, `badanie`, `przeglad`, `przekaz`, `przemysl`, `retro`) model może zaproponować albo uruchomić sam. Tak opisuje to README.
 
-Subagenci są rozdzieleni tak, jak każe sekcja „Subagenci i modele” w kontrakcie. Claude Code dostaje definicje w `plugins/ai/agents/`: `badacz`, `recenzent-zgodnosci`, `recenzent-jakosci`, z modelem `sonnet`. Codex nie ładuje tego katalogu. Skill przekazuje mu ścieżkę do wspólnego pliku roli obok `SKILL.md`.
+Subagenci są rozdzieleni tak, jak każe sekcja „Subagenci i modele” w kontrakcie. Claude Code dostaje definicje w `plugins/ai/agents/`, m.in. `badacz`, recenzenci przeglądu, `recenzent-planu` i `architekt`, z modelem `sonnet`, oraz `czytelnik` na `haiku`. Codex nie ładuje tego katalogu. Skill przekazuje mu ścieżkę do wspólnego pliku roli obok `SKILL.md`.
 
 Badacz ma dostęp do czytania, wyszukiwania, zapisu i źródeł internetowych oraz `background: true`. Recenzenci mają `Read`, `Grep`, `Glob`, `Bash`; użycie powłoki dozwolone jest instrukcją wyłącznie dla odczytów. Wybór modelu może pochodzić z `modele.<agent>.<skill>` w `.ai/warsztat.json`, jeśli host udostępnia taki parametr. Sam ten plik nie konfiguruje runtime'u Codexa. Bez delegowania agent wykonuje role kolejno i oznacza brak niezależności.
 

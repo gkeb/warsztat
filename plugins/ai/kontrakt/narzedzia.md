@@ -22,16 +22,23 @@ Skille `przeglad`, `badanie` i `prototyp` oddają część pracy subagentom, czy
   | Poziom | Role | Domyślnie Claude | Domyślnie Codex |
   | --- | --- | --- | --- |
   | `czytanie` | `czytelnik` — eksploracja kodu, dokumentacji i historii, uruchomienie testów i walidacji, streszczenie porażek | `haiku`, effort `medium` | `gpt-6.1-terra`, `medium` |
-  | `recenzja` | `recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `oceniajacy` | `sonnet` | `gpt-6.2-sol`, `medium` |
+  | `recenzja` | `recenzent-zgodnosci`, `recenzent-jakosci`, `recenzent-bezpieczenstwa`, `recenzent-planu`, `architekt`, `oceniajacy` | `sonnet` | `gpt-6.2-sol`, `medium` |
   | `badanie` | `badacz`, `eksperymentator` | `sonnet` | `gpt-6.2-sol`, `medium` |
 
   Źródło wartości: `.ai/warsztat.json` → `modele.<agent>.<poziom>` = `{ "model": …, "wysilek": … }`; `null` = domyślny modelu albo definicji. Uzasadnienie wyboru: zgłoszenie Z06 i badania w `docs/badania/` repozytorium warsztatu.
-- **Jedno źródło instrukcji.** Instrukcje każdej roli leżą w pliku obok skilla (np. `skills/przeglad/recenzent-zgodnosci.md`); rola wspólna dla kilku skilli (`czytelnik`) — w `procedury/`. Obowiązują w każdym agencie.
+- **Jedno źródło instrukcji.** Instrukcje każdej roli leżą w pliku obok skilla (np. `skills/przeglad/recenzent-zgodnosci.md`); rola wspólna dla kilku skilli (`czytelnik`, `recenzent-planu`, `architekt`) — w `procedury/`. Obowiązują w każdym agencie.
 - **Claude Code.** Plugin ma gotowe definicje subagentów w `agents/` z modelem i effortem domyślnymi dla poziomu i narzędziami dobranymi do roli. Uruchamiasz je po nazwie i przekazujesz `model` oraz `effort` z `modele.claude.<poziom>`, jeśli narzędzie delegowania je przyjmuje. Subagent na innym modelu niż rodzic nie dziedziczy effortu sesji — bez wartości przy wywołaniu obowiązuje pole `effort` z definicji.
 - **Codex.** Definicje w `plugins/ai/agents/` są dla Claude Code; przenośny manifest pluginu nie deklaruje agentów. Model i wysiłek niosą projektowe definicje `.codex/agents/warsztat-<poziom>.toml` (`model`, `model_reasoning_effort`), które `start` generuje z `modele.codex` — mają pierwszeństwo przed dziedziczeniem z rodzica. Uruchamiasz subagenta z `agent_type` = `warsztat-<poziom>`, a w wiadomości podajesz pełną ścieżkę do pliku roli i fakty. Gdy schemat narzędzia pokazuje `model` i `reasoning_effort`, podaj je też przy wywołaniu, razem z `fork_turns: "none"`. `.ai/warsztat.json` nie jest konfiguracją Codexa — po zmianie `modele.codex` uruchom `start`, żeby odświeżył definicje.
 - **Model faktycznie użyty.** Bez definicji poziomu i bez pola modelu przy wywołaniu subagent dziedziczy model rodzica. Nie raportuj użycia tańszego modelu, jeśli nie został faktycznie wybrany.
 - **Tylko fakty na wejściu.** Subagentowi przekazujesz ścieżki i zakres (komendę diffu, ticket, spec, pytanie), nie streszczenie rozmowy. Jego wartością jest niezależność.
 - **Świeży kontekst.** Jeśli narzędzie delegowania domyślnie dziedziczy rozmowę, wyłącz to przy uruchomieniu recenzenta lub oceniającego eksperyment (np. `fork_turns: "none"`, gdy taki parametr jest dostępny). Samo pominięcie streszczenia nie usuwa odziedziczonej historii. Gdy host nie pozwala zapewnić świeżego kontekstu, zaznacz brak niezależności; oszczędność cache nie zmienia tej oceny.
 - **Subagent, który zapisuje.** Tylko `eksperymentator` uruchamia komendy i zapisuje pliki: plik eksperymentu i katalog roboczy poza repo, nic więcej. W tle uruchamiasz go tylko wtedy, gdy host pozwala subagentowi w tle wykonywać komendy bez pytań o uprawnienia.
-- **Bez subagentów.** Wykonaj instrukcje ról sam, po kolei, i napisz w raporcie, że przegląd nie był niezależny.
-- **Weryfikacja.** Ustalenia subagenta sprawdzasz w kodzie lub w źródle, zanim je przekażesz użytkownikowi. Fałszywe alarmy odrzucasz.
+- **Bez subagentów.** Wykonaj instrukcje ról sam, po kolei, i napisz w raporcie, że przegląd nie był niezależny. Wyjątek: `recenzent-planu` i `architekt` — ich wartością jest nieznajomość rozmowy, więc zamiast nich polecenie do nowej sesji albo świadome pominięcie (`kontrakt/praca.md`, „Recenzja planu” i „Rozjazd z planem”).
+- **Recenzent, który nie zadziałał, to nie zero uwag.** Raport podaje każdą rolę jako `wykonana` albo `nie uruchomiona` (z powodem). Rolę, która zwróciła błąd albo pusty wynik bez słowa „bez uwag”, uruchamiasz ponownie raz; dalej nie działa → raport mówi to wprost i przegląd nie jest pełny.
+- **Rozstrzyganie uwag.** Ustalenia subagenta sprawdzasz w kodzie lub w źródle, zanim je przekażesz użytkownikowi. Każda uwaga dostaje jedną decyzję:
+  - `przyjęta` — poprawiasz albo proponujesz poprawkę;
+  - `odparta` — tylko ze sprawdzalnym śladem: `plik:linia`, test, ADR, zasada albo fragment dokumentu, który recenzent przeoczył. „Moim zdaniem jest dobrze” nie jest odparciem;
+  - `do człowieka` — uwaga przeczy wiedzy, której nie ma w żadnym pliku dostępnym recenzentowi (ustalenie z rozmowy, priorytet użytkownika); takie fakty po rozstrzygnięciu trafiają do dokumentu, żeby następny czytelnik ich nie potrzebował;
+  - `pominięta` — tylko uwagi drobne.
+
+  Wagi uwagi nie zmieniasz sam — obniżenie to decyzja człowieka. Uwagi o niezrozumiałym tekście (brak parafrazy, niezdefiniowane pojęcie) nie odpierasz: to zawsze luka dokumentu, nawet gdy Ty wiesz, o co chodzi.

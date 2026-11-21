@@ -42,7 +42,9 @@ Bez możliwości uruchomienia subagentów wykonaj wybrane role sam, po kolei, i 
 
 ## 3. Zweryfikuj
 
-Każdą uwagę sprawdź w kodzie. Odrzuć te, które się nie potwierdzają albo dotyczą kodu spoza diffu, z wyjątkiem sytuacji, gdy diff go psuje. Połącz duplikaty z obu przeglądów.
+Każdą uwagę sprawdź w kodzie i rozstrzygnij według „Rozstrzyganie uwag” w `../../kontrakt/narzedzia.md`: odrzucona uwaga ma sprawdzalny ślad, a wagi nie zmieniasz. Odrzuć też uwagi dotyczące kodu spoza diffu, z wyjątkiem sytuacji, gdy diff go psuje. Połącz duplikaty z obu przeglądów.
+
+Uwaga blokująca zgodności o sprzeczności ze specem, ADR albo zakresem, przy której nie jest oczywiste, czy myli się kod, czy plan → oznacz ją `[rozjazd]`. Wywołany przez `buduj` — skill budowy zdecyduje o architekcie. Wywołany samodzielnie — uruchom rolę `architekt` („Rozjazd z planem — architekt” w `../../kontrakt/praca.md`; w Claude Code subagent `architekt`, w innym agencie subagent poziomu `recenzja` z pełną ścieżką do `../../procedury/architekt.md`) i dołącz jego diagnozę pod uwagą.
 
 Uwagę blokującą, która wynika z fałszywego założenia autora (np. „funkcja X zwraca posortowane”, „usługa doręcza raz”), a nie z pomyłki w pisaniu, oznacz `[założenie]` i nazwij to założenie. Skill, który ją poprawia, zapisuje lekcję.
 
@@ -50,6 +52,7 @@ Uwagę blokującą, która wynika z fałszywego założenia autora (np. „funkc
 
 ```text
 Przegląd: <zakres> — recenzenci: niezależni | nieniezależny
+Role: zgodność wykonana | nie uruchomiona (powód); jakość …; bezpieczeństwo …
 
 Blokujące
   1. plik:linia — co jest nie tak — dlaczego (kryterium / ADR / błąd) — propozycja

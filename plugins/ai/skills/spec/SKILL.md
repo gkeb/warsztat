@@ -46,13 +46,15 @@ Jeśli w `## Otwarte pytania` jest cokolwiek, co blokuje spec, zatrzymaj się: w
 - `wymagana` i brak drugiej opinii → nie pytasz o akceptację; ustaw Następny krok na `skill pomysl <slug> druga-opinia` i zakończ. Przy `weryfikacja.innyModel` = `true` wybierz model spoza listy `Grill:`; przy `false` ten sam model jest dozwolony, ale wynik oznacz jako nieniezależny. Wyjątek od ustawienia `true` tylko na wyraźną decyzję użytkownika, z notatką w mapie i oznaczeniem nieniezależności.
 - `wylaczona` → pomiń.
 
-Pokaż krótkie streszczenie: problem, zakres, poza zakresem, największe ryzyko. Zapytaj o akceptację zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`:
+**Recenzja planu** — przy `weryfikacja.recenzjaPlanu` różnym od `false` (domyślnie, także przy braku klucza) uruchom rolę `recenzent-planu` w trybie `spec`, zanim zapytasz o akceptację. W Claude Code to subagent `recenzent-planu` z tego pluginu; w innym agencie subagent poziomu `recenzja` z pełną ścieżką do `../../procedury/recenzent-planu.md` (względem tego pliku). Przekaż tylko ścieżki: `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.md`, ADR-y linkowane w specu, mapy obszarów i katalogi kodu, których zdolność dotyka — bez `mapa.md`, lekcji i streszczenia rozmowy. Uwagi sprawdź i rozstrzygnij według „Rozstrzyganie uwag” w `../../kontrakt/narzedzia.md`; przyjęte nanieś w specu, odparte zapisz w mapie. Bez subagentów — zasady z „Recenzja planu — świeży czytelnik” w `../../kontrakt/praca.md` (polecenie do nowej sesji albo świadome pominięcie).
+
+Pokaż krótkie streszczenie: problem, zakres, poza zakresem, największe ryzyko, a pod nim wynik recenzji planu — parafrazę recenzenta w jednym zdaniu (czy zgadza się z tym, co miałeś na myśli), uwagi przyjęte i naniesione, odparte z jednym zdaniem dlaczego, otwarte. Zapytaj o akceptację zgodnie z sekcją `## Jak pytać` w `../../KONTRAKT.md`:
 
 - **Akceptuję** → w `ROADMAP.md` status `spec`, w specu data akceptacji, w mapie Następny krok `skill pokroj <slug>`. Gdy spec odpowiada ustaleniom i nie ma znanych braków, rekomenduj tę opcję jako pierwszą.
 - **Poprawki** → nanieś je i zapytaj ponownie.
 - **Wracamy do grilla** → zapisz, co okazało się niejasne, jako otwarte pytania. Status zostaje `grill`.
 
-Jeśli akceptacja nie jest właściwą rekomendacją, ustaw poprawną rekomendację jako pierwszą opcję. Nigdy nie oznaczaj akceptacji jako rekomendowanej, gdy znasz nierozstrzygnięty bloker.
+Jeśli akceptacja nie jest właściwą rekomendacją, ustaw poprawną rekomendację jako pierwszą opcję. Nigdy nie oznaczaj akceptacji jako rekomendowanej, gdy znasz nierozstrzygnięty bloker — także otwartą uwagę blokującą z recenzji planu.
 
 Nigdy nie ustawiasz statusu `spec` bez jawnej akceptacji.
 
@@ -62,6 +64,7 @@ Jeśli zdolność jest już w `spec`, `plan`, `budowa` albo `weryfikacja`:
 
 - zmiana wymaga zgody użytkownika;
 - w mapie zapisz `RRRR-MM-DD — zmiana specu: … — dlaczego`;
+- zmiana dotyka scenariuszy albo decyzji projektowych → recenzja planu jak w kroku 4, na zmienionych sekcjach;
 - sprawdź, które tickety się zdezaktualizowały, i zaproponuj skill `pokroj <slug>` do ich poprawy.
 
 Na koniec zaproponuj commit `<slug>: spec` — zrób go po zgodzie.

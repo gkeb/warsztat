@@ -50,7 +50,7 @@ Trzy poziomy, każdy zakotwiczony w poprzednim: **język** domeny (lekkie, strat
 
 ## Weryfikacja krzyżowa
 
-Dwa modele spotykają się w dwóch miejscach: przy **koncepcji** (druga opinia po grillu) i przy **dowiezieniu** (weryfikacja po budowie). W obu jeden model tworzy, drugi podważa, a różnice rozstrzyga człowiek.
+Dwa modele spotykają się w dwóch miejscach: przy **koncepcji** (druga opinia po grillu) i przy **dowiezieniu** (weryfikacja po budowie). W obu jeden model tworzy, drugi podważa, a różnice rozstrzyga człowiek. Między nimi pracują świeże konteksty tego samego dostawcy: **recenzent planu** czyta spec i tickety bez rozmowy, w której powstały, a **architekt** rozstrzyga rozjazdy budowy z planem. Druga opinia podważa decyzje, recenzent planu szuka kontekstu, którego nie zapisano, architekt ocenia, czy przy rozjeździe myli się kod, czy plan.
 
 ### Druga opinia — koncepcja
 
@@ -59,10 +59,32 @@ Kontynuacja grilla w drugim modelu niewiele wnosi: drugi model czyta decyzje pie
 - **Najpierw własne zdanie.** Weryfikator czyta tylko `## Problem` z mapy, linię roadmapy, rodzaj zdolności, `Grill:` (wyłącznie do sprawdzenia niezależności), słownik, `ZASADY.md`, powiązane ADR-y i kod — bez lekcji, decyzji i otwartych pytań — i sam spisuje kluczowe pytania, ryzyka i podejścia. Dopiero potem czyta wynik grilla i porównuje.
 - **Ślepota jest częściowa.** Słownik, `ZASADY.md` i ADR-y mogą zawierać wnioski z wcześniejszego grilla. Czytanie ich przed decyzjami z mapy ogranicza sugerowanie się odpowiedziami, ale nie gwarantuje pełnej niezależności.
 - **Wynik w czterech grupach:** zakwestionowane decyzje (z argumentem), pytania, których nikt nie zadał, nierozważone alternatywy, niejasne lub niespójne pojęcia.
+- **Szersza krytyka.** Zanim zestawisz grupy, przejdź wynik grilla trzema soczewkami, a znaleziska rozłóż do grup: (1) czy to w ogóle musi powstać i czy projekt albo zainstalowana zależność już tego nie robi — drabinka rozwiązania z `## Kontekst i założenia` w `KONTRAKT.md`, zastosowana do całej zdolności; (2) założenia przyjęte bez dowodu i ryzyka bez zabezpieczenia — każde z tym, co by je sprawdziło; (3) fałszywe kompromisy — decyzja „trochę A, trochę B” tam, gdzie istnieje rozwiązanie bez tego wyboru; razem z kosztem, który ono wprowadza. Soczewka bez znalezisk nie wymaga wpisu.
 - **Grill tylko na różnicach.** Użytkownik nie odpowiada drugi raz na to, co ustalone i niepodważone.
 - **Źródło przy wpisie.** Decyzje i pytania wniesione przez drugą opinię mają dopisek `(druga opinia: <narzędzie / model>)`; zmienione decyzje — `zmienione po drugiej opinii (było: …)`.
 - **Niezależność.** Porównuj nazwy modeli, nie narzędzi; ten sam model w innym kliencie nadal jest tym samym modelem. Jeśli model opiniujący pasuje do któregokolwiek modelu z `Grill:` i `weryfikacja.innyModel: true`, ostrzeż i za zgodą oznacz opinię jako nieniezależną. Gdy `innyModel: false`, ten sam model może kontynuować, ale nie nazywaj opinii niezależną. Jeśli któryś model jest `nieznany`, nie twierdź, że opinia jest niezależna.
 - **Konfiguracja** `weryfikacja.drugaOpinia`: `zalecana` (domyślnie — skill `spec` przypomina przed bramką akceptacji), `wymagana` (bez drugiej opinii `spec` nie przechodzi do akceptacji) albo `wylaczona`.
+
+### Recenzja planu — świeży czytelnik
+
+Autor planu i użytkownik po rozmowie czytają ponad lukami, które sami wypełnili w głowie. Pierwszym czytelnikiem bez tej wiedzy jest dziś dopiero `buduj` w nowej sesji — wtedy luka kosztuje zatrzymanie budowy. Recenzent planu czyta plan wcześniej, znając tylko tekst.
+
+- **Kiedy.** Skill `spec` przed bramką akceptacji (tryb `spec`) i skill `pokroj` przed uzgodnieniem listy ticketów (tryb `tickety`). Uruchamia się sam, bez pytania; przy zmianie zaakceptowanego specu — gdy zmiana dotyka scenariuszy albo decyzji projektowych.
+- **Rola** `recenzent-planu`, poziom `recenzja`, plik roli `procedury/recenzent-planu.md`. Dostaje spec (i tickety), słownik, `ZASADY.md`, linkowane ADR-y, mapy obszarów i kod — **bez** `mapa.md`, lekcji i rozmowy, bo sprawdza, czy dokument broni się sam.
+- **Spec:** parafraza tego, co proponuje i jak działa dziś (sekcja bez parafrazy jest blokująca), pojęcia spoza słownika, kompletność scenariuszy, twierdzenia o istniejącym kodzie sprawdzone w kodzie, sprzeczności. **Tickety:** zero decyzji projektowych zostawionych budującemu — zachowanie, interfejs, format danych, granica modułu, zależność muszą wynikać z ticketu, specu, ADR albo `ZASADY.md`; decyzje implementacyjne (pliki, nazwy pomocnicze, kolejność kroków) zostają przy budującym, bo plan nie zawiera ścieżek.
+- **Wynik** pokazujesz przy bramce razem ze streszczeniem, po sprawdzeniu według „Rozstrzyganie uwag” w `kontrakt/narzedzia.md`. Uwagę przyjętą nanosisz w dokumencie; odpartą zapisujesz w mapie jako `RRRR-MM-DD — podtrzymane po recenzji planu: <uwaga> — <ślad>`. Nie rekomendujesz akceptacji przy otwartej uwadze blokującej.
+- **Bez subagentów** przegląd w tej samej sesji nie jest recenzją planu — czytałbyś ponad tymi samymi lukami. Zamiast niego podaj użytkownikowi polecenie do wklejenia w **nowej sesji** („Przeczytaj `<pełna ścieżka do procedury>` i wykonaj tryb `<tryb>` dla `<ścieżki>`; wynik zapisz w czacie”) albo, na jego decyzję, pomiń z notatką `RRRR-MM-DD — plan bez recenzji planu` w mapie.
+- **Konfiguracja** `weryfikacja.recenzjaPlanu`: `true` (domyślnie, także przy braku klucza) albo `false`.
+
+### Rozjazd z planem — architekt
+
+Recenzent zgodności zakłada, że plan ma rację, a budujący, który odszedł od planu, ma skłonność do uzasadniania tej zmiany. Gdy kod i plan się rozjeżdżają, świeży architekt ocenia obie strony.
+
+- **Kiedy.** Tylko przy rozjeździe, nie po każdym tickecie: (1) przegląd zgłosił uwagę blokującą „sprzeczność ze specem albo ADR” albo „zachowanie spoza zakresu”, a budujący nie poprawi jej bez zmiany kodu wbrew własnej ocenie; (2) `buduj` zatrzymuje się, bo kod przeczy specowi albo ADR, albo scenariusz okazał się niejednoznaczny; (3) `weryfikuj` ma uwagę blokującą, której przyczyna może leżeć w specu, tickecie albo ADR. Oczywistą pomyłkę w kodzie poprawiasz bez architekta.
+- **Rola** `architekt`, poziom `recenzja`, plik roli `procedury/architekt.md`. Dostaje opis rozjazdu i ścieżki: spec, `mapa.md` (Decyzje, Plasterki), ticket(y), słownik, `ZASADY.md`, ADR-y, komendę diffu — bez rozmowy budującego.
+- **Wynik** dla każdego rozjazdu: gdzie (scenariusz, ticket, decyzja albo ADR ↔ `plik:linia`), diagnoza `kod odszedł od planu | plan błędny | plan niepełny | plan niejednoznaczny` z dowodem i najmniejsza zmiana przywracająca zgodność. `plan błędny` wymaga dowodu, że plan zakłada nieprawdę; lepsze w oczach budującego rozwiązanie nie jest takim dowodem.
+- **Rozstrzyga człowiek.** Architekt i budujący niczego w planie nie zmieniają. Zmiana specu idzie przez „Zmiana zaakceptowanego specu” w skillu `spec`, zmiana decyzji — przez skill `decyzja`, poprawka kodu — w tickecie. Diagnoza `plan błędny` albo `plan niepełny` w zaakceptowanym specu po rozwiązaniu to lekcja `[<slug>]` — luka planu, którą recenzja planu powinna była złapać.
+- **Bez subagentów** postępuj jak przy recenzji planu: polecenie do nowej sesji albo, na decyzję użytkownika, diagnoza w tej samej sesji oznaczona jako nieniezależna.
 
 ### Weryfikacja — dowiezienie
 

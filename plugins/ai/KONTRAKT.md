@@ -16,7 +16,7 @@ Wspólny rdzeń reguł i indeks szczegółów. Każdy skill przestrzega tego rdz
 | --- | --- |
 | [Stan projektu](kontrakt/stan.md) | Trzy poziomy — nigdy w jednym pliku; Jedno źródło prawdy; Statusy zdolności; Statusy ticketu |
 | [Pliki projektu i instrukcje agentów](kontrakt/pliki.md) | Układ w repozytorium projektu; AGENTS.md i CLAUDE.md |
-| [Budowa i weryfikacja](kontrakt/praca.md) | Rodzaje zdolności; Język → zachowanie → test; Weryfikacja krzyżowa; Odbiór — sprawdzenie przez człowieka; Poprawki (bugi); Eksperymenty i prototypy |
+| [Budowa i weryfikacja](kontrakt/praca.md) | Rodzaje zdolności; Język → zachowanie → test; Weryfikacja krzyżowa; Recenzja planu — świeży czytelnik; Rozjazd z planem — architekt; Odbiór — sprawdzenie przez człowieka; Poprawki (bugi); Eksperymenty i prototypy |
 | [Rozmowa i materiały z zamiarem](kontrakt/rozmowa.md) | Przemyślenia — metoda sokratejska; Plik z zamiarem — pomysł spisany przez użytkownika |
 | [Poznanie kodu i aktualność wiedzy](kontrakt/poznanie.md) | Zastany projekt; Aktualność map obszarów; Zasady projektu |
 | [Lekcje, próby i wzorce](kontrakt/pamiec.md) | Lekcje — czego się nauczyliśmy; Próby — czego nie powtarzać; Wzorce — wiedza między projektami; Zgłoszenia warsztatu — zmiany procesu |
@@ -40,6 +40,7 @@ Najpierw sprawdź, czy odpowiedź da się znaleźć w kodzie, plikach projektu a
 - Pytanie otwarte, np. „Dla kogo jest ta zdolność?” — zadaj tekstem i czekaj na odpowiedź.
 - Jeśli istnieje skończony zestaw 2–4 sensownych odpowiedzi, użyj dostępnego narzędzia pytań z wyborem. W Claude Code jest to `AskUserQuestion`. Nie zakładaj, że narzędzie jest dostępne tylko dlatego, że działasz w danym produkcie.
 - Rekomendowaną odpowiedź umieść jako pierwszą i oznacz „(rekomendowane)”; krótko wyjaśnij ją w opisie opcji. Nie dodawaj opcji „Inne”, jeśli interfejs dodaje ją automatycznie.
+- **Decyzja z kompromisem** (architektura, wybór podejścia w grillu, ADR): każda opcja ma w opisie „wygrywa, gdy…” i „zawodzi, gdy…”. Rekomendujesz tylko wtedy, gdy wybór wynika z ustalonego faktu albo kryterium — i nazywasz je. Gdy rozstrzyga priorytet użytkownika (koszt czy elastyczność, prostota czy skala), nie rekomendujesz: rekomendacja byłaby zgadywaniem jego preferencji i zakotwiczyłaby wybór. Zamiast niej nazwij priorytet, który decyduje („jeśli ważniejsze jest X → A”), albo zapytaj najpierw o ten priorytet. Pytania procesowe (akceptacja, kolejność, zgoda) zostają z rekomendacją.
 - W `AskUserQuestion` używaj krótkiego nagłówka (maksymalnie 12 znaków).
 - Jeśli sensownych odpowiedzi jest więcej niż cztery, wypisz je tekstowo, żeby nie ukrywać możliwości ani nie wybierać ich arbitralnie.
 - Bez narzędzia wyboru zadaj to samo pytanie w rozmowie, z ponumerowanymi opcjami w tej samej kolejności; pierwszą oznacz jako rekomendowaną i podaj krótkie uzasadnienie. Otwarte pytania pozostają tekstowe.
