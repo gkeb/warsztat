@@ -3,7 +3,7 @@
 
 Stan projektu żyje w `.ai/`, nie w czacie. Hook może wczytać go na starcie sesji; pełny obraz daje skill `gdzie`. W Codexie hook wymaga jednorazowego przejrzenia i zaufania.
 
-Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do instrukcji i przekazania sesji. Stabilność kontekstu może pomagać w cache, ale nie zastępuje świeżych źródeł ani niezależnego przeglądu. Przed większą zmianą sprawdź istotne założenia i wybierz najprostsze rozwiązanie spełniające kryteria.
+Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do instrukcji i przekazania sesji. Stabilność kontekstu może pomagać w cache, ale nie zastępuje świeżych źródeł ani niezależnego przeglądu. Przed większą zmianą sprawdź istotne założenia, wypisz miejsca, do których zmiana musi dotrzeć (wywołujący, testy, konfiguracja, eksporty), i wybierz najprostsze rozwiązanie spełniające kryteria: najpierw to, co już jest w projekcie, potem biblioteka standardowa, potem zainstalowana zależność, dopiero na końcu własny kod — nigdy nowa zależność dla kilku linii. Raport po zmianie kodu kończy się linią `Pominięte i ryzyko:`.
 
 ### Routing
 
@@ -43,7 +43,7 @@ Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do 
 3. Spec nie zawiera kodu. Kod nie wprowadza nowego pojęcia bez wpisu w `.ai/SLOWNIK.md` ani nowej twardej decyzji bez ADR.
 4. Ticket, którego nie da się skończyć w jednej sesji, jest źle pokrojony — wraca do skilla `pokroj`.
 5. Używaj pojęć ze słownika, w znaczeniu z kontekstu, w którym pracujesz, i nie łam niezmienników zapisanych przy pojęciach. Test akceptacyjny scenariusza ze specu nosi jego numer (`S3`). Gdy coś przeczy ADR (`przyjęta` albo `zastana`), mów wprost: „Przeczy decyzji 0003, bo…”. Katalog ADR: `sciezki.decyzje` w `.ai/warsztat.json`.
-6. Gdy Twoje założenie okazało się fałszywe — poprawił je użytkownik, test, błąd albo przegląd — i znasz już rozwiązanie, od razu wpis w `.ai/lekcje.md` (ta sama przyczyna → nowe wystąpienie istniejącej lekcji). Bez rozwiązania → `.ai/proby.md` jako `nierozwiazane`.
+6. Gdy Twoje założenie okazało się fałszywe — poprawił je użytkownik, test, błąd albo przegląd — i znasz już rozwiązanie, od razu wpis w `.ai/lekcje.md` (ta sama przyczyna → nowe wystąpienie istniejącej lekcji). Bez rozwiązania → `.ai/proby.md` jako `nierozwiazane`. Komenda zawiodła przez środowisko (brak narzędzia, inny sposób uruchomienia, inna powłoka), a działający wariant znasz → zaproponuj poprawkę w `## Projekt` tego pliku (Uruchamianie albo Pułapki), nie lekcję. Ten sam błąd po dwóch kolejnych poprawkach albo ta sama komenda zawodzi trzeci raz → stop: wróć do założeń, przeszukaj `.ai/proby.md`, zapisz porzucone podejście; bez nowej hipotezy zapytaj.
 7. Priorytety roadmapy ustala człowiek. Ty aktualizujesz statusy.
 8. Zanim zmienisz zachowanie kodu bez testów, przypnij je testem charakteryzującym. Zastanej dokumentacji nie przepisujesz — linkujesz ją, a rozjazdy z kodem zgłaszasz.
 9. Zanim zaproponujesz albo zaczniesz podejście (biblioteka, technika, poprawka), przeszukaj `.ai/proby.md`, a przy problemie, który nie zależy od tego projektu, także indeks wzorców warsztatu (ścieżkę podaje hook na starcie sesji). Podejścia `nie-dziala` nie powtarzasz bez spełnionego warunku powrotu. Porzucone podejście, odłożoną ścieżkę albo nierozwiązany problem zapisujesz tam od razu.

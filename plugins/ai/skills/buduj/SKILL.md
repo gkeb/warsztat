@@ -40,7 +40,7 @@ Wczytaj: ticket, odpowiednie fragmenty `spec.md`, `.ai/SLOWNIK.md`, `.ai/ZASADY.
 
 - Ticket → `w-toku`. Zdolność w `plan` → `budowa` w `ROADMAP.md`. To jedyna zmiana roadmapy, jaką wolno budowie.
 - Pokaż plan w 3–6 punktach: które scenariusze z pola `scenariusze` ticket kończy, na jakim poziomie powstaną ich testy akceptacyjne, jakie zachowania sprawdzą testy wewnętrzne i w jakiej kolejności. Idź dalej bez czekania, chyba że coś jest niejasne.
-- W tym planie wskaż istotne niesprawdzone założenia i najprostszy wariant spełniający ticket. Założenia techniczne sprawdź przed oparciem na nich implementacji; brakujące wymagania rozstrzyga użytkownik. Używaną mapę obszaru sprawdź według `## Aktualność map obszarów`; zmienione źródła wymagają sprawdzenia twierdzeń w kodzie. Nie uznawaj starej mapy za aktualną przez samo przesunięcie checkpointu.
+- W tym planie wskaż zasięg zmiany, istotne niesprawdzone założenia i najprostszy wariant spełniający ticket — ze szczeblem drabinki, na którym się zatrzymałeś (`## Kontekst i założenia` w `../../KONTRAKT.md`: „Drabinka rozwiązania”, „Zasięg zmiany”). Założenia techniczne sprawdź przed oparciem na nich implementacji; brakujące wymagania rozstrzyga użytkownik. Używaną mapę obszaru sprawdź według `## Aktualność map obszarów`; zmienione źródła wymagają sprawdzenia twierdzeń w kodzie. Nie uznawaj starej mapy za aktualną przez samo przesunięcie checkpointu.
 
 ## 5. Podwójna pętla — pionowo, jeden test naraz
 
@@ -72,6 +72,7 @@ Gdy test akceptacyjny i wewnętrzny sprawdzałyby dokładnie to samo (mały scen
 2. Mały krok struktury → testy → zielone → następny krok.
 3. Test niezmiennika zczerwieniał → cofnij krok i zrób mniejszy. **Nigdy nie poprawiasz testu niezmiennika, żeby przeszedł.**
 4. Żadnych zmian zachowania. Kusząca poprawka → zapisz ją w mapie jako pomysł na osobną zdolność.
+5. Kod przenoszony albo scalany zabiera ze sobą obsługę błędów i walidację. Brak testu, który by ich zniknięcie wyłapał → najpierw test charakteryzujący.
 
 **Narzędzia testów akceptacyjnych** — według sekcji `Testy akceptacyjne` profili projektu (`warsztat.json` → `profile`, pliki w `../../profile/`): CLI uruchamiasz jak użytkownik i sprawdzasz kod wyjścia, stdout i stderr; stronę generowaną testujesz w przeglądarce na wyniku budowania, a pliki profilu `html` serwujesz bezpośrednio przez HTTP zgodnie z konfiguracją hostingu.
 
@@ -97,7 +98,7 @@ Zatrzymaj się i zgłoś, zamiast brnąć, gdy:
 - ticket da się zrobić tylko łamiąc zasadę twardą z `.ai/ZASADY.md` → stop: wyjątek wpisany w zasadzie (za zgodą) albo zmiana zasady przez skill `decyzja`. Nigdy po cichu;
 - ticket nie zmieści się w tej sesji → skill `przekaz`, potem skill `pokroj <slug>#NN`;
 - kod przeczy specowi albo ADR → powiedz to wprost i zapytaj;
-- wybrane podejście nie działa i przechodzisz na inne → najpierw wpis w `.ai/proby.md` (`nie-dziala` z dowodem albo `odlozone`), potem zmiana kursu;
+- wybrane podejście nie działa i przechodzisz na inne → najpierw wpis w `.ai/proby.md` (`nie-dziala` z dowodem albo `odlozone`), potem zmiana kursu; ten sam błąd po dwóch kolejnych poprawkach to sygnał do zatrzymania („Pętla porażek” w `../../KONTRAKT.md`);
 - kod zależy od tego, jak działa biblioteka, API albo usługa, a nie jesteś pewien zachowania w używanej wersji → sprawdź w źródle (dokumentacja tej wersji, kod w `node_modules` / `site-packages`), nie z pamięci; pytanie, które wymaga więcej niż kilku minut → skill `badanie`.
 
 **Fałszywe założenie** — test czerwony z innego powodu niż przewidziałeś, kod zachowuje się inaczej, niż zakładałeś, przegląd albo użytkownik pokazał błąd w rozumowaniu. Gdy znasz już rozwiązanie, od razu wpis w `.ai/lekcje.md` według zasad z `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”; format wpisu: `../../kontrakt/formaty.md` → „Lekcja — wpis w `lekcje.md`” (ta sama przyczyna → nowe wystąpienie istniejącej lekcji). Nie czekaj do końca ticketu.
@@ -132,4 +133,4 @@ Według sekcji `## Sprzątanie — procesy i pliki tymczasowe` w `../../kontrakt
 
 ## 11. Stop
 
-Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, wynik CI (albo „niesprawdzone”), sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.
+Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, wynik CI (albo „niesprawdzone”), sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok, a na końcu linia `Pominięte i ryzyko:` (`## Kontekst i założenia` w `../../KONTRAKT.md`). **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.

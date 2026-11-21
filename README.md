@@ -123,6 +123,8 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
+Od wersji `0.22.0` agent wybiera rozwiązanie drabinką (czy to musi powstać → co już jest w projekcie → biblioteka standardowa → zainstalowana zależność → minimum własnego kodu), przed edycją wypisuje zasięg zmiany, zatrzymuje się po dwóch nieudanych poprawkach tego samego błędu, fakty o uruchamianiu narzędzi zapisuje w `AGENTS.md` zamiast w lekcjach, a raport po zmianie kodu kończy linią `Pominięte i ryzyko:`.
+
 Od wersji `0.21.0` scenariusz rozłożony na kilka ticketów odkłada tylko wiersze tabeli i warianty wejścia — niezmienniki, zasady twarde i komendy z podpowiedzi mają test od pierwszego ticketu, który ich dotyka; log z porażką agent usuwa dopiero po odczytaniu błędu.
 
 Od wersji `0.20.0` subagenci dostają model i wysiłek według poziomu pracy (`czytanie`, `recenzja`, `badanie`), a nowa rola `czytelnik` na tańszym modelu przejmuje czytanie kodu i streszczanie testów w `buduj`, `napraw`, `poznaj` i `weryfikuj`. Stary format `modele` (per skill) `start` przenosi przy aktualizacji.

@@ -42,7 +42,7 @@ Zmniejszaj przypadek: mniej danych, mniej kroków, izolowany moduł. Przeszukani
 - **Nie poprawiasz, dopóki nie umiesz wyjaśnić przyczyny.** Jeśli musisz poprawić sam objaw, powiedz to wprost i zapisz w raporcie.
 - Instrumentację usuwasz przed commitem. Skrypty odtwarzające i pliki pośrednie trzymasz poza repo (`../../kontrakt/sprzatanie.md`, `## Sprzątanie — procesy i pliki tymczasowe`), chyba że stają się testem regresji.
 - Hipoteza obalona po większym wysiłku albo poprawka, która nie pomogła → wpis `nie-dziala` w `.ai/proby.md` od razu, z dowodem. Następna osoba zacznie od tego miejsca, nie od zera.
-- Kolejne próby nie dostarczają nowych dowodów → podsumuj niewiadomą i zmień sposób zbierania danych albo przekaż pracę. Nie powtarzaj tej samej hipotezy bez nowych warunków. Porównywanie kilku wariantów optymalizacji prowadź według `../../procedury/eksperyment.md`, w zakresie naprawy, z zachowaniem poprawności, ustalonym pomiarem i skończonym budżetem.
+- Kolejne próby nie dostarczają nowych dowodów albo ten sam błąd wraca po dwóch kolejnych poprawkach („Pętla porażek” w `../../KONTRAKT.md`) → podsumuj niewiadomą i zmień sposób zbierania danych albo przekaż pracę. Nie powtarzaj tej samej hipotezy bez nowych warunków. Porównywanie kilku wariantów optymalizacji prowadź według `../../procedury/eksperyment.md`, w zakresie naprawy, z zachowaniem poprawności, ustalonym pomiarem i skończonym budżetem.
 
 ## 5. Ustal rozmiar
 
@@ -50,7 +50,8 @@ Według tabeli w `../../kontrakt/praca.md` → „Poprawki (bugi)”: mały → 
 
 ## 6. Poprawka
 
-- Minimalna zmiana u przyczyny. Sygnał z kroku 2 przechodzi na zielony i zostaje w repo jako test regresji, w stylu pozostałych testów.
+- Zanim zmienisz funkcję, znajdź wszystkich jej wywołujących (grep, nie pamięć) i wypisz zasięg zmiany („Zasięg zmiany” w `## Kontekst i założenia` w `../../KONTRAKT.md`). Przyczynę we wspólnym kodzie poprawiasz raz, u źródła — nie w każdym wywołującym osobno.
+- Minimalna zmiana u przyczyny, dobrana drabinką rozwiązania z tej samej sekcji kontraktu. Sygnał z kroku 2 przechodzi na zielony i zostaje w repo jako test regresji, w stylu pozostałych testów.
 - Uruchom całą walidację z `.ai/warsztat.json` (z uwzględnieniem `odniesienie.znane`; naprawiony znany błąd usuń z listy). Nie wyłączasz testów i nie osłabiasz typów.
 - Poszukaj tego samego wzorca błędu w innych miejscach. Znaleziska zgłoś; poprawiasz je tylko za zgodą.
 
@@ -68,4 +69,4 @@ Przy zmianie większej niż kilka linii albo dotykającej logiki — skill `prze
 - Jeśli przyczyną było fałszywe założenie (w kodzie albo w diagnozie) → wpis w `.ai/lekcje.md` według zasad z `../../kontrakt/pamiec.md` → „Lekcje — czego się nauczyliśmy”; format wpisu: `../../kontrakt/formaty.md` → „Lekcja — wpis w `lekcje.md`”; ta sama przyczyna co w istniejącej lekcji → nowe wystąpienie. Pomógł albo nie pasował wzorzec → dopisek `Wzorzec:`. Jeśli bug mogła wyłapać automatyczna kontrola (test, lint, typ) → zaproponuj skill `retro` albo od razu tę kontrolę, jeśli jest mała.
 - Jeśli naprawa była zapisana w `.ai/sesje/`, usuń ten plik. Jeśli zamyka wpis `nierozwiazane` w `.ai/proby.md` — zamień go w lekcję (problem → przyczyna → rozwiązanie) i usuń z `proby.md`; podejścia, które po drodze okazały się błędne, zostają tam jako `nie-dziala`.
 - Sprzątanie jak w `buduj` (`../../kontrakt/sprzatanie.md`, `## Sprzątanie — procesy i pliki tymczasowe`): procesy uruchomione w tej sesji zamknięte, śmieci z listy usunięte, nowe pliki spoza listy — pytanie.
-- Raport: przyczyna w 1–2 zdaniach, poprawka, test regresji, hash commita, sprzątanie.
+- Raport: przyczyna w 1–2 zdaniach, poprawka, test regresji, hash commita, sprzątanie, a na końcu linia `Pominięte i ryzyko:` (`## Kontekst i założenia` w `../../KONTRAKT.md`).
