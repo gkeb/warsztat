@@ -133,4 +133,4 @@ Według sekcji `## Sprzątanie — procesy i pliki tymczasowe` w `../../kontrakt
 
 ## 11. Stop
 
-Raport: co zrobione, wynik walidacji, skan sekretów (narzędzie albo ręczny), hash commita, czy wypchnięty, wynik CI (albo „niesprawdzone”), sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego), następny krok, a na końcu linia `Pominięte i ryzyko:` (`## Kontekst i założenia` w `../../KONTRAKT.md`). **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.
+Raport z nagłówkami z `## Odpowiedź i raport` w `../../KONTRAKT.md`: `Zrobione:` — co zrobione, hash commita, czy wypchnięty, sprzątanie (zamknięte procesy, usunięte śmieci, co zostało i dlaczego); `Decyzje:` — wybory dokonane w ramach ticketu bez pytania; `Sprawdzone:` — wynik walidacji, skan sekretów (narzędzie albo ręczny), wynik CI (albo „niesprawdzone”); `Pominięte i ryzyko:`; `Następny krok:`. **Nie zaczynasz następnego ticketu sam** — użytkownik jawnie uruchamia skill `buduj` ponownie, najlepiej w świeżej sesji.

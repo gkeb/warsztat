@@ -40,17 +40,35 @@ Najpierw sprawdź, czy odpowiedź da się znaleźć w kodzie, plikach projektu a
 - Pytanie otwarte, np. „Dla kogo jest ta zdolność?” — zadaj tekstem i czekaj na odpowiedź.
 - Jeśli istnieje skończony zestaw 2–4 sensownych odpowiedzi, użyj dostępnego narzędzia pytań z wyborem. W Claude Code jest to `AskUserQuestion`. Nie zakładaj, że narzędzie jest dostępne tylko dlatego, że działasz w danym produkcie.
 - Rekomendowaną odpowiedź umieść jako pierwszą i oznacz „(rekomendowane)”; krótko wyjaśnij ją w opisie opcji. Nie dodawaj opcji „Inne”, jeśli interfejs dodaje ją automatycznie.
+- **Decyzja zrozumiała bez plików.** Gdy człowiek ma coś postanowić (akceptacja specu albo ticketów, ADR, pytanie w grillu, wybór podejścia), opis przed pytaniem musi dać się zrozumieć bez otwierania plików i bez pamięci rozmowy — zwięźle, kilka zdań, nie esej:
+  - **o co chodzi** — sytuacja i problem prostymi słowami. Pojęcie ze słownika, specu albo warsztatu objaśnij w pół zdania przy pierwszym użyciu, zamiast odsyłać do pliku;
+  - **co jest do wyboru** i co każda opcja znaczy w praktyce: co zobaczy użytkownik aplikacji, co trzeba będzie utrzymać, co się zablokuje;
+  - **co dalej** — co agent zrobi po decyzji i czy łatwo ją później zmienić.
+  Odnośnik do pliku dopełnia wyjaśnienie, nie zastępuje go. Numer scenariusza albo ticketu (`S3`, `#02`) zawsze z kilkoma słowami, czego dotyczy.
 - **Decyzja z kompromisem** (architektura, wybór podejścia w grillu, ADR): każda opcja ma w opisie „wygrywa, gdy…” i „zawodzi, gdy…”. Rekomendujesz tylko wtedy, gdy wybór wynika z ustalonego faktu albo kryterium — i nazywasz je. Gdy rozstrzyga priorytet użytkownika (koszt czy elastyczność, prostota czy skala), nie rekomendujesz: rekomendacja byłaby zgadywaniem jego preferencji i zakotwiczyłaby wybór. Zamiast niej nazwij priorytet, który decyduje („jeśli ważniejsze jest X → A”), albo zapytaj najpierw o ten priorytet. Pytania procesowe (akceptacja, kolejność, zgoda) zostają z rekomendacją.
 - W `AskUserQuestion` używaj krótkiego nagłówka (maksymalnie 12 znaków).
 - Jeśli sensownych odpowiedzi jest więcej niż cztery, wypisz je tekstowo, żeby nie ukrywać możliwości ani nie wybierać ich arbitralnie.
 - Bez narzędzia wyboru zadaj to samo pytanie w rozmowie, z ponumerowanymi opcjami w tej samej kolejności; pierwszą oznacz jako rekomendowaną i podaj krótkie uzasadnienie. Otwarte pytania pozostają tekstowe.
 - Zadawaj jedno pytanie naraz, chyba że skill wyraźnie prosi o zestaw niezależnych odpowiedzi. Nigdy nie zgaduj odpowiedzi użytkownika ani nie obchodź wymaganej akceptacji. W trybie nieinteraktywnym przedstaw pytanie i zatrzymaj się, by użytkownik mógł odpowiedzieć w kolejnej turze.
 
+## Odpowiedź i raport
+
+Ten sam układ odpowiedzi w każdym agencie i modelu — człowiek od razu widzi, co zrobiono, co postanowiono i co zostało.
+
+- **Zwykła odpowiedź.** Po polsku. Najpierw odpowiedź albo wynik, potem uzasadnienie i szczegóły. Bez wstępów, streszczania pytania, pochwał i powtarzania tego, co już padło. Twierdzenie o kodzie albo pliku ma odnośnik (`plik:linia`), fakt spoza repozytorium — źródło.
+- **Raport po pracy** — na końcu skilla albo zadania, które zmieniło kod lub pliki `.ai/`. Zawsze te nagłówki, w tej kolejności; pusty dostaje `brak`:
+  - `Zrobione:` co się zmieniło i gdzie (pliki);
+  - `Decyzje:` co wybrałeś sam, bez pytania, jaką alternatywę odrzuciłeś i dlaczego — jedno zdanie na decyzję; decyzja zapisana w mapie, specu albo ADR ma odnośnik;
+  - `Sprawdzone:` komendy i ich wyniki (walidacja, testy, skan sekretów, CI);
+  - `Pominięte i ryzyko:` czego nie sprawdziłeś albo świadomie nie zrobiłeś i co człowiek musi wiedzieć;
+  - `Następny krok:` skill albo pytanie do człowieka.
+- Skill dopisuje własne pozycje (commit, CI, sprzątanie) pod tymi nagłówkami — nie zmienia ich nazw ani kolejności i nie dokłada własnego układu. Krótka praca → krótki raport, ale nagłówki zostają.
+
 ## Kontekst i założenia
 
 - Stałe instrukcje procesu żyją w kontrakcie i bloku warsztatu w `AGENTS.md`; zmienny stan w `.ai/`. Nie dopisuj do stałych instrukcji logów sesji, wyników kolejnych prób ani bieżących statusów.
 - Dobieraj materiały do zadania według zasad czytania kontraktu powyżej. Już wczytanych, niezmienionych instrukcji nie odczytuj ponownie bez potrzeby. Po kompaktowaniu odtwórz wymagane reguły z plików. Nie ładuj całych artykułów, wszystkich map ani wszystkich profili na zapas; wyszukaj temat i przeczytaj odpowiedni fragment. Wymagane przez skill materiały nadal obowiązują.
-- Wyniki dużych komend zapisuj poza repo; w kontekst wczytaj wynik, istotny błąd i wskazanie pełnego logu. Kolejne sprawdzenie zaczynaj od zmian, bez powtarzania niezmienionych treści. Nie ukrywaj brakujących danych ani pominiętych kontroli: raport skilla, który zmienia kod, kończy się linią `Pominięte i ryzyko:` — czego nie sprawdziłeś albo świadomie nie zrobiłeś i co człowiek musi wiedzieć; gdy nic, napisz `brak`.
+- Wyniki dużych komend zapisuj poza repo; w kontekst wczytaj wynik, istotny błąd i wskazanie pełnego logu. Kolejne sprawdzenie zaczynaj od zmian, bez powtarzania niezmienionych treści. Nie ukrywaj brakujących danych ani pominiętych kontroli — raport podaje je w `Pominięte i ryzyko:` (`## Odpowiedź i raport`).
 - Stabilny prefiks może pomóc w prompt cache, ale żądania i granice cache ustala host. Skill nie ustawia parametrów API. Koszt, czas i udział tokenów z cache oceniaj tylko na podstawie dostępnych pomiarów. Nie utrzymuj sesji sztucznymi wywołaniami ani nie opóźniaj aktualizacji wiedzy dla cache; świeży kontekst recenzenta zachowuje pierwszeństwo.
 - Przed większą zmianą wskaż założenia, których błędność zmieniłaby rozwiązanie. Sprawdź je najtańszym dowodem w kodzie, źródle albo pomiarze. Nieustalone wymaganie rozstrzyga użytkownik; trudna niewiadoma techniczna trafia do `[badanie]` albo `[prototyp]`. Nie zamieniaj sprawdzonych faktów w dodatkowe bramki akceptacji.
 - Wersje środowiska, narzędzi i zależności, które rekomendujesz albo wpisujesz (np. Node LTS, wersja pakietu, minimalna wersja klienta), sprawdzasz w źródle — harmonogramie wydań, rejestrze pakietów (`npm view`, PyPI), changelogu — z datą sprawdzenia, nie z pamięci modelu.

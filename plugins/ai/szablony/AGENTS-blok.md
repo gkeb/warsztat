@@ -3,7 +3,9 @@
 
 Stan projektu żyje w `.ai/`, nie w czacie. Hook może wczytać go na starcie sesji; pełny obraz daje skill `gdzie`. W Codexie hook wymaga jednorazowego przejrzenia i zaufania.
 
-Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do instrukcji i przekazania sesji. Stabilność kontekstu może pomagać w cache, ale nie zastępuje świeżych źródeł ani niezależnego przeglądu. Przed większą zmianą sprawdź istotne założenia, wypisz miejsca, do których zmiana musi dotrzeć (wywołujący, testy, konfiguracja, eksporty), i wybierz najprostsze rozwiązanie spełniające kryteria: najpierw to, co już jest w projekcie, potem biblioteka standardowa, potem zainstalowana zależność, dopiero na końcu własny kod — nigdy nowa zależność dla kilku linii. Raport po zmianie kodu kończy się linią `Pominięte i ryzyko:`.
+Czytaj materiały potrzebne do zadania; szczegóły linkuj zamiast kopiować do instrukcji i przekazania sesji. Stabilność kontekstu może pomagać w cache, ale nie zastępuje świeżych źródeł ani niezależnego przeglądu. Przed większą zmianą sprawdź istotne założenia, wypisz miejsca, do których zmiana musi dotrzeć (wywołujący, testy, konfiguracja, eksporty), i wybierz najprostsze rozwiązanie spełniające kryteria: najpierw to, co już jest w projekcie, potem biblioteka standardowa, potem zainstalowana zależność, dopiero na końcu własny kod — nigdy nowa zależność dla kilku linii.
+
+Odpowiadasz po polsku, najpierw wynikiem, bez wstępów. Raport po pracy, która zmieniła kod albo `.ai/`, ma zawsze nagłówki `Zrobione:`, `Decyzje:` (co wybrałeś sam i dlaczego), `Sprawdzone:`, `Pominięte i ryzyko:`, `Następny krok:` — pusty jako `brak`. Gdy człowiek ma coś postanowić, opisz to tak, żeby zrozumiał bez otwierania plików: o co chodzi, opcje i ich skutki w praktyce, co dalej — zwięźle. Szczegóły: „Odpowiedź i raport” i „Jak pytać” w kontrakcie warsztatu.
 
 ### Routing
 
