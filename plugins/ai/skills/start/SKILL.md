@@ -94,6 +94,7 @@ Jeśli repo nie jest gitem, zapytaj, czy zrobić `git init -b main`. Bez gita sk
 
 **Pusty projekt:**
 
+- Zapytaj, czy projekt czerpie z cudzego kodu (fork w szerokim sensie: bierzemy wybrane zdolności i koncepcje z istniejącego rozwiązania). Tak → najpierw `skill referencja dodaj <nazwa> <url|ścieżka>`, potem `referencja poznaj` i `referencja katalog`, a dopiero z katalogiem `pomysl produkt` (`../../kontrakt/referencje.md`). Klon referencji leży poza tym repozytorium — nie klonujesz go tutaj.
 - Nic nie wpisujesz do roadmapy sam. Następny krok to `skill pomysl produkt` — albo `skill pomysl produkt <plik>`, jeśli użytkownik ma spisany pomysł (zapytaj, nawet gdy rozpoznanie niczego nie znalazło): wspólnie ustalimy cel produktu, listę zdolności i decyzje fundamentowe (stos, dane, wdrażanie), a pierwszą zdolnością w Teraz zostanie `szkielet`.
 - Zaproponuj, żeby zrobić to od razu, w tej sesji.
 

@@ -65,6 +65,7 @@
   "sciezki": {
     "decyzje": ".ai/decyzje"
   },
+  "referencje": [],
   "modele": {
     "claude": {
       "czytanie": { "model": "haiku", "wysilek": "medium" },

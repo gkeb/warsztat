@@ -31,6 +31,8 @@ RRRR-MM-DD — ticket NN (w-toku)
 
 Nie streszczasz czatu i nie kopiujesz treści ticketu ani specu — linkujesz.
 
+Przy pracy nad referencją (skill `referencja`) zaktualizuj `## Pokrycie` w `.ai/referencje/<nazwa>/katalog.md` — co opisane, co zostało — a w przekazaniu (plik w `.ai/sesje/`, gdy praca nie dotyczy zdolności) zapisz następną partię poznania albo grupę wierszy czekających na decyzję.
+
 Przy eksperymencie linkuj plan i wynik w `.ai/eksperymenty/`; zapisz wybrany wariant, pozostały budżet i położenie potrzebnych artefaktów poza repo. Nie rozpoczynaj budżetu od nowa w kolejnej sesji. Przy przekazaniu na inny komputer zaznacz, których artefaktów tam nie będzie i jak odtworzyć wariant z zapisanych danych.
 
 ## Dodatkowo

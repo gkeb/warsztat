@@ -91,6 +91,7 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | --- | --- | --- | --- |
 | `start` | `/ai:start` | `$start` | raz na projekt (i po aktualizacji pluginu, i na każdym nowym komputerze): rozpoznaje pusty projekt albo zastany kod, zakłada `.ai/`, `AGENTS.md`, `CLAUDE.md`, zabezpieczenia (skan sekretów, `.gitignore`, blokada odczytu) i sposób pracy z gitem |
 | `poznaj` | `/ai:poznaj [ogolnie\|obszar]` | `$poznaj [ogolnie\|obszar]` | zastany kod tego repo: kod, dokumentacja, ADR i historia → mapa obszaru, słownik, zastane ADR i zasady, rozjazdy; zewnętrzne fakty → `badanie` |
+| `referencja` | `/ai:referencja [dodaj\|poznaj\|katalog] <nazwa>` | `$referencja [dodaj\|poznaj\|katalog] <nazwa>` | projekt czerpie z cudzego kodu (fork): klon tylko do odczytu poza repo, licencja, poznanie wszerz, katalog decyzji „co bierzemy”; kod tego repo → `poznaj` |
 | `przemysl` | `/ai:przemysl [myśl\|slug]` | `$przemysl [myśl\|slug]` | luźna myśl przed określeniem celu lub kierunku; gdy wiadomo już, jakiej zdolności dotyczy temat → `pomysl` |
 | `pomysl` | `/ai:pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | `$pomysl [produkt [plik.md]\|plik.md\|#nr\|opis\|slug\|slug druga-opinia\|slug sokratejsko]` | grill nowej zdolności, gdy wiadomo już, czego dotyczy; luźna myśl bez celu → `przemysl`; obsługuje produkt, plik, Issue, drugą opinię i tryb sokratejski |
 | `spec` | `/ai:spec [slug]` | `$spec [slug]` | spec i Twoja akceptacja |
@@ -108,7 +109,7 @@ Potem w każdym projekcie z warsztatem `start` (sekcja [Po aktualizacji pluginu]
 | `przekaz` | `/ai:przekaz` | `$przekaz` | koniec sesji albo przerwa: stan do `mapa.md` albo `.ai/sesje/` |
 | `retro` | `/ai:retro [sesja]` | `$retro [sesja]` | lekcje → automatyczne kontrole, zasady, zmiany warsztatu albo wzorce wspólne dla projektów; `sesja` — rozbiór bieżącej sesji |
 
-Siedem skilli to bramki, które uruchamiasz tylko Ty: `start`, `spec`, `pokroj`, `buduj`, `weryfikuj`, `zamknij`, `wydaj`. W Claude Code pilnuje tego `disable-model-invocation`, w Codexie `agents/openai.yaml`. Pozostałe agent może zaproponować albo uruchomić, gdy rozmowa tego wymaga.
+Osiem skilli to bramki, które uruchamiasz tylko Ty: `start`, `referencja`, `spec`, `pokroj`, `buduj`, `weryfikuj`, `zamknij`, `wydaj`. W Claude Code pilnuje tego `disable-model-invocation`, w Codexie `agents/openai.yaml`. Pozostałe agent może zaproponować albo uruchomić, gdy rozmowa tego wymaga.
 
 Pytania z wyborem używają natywnego interfejsu, jeśli agent go ma (w Claude Code: `AskUserQuestion`); bez niego skill pyta tekstowo z ponumerowanymi opcjami. Rekomendacja jest zawsze pierwsza. Pytania otwarte pozostają tekstowe. Szczegóły: sekcja `Jak pytać` w kontrakcie.
 
@@ -124,6 +125,8 @@ Pytania z wyborem używają natywnego interfejsu, jeśli agent go ma (w Claude C
 Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plikach `.ai/` zapisuje nazwę skilla bez składni agenta (np. `skill buduj platnosci`), więc projekt nie zależy od narzędzia. Starsze mapy z `/ai:...` nadal są czytelne; aktualizuj je przy najbliższej zmianie danego kroku.
 
 ## Aktualność wiedzy, eksperymenty i kontekst
+
+Od wersji `0.26.0` warsztat obsługuje projekt czerpiący z cudzego kodu (fork w szerokim sensie — scenariusz 5): skill `referencja` dodaje cudzy projekt jako klon tylko do odczytu poza repozytorium, sprawdza licencję, poznaje go wszerz i prowadzi katalog decyzji, co z niego bierzemy. Nowy hook `PreToolUse` odmawia zapisu w klonie (także przez powłokę), a blok w `AGENTS.md` traktuje pliki referencji, razem z jej `AGENTS.md` i `CLAUDE.md`, jako dane. To pierwszy z trzech kroków zgłoszenia Z09 (`ZGLOSZENIA.md`); rodzaj zdolności `przeniesienie` i odświeżanie referencji dojdą w kolejnych wersjach.
 
 Od wersji `0.25.0` warsztat wspiera Groka w rolach oceniających i faktach: druga opinia, weryfikacja, przegląd i badanie. Badania można kierować do Groka ustawieniem `badanie.wykonawca: "grok"` — pracujący model nie bada wtedy sam, tylko podaje polecenie do wklejenia w Grok. Blok warsztatu w `AGENTS.md` jest krótszy (reguły przed routingiem), żeby zmieścił się w limicie instrukcji Groka; hook stanu reaguje też na zdarzenia startu Groka.
 
@@ -219,6 +222,17 @@ Drobna poprawa struktury wewnątrz ticketu nie potrzebuje tego procesu — to zw
 ### 4. Bug
 
 `napraw` — czerwony sygnał odtwarzający bug → zawężenie → hipoteza → poprawka przyczyny → test regresji. Skill sam ustala, czy wystarczy commit `fix:`, czy potrzebny jest ticket, czy to w ogóle zmiana specu. Obalone hipotezy i problemy bez rozwiązania trafiają do `.ai/proby.md`. Bug zgłoszony na GitHubie: `napraw #12` — skill czyta zgłoszenie, a commit poprawki je zamyka.
+
+### 5. Nowy projekt z cudzego kodu (fork)
+
+Bierzesz wybrane zdolności i koncepcje z istniejącego rozwiązania, przerabiasz je po swojemu, a projekt z czasem staje się czymś innym. Cudzy projekt to **referencja**: klon tylko do odczytu **obok** projektu, nie w nim — jego instrukcje agentów, testy i lint nie wpływają na pracę, a domyślnie nic z niego nie przechodzi. Zasady: [kontrakt/referencje.md](plugins/ai/kontrakt/referencje.md).
+
+1. `start` w pustym katalogu projektu — zapyta, czy projekt czerpie z cudzego kodu.
+2. `referencja dodaj <nazwa> <url|ścieżka>` — klon poza repo (albo istniejący), commit przejrzany, licencja (permisywna / copyleft / brak — co wolno kopiować), ścieżka w `warsztat.json` → `referencje`, dostęp tylko do odczytu w Claude Code (`additionalDirectories`, deny `Edit`) i hook blokujący zapis w klonie. Ustawienia działają od nowej sesji.
+3. `referencja poznaj <nazwa> [obszar]` — wszerz i partiami: zdolności z perspektywy użytkownika referencji i koncepcje przekrojowe, każda z oceną kodu (stan, testy, lokalizacja, zależności, sprzężenie). Opis sprawdzany w kodzie. Wynik w `.ai/referencje/<nazwa>/katalog.md`.
+4. `referencja katalog <nazwa> [plik.md]` — Twoje decyzje: `bierzemy bez zmian` / `bierzemy i zmieniamy` / `nie bierzemy` / `później`. Notatka o tym, co chcesz wziąć (np. `fork.md`), jest materiałem wejściowym.
+5. `pomysl produkt` — roadmapa z katalogu: wiersze „bierzemy” to kandydaci na zdolności, przyjęte koncepcje na ADR; do słownika i zasad projektu nic nie wchodzi bez „bierzemy”. Szkielet wynika ze stosu i pierwszej ścieżki Twojego produktu.
+6. Zwykły cykl zdolności. Na razie kod z referencji przenosi zdolność rodzaju `funkcja`: `buduj` kopiuje plik po sprawdzeniu licencji i zapisuje w mapie, skąd pochodzi.
 
 ## Spisany pomysł w pliku
 
@@ -404,6 +418,7 @@ CLAUDE.md                 # @AGENTS.md
   eksperymenty/           # plany, pomiary i wyniki ograniczonych eksperymentów
   przemyslenia/           # myśli przemyślane pytaniami sokratejskimi: wniosek, dokąd trafiły albo dlaczego odrzucone
   sesje/                  # przerwana praca poza zdolnościami
+  referencje/<nazwa>/     # cudzy projekt, z którego czerpiemy: referencja.md (źródło, commit, licencja), katalog.md (decyzje)
   zdolnosci/<slug>/
     mapa.md               # problem, rodzaj, kto grillował, następny krok, pytania, decyzje, plasterki, stan sesji
     spec.md               # kontrakt zdolności

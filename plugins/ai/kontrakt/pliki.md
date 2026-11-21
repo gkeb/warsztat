@@ -40,9 +40,13 @@ CLAUDE.md                    # importuje @AGENTS.md
     RRRR-MM-DD-slug.md       # pytanie, warunki, pomiar odniesienia, iteracje i wynik; kod roboczy poza repo
   sesje/
     RRRR-MM-DD-slug.md       # przerwana praca poza zdolnością (np. naprawa); usuwa ją ten, kto kończy
+  referencje/
+    <nazwa>/
+      referencja.md          # cudzy projekt, z którego czerpiemy: źródło, commit przejrzany, licencja (klon leży poza repo)
+      katalog.md             # zdolności i koncepcje referencji z decyzjami; pokrycie poznania
 ```
 
-Katalogi `obszary/`, `badania/`, `eksperymenty/`, `przemyslenia/` i `sesje/` oraz pliki `zrodla.md`, `proby.md`, `profil.md` i `wydania.md` powstają dopiero wtedy, gdy są potrzebne. `CHANGELOG.md` w korzeniu repozytorium — tylko gdy projekt prowadzi historię zmian dla użytkowników (`wydanie.changelog`).
+Katalogi `obszary/`, `badania/`, `eksperymenty/`, `przemyslenia/`, `sesje/` i `referencje/` oraz pliki `zrodla.md`, `proby.md`, `profil.md` i `wydania.md` powstają dopiero wtedy, gdy są potrzebne. `CHANGELOG.md` w korzeniu repozytorium — tylko gdy projekt prowadzi historię zmian dla użytkowników (`wydanie.changelog`).
 
 Poza projektem, w katalogu pluginu (poziom wyżej niż ten plik), leżą `wzorce/` — wiedza przenoszona między projektami („Wzorce — wiedza między projektami” w `kontrakt/pamiec.md`) — i `profile/` — listy decyzji dla klas aplikacji („Profile — klasy aplikacji” w `kontrakt/profile-i-wydania.md`). Nie kopiujesz ich do `.ai/`.
 

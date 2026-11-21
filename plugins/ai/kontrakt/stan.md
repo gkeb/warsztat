@@ -29,6 +29,9 @@ Część [kontraktu warsztatu](../KONTRAKT.md). Czytaj sekcje potrzebne do zadan
 | zasady, których kod ma się trzymać (architektura, wzorce, kod, testy, niefunkcjonalne) | `ZASADY.md` | skille `decyzja`, `poznaj`, `pomysl produkt`, `retro`, `zamknij`; zmiana zasady tylko za zgodą człowieka |
 | szczegóły obszaru kodu | `obszary/<slug>.md` | skill `poznaj` |
 | zastana dokumentacja i rozjazdy z kodem | `zrodla.md` | skill `start`, `poznaj` |
+| referencja (cudzy projekt, z którego czerpiemy): źródło, commit przejrzany, licencja, jej dokumentacja | `referencje/<nazwa>/referencja.md` | skill `referencja` |
+| ścieżka klonu referencji na tym komputerze | `warsztat.json` → `referencje` (z niej wyprowadzone wpisy w `.claude/settings.json`) | skill `referencja dodaj` |
+| zdolności i koncepcje referencji z decyzjami (`bierzemy`, `później`, …) i pokrycie poznania | `referencje/<nazwa>/katalog.md` | skill `referencja`; decyzje — tylko człowiek |
 | pliki z zamiarem użytkownika i stan ich rozbioru | `zrodla.md` → `## Zamiar` | skill `pomysl` |
 | punkt odniesienia walidacji | `warsztat.json` → `odniesienie` | skill `start`; lista znanych błędów może tylko maleć |
 | zachowanie zdolności | `spec.md` | skill `spec` (po akceptacji — tylko za zgodą człowieka) |
