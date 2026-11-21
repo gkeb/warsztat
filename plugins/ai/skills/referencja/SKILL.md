@@ -29,7 +29,7 @@ Ten skill pisze tylko w `.ai/referencje/<nazwa>/`, w `warsztat.json` → `refere
 5. **Zapis — jedna lista do zgody:**
    - `.ai/referencje/<nazwa>/referencja.md` z szablonu (źródło, commit przejrzany, licencja, pliki instrukcji);
    - `warsztat.json` → `referencje`: wpis `{ "nazwa", "sciezka", "zrodlo" }` (brak klucza → dopisz go; wpis o tej nazwie już jest → uzgodnij ścieżkę);
-   - `.claude/settings.json` → `permissions.additionalDirectories`: ścieżka klonu z `/`; `permissions.deny`: `Edit(//<ścieżka bez dwukropka, z małą literą dysku>/**)` oraz `Edit(<ścieżka z />/**)` (np. `Edit(//c/progs/ref/t3code/**)` i `Edit(C:/progs/ref/t3code/**)`) — składnia dla litery dysku w Windows nie jest jeszcze potwierdzona, więc oba warianty; hook i tak pilnuje zapisu. Istniejących ustawień nie ruszasz poza tymi wpisami.
+   - `.claude/settings.json` → `permissions.additionalDirectories`: ścieżka klonu z `/`; `permissions.deny`: `Edit(//<ścieżka z /, litera dysku bez dwukropka>/**)`, np. `Edit(//c/progs/ref/t3code/**)` (w Windows działa też `Edit(C:/…/**)`, ale `//` to postać z dokumentacji). Wpis w starszej postaci zostawiasz. Hook i tak pilnuje zapisu. Istniejących ustawień nie ruszasz poza tymi wpisami.
 
    Ponowne `dodaj` tej samej nazwy (inny komputer, przerwane pierwsze uruchomienie) uzgadnia wszystkie trzy miejsca ze ścieżką w `warsztat.json`, a commit przejrzany zostawia bez zmian, chyba że klon jest na innym commicie — wtedy pokaż różnicę i zapytaj.
 6. Powiedz, że ustawienia Claude Code obowiązują od nowej sesji, a w Codexie nic nie konfigurujesz (czyta poza workspace, a sandbox nie pozwala tam pisać).

@@ -45,6 +45,16 @@ Claude Code: katalog dodany przez `permissions.additionalDirectories` w settings
 24. Codex, konfiguracja: uruchamiać w `workspace-write` (domyślny) bez `--add-dir` i bez wpisu w `writable_roots` dla katalogu referencyjnego; odczyt jest wtedy (wg kodu) dozwolony, zapis wymaga zatwierdzenia i leży poza piaskownicą, więc trzeba nie zatwierdzać go albo użyć `read-only`. Gdyby trzeba było twardo zablokować odczyt lub zapis, służy beta profili z regułą `deny`. AGENTS.md z katalogu referencyjnego nie jest ładowany automatycznie [11][12]. (wniosek)
 25. Czego Codex nie gwarantuje mechanizmem: ochrony przed treścią instrukcji w plikach, które agent sam otworzy; oraz w trybie `read-only` i `workspace-write` jest „approval” zamiast twardej odmowy (pytanie do użytkownika, nie zakaz), o ile nie ustawiono polityki zatwierdzeń `never` (wniosek; polityki `never` w tym badaniu nie sprawdzano). Potrzebna ta sama reguła w AGENTS.md repo. (wniosek)
 
+## Wynik próby
+
+Sesje Claude Code w projekcie `C:\progs\tenta` z warsztatem 0.26.0, Windows, 2026-11-21:
+
+- Zagnieżdżone `CLAUDE.md` w katalogu dodanym przez `permissions.additionalDirectories` nie są dociągane przy odczycie pliku w tym poddrzewie (plik z `.repos/alchemy-effect/` obok `CLAUDE.md` z importem `@AGENTS.md`); na starcie wczytany był tylko `CLAUDE.md` projektu.
+- Reguła deny `Edit(//c/progs/tenta/tmp/proba-a/**)` i reguła `Edit(C:/progs/tenta/tmp/proba-b/**)` blokują edycję — każda osobno, w świeżej sesji (`claude -p`); komunikat „File is in a directory that is denied by your permission settings.”
+- Hook `PreToolUse` warsztatu (`scripts/referencje.mjs`) odmówił w sesji edycji pliku w ścieżce referencji bez reguły deny i polecenia `echo x >` do niej.
+
+Dwie pierwsze niepewności niżej są tym rozstrzygnięte dla Windows i tej wersji Claude Code.
+
 ## Niepewności
 
 - Nie ustalono, czy zagnieżdżone CLAUDE.md/AGENTS.md w podkatalogach dodanego katalogu są dociągane przy odczycie tam pliku. Dokumentacja opisuje tylko „subdirectories under your current working directory”. Wymaga testu: katalog z CLAUDE.md w podkatalogu, `/add-dir`, odczyt pliku, obserwacja linii `Loaded` / hooka `InstructionsLoaded`.
