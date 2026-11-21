@@ -16,9 +16,10 @@ Dotyczy projektu, który bierze wybrane zdolności i koncepcje z istniejących r
   - `bierzemy i zmieniamy` — bierzemy i zmieniamy zachowanie;
   - `nie bierzemy` — zostaje tylko w katalogu, z powodem;
   - `później` — opisane z lokalizacją, bez poznawania w głąb; wraca przez Mgłę (to samo słowo co `później` w profilu);
+  - `rozstrzyga projekt` — sprawa, którą projekt ustala sam (np. narzędzia, stos, styl kodu): referencja jest tylko punktem odniesienia, a decyzja zapada w `ZASADY.md`, ADR albo profilu projektu; wiersz linkuje to miejsce, gdy już istnieje;
   - `otwarte` — jeszcze bez decyzji.
 
-  Nowe zdolności, których referencja nie ma, idą zwykłą drogą roadmapy.
+  Decyzja to zawsze jedna z tych wartości, dosłownie. Samo `bierzemy` nie wystarcza — „bez zmian” i „i zmieniamy” rozstrzygają, czy przeniesienie zmienia zachowanie. Nowych wartości nie tworzysz: wiersz, którego części dostają różne decyzje, dzielisz (niżej). Nowe zdolności, których referencja nie ma, idą zwykłą drogą roadmapy.
 
 ### Separacja wiedzy
 
@@ -52,7 +53,8 @@ Dotyczy projektu, który bierze wybrane zdolności i koncepcje z istniejących r
 - **Wszerz, nie w głąb.** Poznanie referencji opisuje każdą zdolność i koncepcję na tyle, żeby dało się o niej zdecydować. Mapa w głąb powstaje dopiero dla `bierzemy`, przy przenoszeniu.
 - **Partiami.** Duża referencja nie mieści się w jednej sesji. `katalog.md` ma sekcję `## Pokrycie`: które obszary referencji są opisane, które nie, z commitem przejrzanym. `przekaz` i `gdzie` pokazują, gdzie skończyliśmy.
 - **Zależność odrzucona.** Wiersz `bierzemy`, którego zależność (wiersz albo koncepcja) ma `nie bierzemy`, potrzebuje zastępstwa tej zależności, nazwanego w wierszu; bez niego zostaje przy `później`.
-- **Plik z zamiarem.** Notatka użytkownika o tym, co chce wziąć (np. `fork.md`), to materiał wejściowy katalogu: jej pozycje stają się wierszami i koncepcjami ze sprawdzeniem w kodzie i decyzją użytkownika. Plik zostaje nietknięty; wiersz ma odnośnik `Źródło: <plik> § <sekcja>`.
+- **Podział wiersza.** Części jednego wiersza dostają różne decyzje (np. „Klienci”: web — `bierzemy i zmieniamy`, desktop i mobile — `później`) → wiersz dzielisz na wiersze z literą (`W9a`, `W9b`, …), każdy z własną oceną kodu i decyzją. Pierwotny wiersz zostaje z linią `Podzielony na: W9a, W9b` i bez decyzji; numerów nie przesuwasz.
+- **Plik z zamiarem.** Notatka użytkownika o tym, co chce wziąć (np. `fork.md`), to materiał wejściowy katalogu: jej pozycje stają się wierszami i koncepcjami ze sprawdzeniem w kodzie i decyzją użytkownika. Plik zostaje nietknięty; wiersz ma odnośnik `Źródło: <plik> § <sekcja>`. Plik ma leżeć w repozytorium projektu i być zacommitowany — inaczej rozbiór nie ma wersji odniesienia, a zmiany pliku nie zostaną wykryte. Plik poza repo (np. obok klonu) → zaproponuj przeniesienie do projektu (np. `docs/`) i commit; po zgodzie rejestrujesz go w `.ai/zrodla.md` → `## Zamiar` z commitem rozbioru, jak w „Plik z zamiarem” w `kontrakt/rozmowa.md`. Bez zgody zapisz w `## Pokrycie`, że rozbiór nie ma wersji odniesienia.
 
 ### Przeniesienie kodu przed rodzajem `przeniesienie`
 

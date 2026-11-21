@@ -1,6 +1,6 @@
 # Katalog referencji: {{nazwa}}
 
-> Co ma referencja i co z tym robimy. Wiersz = zdolność z perspektywy użytkownika referencji; koncepcje = rozwiązania przekrojowe. Decyzje: `bierzemy bez zmian` · `bierzemy i zmieniamy` · `nie bierzemy` · `później` · `otwarte`. „Bez zmian” znaczy bez zmiany zachowania — dopasowanie do `ZASADY.md` obowiązuje zawsze. Do słownika, zasad i roadmapy projektu przechodzi tylko `bierzemy`, przez zwykłe skille.
+> Co ma referencja i co z tym robimy. Wiersz = zdolność z perspektywy użytkownika referencji; koncepcje = rozwiązania przekrojowe. Decyzje — dosłownie jedna z: `bierzemy bez zmian` · `bierzemy i zmieniamy` · `nie bierzemy` · `później` · `rozstrzyga projekt` · `otwarte` (samo „bierzemy” nie wystarcza; nowych wartości nie ma — części z różnymi decyzjami → podział wiersza na `W9a`, `W9b`). „Bez zmian” znaczy bez zmiany zachowania — dopasowanie do `ZASADY.md` obowiązuje zawsze. Do słownika, zasad i roadmapy projektu przechodzi tylko `bierzemy`, przez zwykłe skille.
 
 ## Pokrycie
 
