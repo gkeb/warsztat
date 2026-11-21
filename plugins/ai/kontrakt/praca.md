@@ -88,7 +88,7 @@ Recenzent zgodności zakłada, że plan ma rację, a budujący, który odszedł 
 
 ### Weryfikacja — dowiezienie
 
-Model, który zbudował, ma skłonność do potwierdzania własnego planu. Dlatego domyślnie sprawdza go **inny model** — najlepiej w innym narzędziu (budujesz w Claude Code, weryfikujesz w Codexie albo odwrotnie). Gdy `weryfikacja.innyModel` jest `false`, ten sam model może sprawdzić wynik, ale runda jest nieniezależna. Przekazanie odbywa się przez pliki `.ai/` i git, nie przez czat.
+Model, który zbudował, ma skłonność do potwierdzania własnego planu. Dlatego domyślnie sprawdza go **inny model** — najlepiej w innym narzędziu (budujesz w Claude Code, weryfikujesz w Codexie albo w Grok, i odwrotnie). Gdy `weryfikacja.innyModel` jest `false`, ten sam model może sprawdzić wynik, ale runda jest nieniezależna. Przekazanie odbywa się przez pliki `.ai/` i git, nie przez czat.
 
 - **Role.** Budujący (`buduj`) koduje i poprawia. Weryfikator (`weryfikuj`) ocenia i zapisuje uwagi — niczego nie poprawia.
 - **Kto budował.** `buduj` wpisuje do ticketu `budowal: "<narzędzie> / <model>"`. `weryfikuj` porównuje nazwy modeli, nie narzędzi, ze wszystkimi budującymi w zakresie. Ten sam model przy `weryfikacja.innyModel: true` → ostrzeżenie, a za zgodą użytkownika weryfikacja oznaczona jako nieniezależna. Przy `false` wolno użyć tego samego modelu, ale wynik oznacz jako nieniezależny. Gdy model którejkolwiek strony jest `nieznany`, nie twierdź, że weryfikacja jest niezależna.

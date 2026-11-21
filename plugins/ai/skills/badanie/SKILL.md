@@ -21,6 +21,11 @@ Badanie nie pisze kodu produkcyjnego i nie podejmuje decyzji. Dostarcza fakty, a
 ## 2. Zleć badanie
 
 - Plik wyniku: `.ai/badania/RRRR-MM-DD-slug.md`.
+- **Kto bada** — `.ai/warsztat.json` → `badanie.wykonawca`: `biezacy` (domyślnie, także przy braku klucza) albo `grok`. Przy `grok`, gdy sam nie działasz w Grok, nie uruchamiasz badacza i nie badasz sam:
+  - pytanie z mapy zdolności zostaje w niej otwarte jako `[badanie]`, z dopisanym docelowym plikiem wyniku; pytanie spoza zdolności żyje tylko w poleceniu poniżej i w pliku wyniku;
+  - podaj człowiekowi gotowe polecenie do wklejenia w Grok: `/badanie <pytanie> — wynik w <plik>`, z kontekstem z kroku 1 w jednym zdaniu;
+  - pracę, która nie zależy od odpowiedzi, kontynuujesz; decyzję zależną od niej odkładasz i mówisz, że czeka na badanie;
+  - gdy plik wyniku już jest (w tej albo następnej sesji) — krok 3.
 - Jeśli możesz, uruchom subagenta **w tle**: w Claude Code `badacz` z tego pluginu, w innym agencie subagent z pełną ścieżką do `badacz.md`. Model i wysiłek — poziom `badanie` według kontraktu (`modele.<agent>.badanie`). Przekaż: pytanie, kontekst z kroku 1 i ścieżkę pliku wyniku.
 - Bez subagenta wykonaj `badacz.md` sam.
 - W tle użytkownik może rozmawiać dalej, np. w `pomysl`. Gdy wynik przyjdzie, wróć do kroku 3.

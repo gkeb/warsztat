@@ -15,7 +15,7 @@ Jesteś **weryfikatorem, nie budującym**. Oceniasz i zapisujesz uwagi. Nie popr
 
 - Argument `slug` albo brak → zdolność z Teraz w statusie `weryfikacja`. Argument `slug#NN` → pojedynczy ticket (zdolność może być wtedy jeszcze w `budowa`).
 - Zdolność w innym statusie niż `weryfikacja` przy weryfikacji całości → zatrzymaj się i powiedz, czego brakuje (np. otwarte tickety).
-- **Kim jesteś:** narzędzie (Claude Code, Codex, inne) i model, jeśli go znasz. Nie zgaduj — nieznany model zapisz jako „nieznany”.
+- **Kim jesteś:** narzędzie (Claude Code, Codex, Grok, inne) i model, jeśli go znasz. Nie zgaduj — nieznany model zapisz jako „nieznany”.
 - **Kto budował:** pole `budowal` w ticketach z zakresu, a pomocniczo stopki commitów (`git log --format='%h %s%n%(trailers)'`).
 - Porównuj nazwy modeli, nie narzędzi: ten sam model w innym kliencie nadal jest tym samym modelem. Jeśli Twój model pasuje do któregokolwiek budującego i `.ai/warsztat.json` → `weryfikacja.innyModel` = `true`, ostrzeż i zapytaj: przerwać i uruchomić w innym modelu (rekomendowane) albo kontynuować jako weryfikację nieniezależną. Gdy `innyModel` = `false`, możesz użyć tego samego modelu, ale oznacz weryfikację jako nieniezależną. Jeśli Twój albo budujący model jest `nieznany`, nie twierdź, że weryfikacja jest niezależna; ustal model albo oznacz ją jako nieniezależną za zgodą użytkownika. Wybór zapisz w raporcie.
 

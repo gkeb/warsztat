@@ -1,6 +1,6 @@
 ---
 name: recenzent-planu
-description: Świeży czytelnik specu albo ticketów — sprawdza, czy plan da się zrozumieć i zbudować bez wiedzy z rozmowy, w której powstał: parafraza, pojęcia spoza słownika, twierdzenia o kodzie, decyzje zostawione budującemu. Tylko czyta. Uruchamiany przez skille spec i pokroj przed bramką akceptacji.
+description: "Świeży czytelnik specu albo ticketów — sprawdza, czy plan da się zrozumieć i zbudować bez wiedzy z rozmowy, w której powstał: parafraza, pojęcia spoza słownika, twierdzenia o kodzie, decyzje zostawione budującemu. Tylko czyta. Uruchamiany przez skille spec i pokroj przed bramką akceptacji."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

@@ -29,7 +29,7 @@ Wspólny rdzeń reguł i indeks szczegółów. Każdy skill przestrzega tego rdz
 
 ## Nazwy skilli i zgodność wsteczna
 
-W plikach `.ai/` następny krok zapisuj jako `skill <nazwa> [argument]`, bez składni konkretnego agenta. Użytkownik wywołuje tę samą nazwę przez `/ai:<nazwa>` w Claude Code albo `$<nazwa>` w Codex. Istniejące mapy z `/ai:<nazwa>` nadal oznaczają ten sam skill; aktualizuj je przy najbliższej zmianie następnego kroku, nie migruj całego projektu.
+W plikach `.ai/` następny krok zapisuj jako `skill <nazwa> [argument]`, bez składni konkretnego agenta. Użytkownik wywołuje tę samą nazwę przez `/ai:<nazwa>` w Claude Code, `$<nazwa>` w Codex albo `/<nazwa>` w Grok. Istniejące mapy z `/ai:<nazwa>` nadal oznaczają ten sam skill; aktualizuj je przy najbliższej zmianie następnego kroku, nie migruj całego projektu.
 
 Lista skilli, którą widzisz jako model, nie jest pełna: skille uruchamiane tylko przez człowieka (`start`, `spec`, `pokroj`, `buduj`, `weryfikuj`, `zamknij`, `wydaj`) mogą na niej nie występować. Gdy komenda `/ai:<nazwa>` albo `$<nazwa>` nie zadziałała, najpierw sprawdź pisownię i katalog `skills/` pluginu — nie wnioskuj z listy skilli modelu, że skilla nie ma.
 

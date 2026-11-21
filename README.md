@@ -32,6 +32,8 @@ codex plugin add ai@warsztat-local
 
 Albo w aplikacji: `/plugins` → Warsztat → zainstaluj. Codex kopiuje plugin do `~/.codex/plugins/cache/warsztat-local/ai/<wersja>/`, więc **po każdej zmianie w repo** uruchom ponownie `codex plugin add ai@warsztat-local` — odświeża kopię (dodaje nowe pliki, usuwa skasowane). Przed pierwszym użyciem hooków otwórz `/hooks`, przejrzyj i zaakceptuj definicje (stan sesji, formatowanie, kontrola, dźwięk); po zmianie ich konfiguracji Codex może poprosić o ponowne zaufanie. Sama instalacja pluginu hooków nie włącza.
 
+**Grok** — bez osobnej instalacji: Grok sam wczytuje plugin zainstalowany w Claude Code (skille, hooki, subagentów), a `grok inspect` w projekcie pokazuje, co widzi. W każdym projekcie raz uruchom w nim `/hooks-trust` (albo startuj z `--trust`) — bez zaufania do folderu Grok nie wczytuje `AGENTS.md`, więc nie zna reguł warsztatu. Grok obcina plik instrukcji do 10 000 znaków; `start` ostrzega, gdy `AGENTS.md` jest dłuższy. Grok służy w warsztacie do ról oceniających i faktów: druga opinia, `weryfikuj`, `przeglad`, `badanie` (wywołanie `/<nazwa>`). Budujesz i naprawiasz w Claude Code albo Codexie.
+
 **Wyłączenie hooków kodu bez odinstalowania:** zmienne środowiskowe `WARSZTAT_HOOKI=0` (formatowanie i kontrola) i `WARSZTAT_DZWIEK=0` (dźwięki) — w Claude Code np. w `env` w `~/.claude/settings.json`. W jednym projekcie: `hooki` w `.ai/warsztat.json`.
 
 **Tylko rozszerzenia VS Code, bez CLI w `PATH`.** Rozszerzenia mają w sobie pełne CLI i używają tej samej konfiguracji (`~/.claude`, `~/.codex`) co wersja terminalowa — plugin zainstalowany raz działa w rozszerzeniu, terminalu i wszystkich projektach. W Claude Code wystarczą komendy `/plugin` w czacie. Do komend terminalowych użyj pliku z rozszerzenia (numer wersji w ścieżce zmienia się po aktualizacji rozszerzenia):
@@ -122,6 +124,8 @@ Pytania z wyborem używają natywnego interfejsu, jeśli agent go ma (w Claude C
 Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plikach `.ai/` zapisuje nazwę skilla bez składni agenta (np. `skill buduj platnosci`), więc projekt nie zależy od narzędzia. Starsze mapy z `/ai:...` nadal są czytelne; aktualizuj je przy najbliższej zmianie danego kroku.
 
 ## Aktualność wiedzy, eksperymenty i kontekst
+
+Od wersji `0.25.0` warsztat wspiera Groka w rolach oceniających i faktach: druga opinia, weryfikacja, przegląd i badanie. Badania można kierować do Groka ustawieniem `badanie.wykonawca: "grok"` — pracujący model nie bada wtedy sam, tylko podaje polecenie do wklejenia w Grok. Blok warsztatu w `AGENTS.md` jest krótszy (reguły przed routingiem), żeby zmieścił się w limicie instrukcji Groka; hook stanu reaguje też na zdarzenia startu Groka.
 
 Od wersji `0.24.0` Claude i Codex odpowiadają w tym samym układzie: najpierw wynik, a raport po pracy ma stałe nagłówki `Zrobione:`, `Decyzje:` (co agent wybrał sam i dlaczego), `Sprawdzone:`, `Pominięte i ryzyko:`, `Następny krok:`. Decyzję, którą podejmujesz Ty (spec, tickety, ADR, grill), agent opisuje tak, żeby dała się zrozumieć bez otwierania plików: o co chodzi, opcje i ich skutki w praktyce, co dalej. Reguły: „Odpowiedź i raport” i „Jak pytać” w kontrakcie; skrót trafia do bloku w `AGENTS.md` przy najbliższym `start`.
 
@@ -242,7 +246,7 @@ Każdy model uczył się na innych danych i inaczej podchodzi do tego samego pro
 grill (model A) → druga opinia (model B) → spec → plan → budowa (A) → weryfikacja (B) → gotowe
 ```
 
-Modele porównujemy niezależnie od narzędzia: ten sam model uruchomiony w Claude Code i Codexie nie daje niezależnej opinii. Kierunek nie ma znaczenia — równie dobrze budujesz w Codexie, a weryfikujesz w Claude Code. Przekazanie odbywa się przez pliki `.ai/` i git.
+Modele porównujemy niezależnie od narzędzia: ten sam model uruchomiony w Claude Code i Codexie nie daje niezależnej opinii. Kierunek nie ma znaczenia — równie dobrze budujesz w Codexie, a weryfikujesz w Claude Code. Trzecią rodziną modeli jest Grok: druga opinia i weryfikacja w nim są niezależne od obu narzędzi do budowy. Przekazanie odbywa się przez pliki `.ai/` i git.
 
 **Przy koncepcji — `pomysl <slug> druga-opinia`.** Zwykła kontynuacja grilla w drugim modelu niewiele daje, bo przyjmuje ustalenia pierwszego. Druga opinia najpierw buduje własne zdanie z problemu, linii roadmapy, rodzaju zdolności, słownika, `ZASADY.md`, powiązanych ADR-ów i kodu — bez czytania lekcji, decyzji ani otwartych pytań — a dopiero potem porównuje. Wynik: zakwestionowane decyzje, pytania, których nikt nie zadał, nierozważone alternatywy i niejasne pojęcia. Grill dotyczy już tylko tych różnic, więc nie odpowiadasz dwa razy na to samo. Ślepota analizy jest częściowa, bo słownik, `ZASADY.md` i ADR-y mogą zawierać wnioski z wcześniejszego grilla. Każda decyzja ma zapisane źródło, a podtrzymane mimo zastrzeżeń — argument. `spec` przypomina o drugiej opinii przed akceptacją, a hook — gdy grill jest skończony, a opinii brak.
 
@@ -426,6 +430,7 @@ Instrukcje projektu żyją w jednym pliku — `AGENTS.md` — bo czytają go wsz
 | `weryfikacja.recenzjaPlanu` | czy `spec` i `pokroj` uruchamiają przed bramką świeżego recenzenta planu (domyślnie `true`, także przy braku klucza) |
 | `weryfikacja.odbior` | czy `zamknij` wymaga odbioru przez człowieka według listy w `odbior.md` (domyślnie `true`) |
 | `przeglad.bezpieczenstwo` | `auto` (domyślnie — recenzent bezpieczeństwa, gdy diff dotyka wrażliwych granic), `zawsze` albo `nigdy` |
+| `badanie.wykonawca` | `biezacy` (domyślnie — bada model, który pracuje) albo `grok` — model zapisuje pytanie i podaje polecenie `/badanie …` do uruchomienia w Grok, a wynik czyta z `.ai/badania/` |
 | `mutacje` | testy mutacyjne w `weryfikuj` (decyzja P-24): `null` albo `{ "komenda": "…", "limitMinut": 15 }`; zakres przez `{pliki}`, `{diff}` albo konfigurację narzędzia |
 | `sciezki.decyzje` | katalog ADR — domyślnie `.ai/decyzje`, w zastanym projekcie może wskazywać istniejący |
 | `profile` | klasy aplikacji: `przekrojowe` zawsze, plus np. `cli`, `strona` |

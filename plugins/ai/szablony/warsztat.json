@@ -54,6 +54,9 @@
   "przeglad": {
     "bezpieczenstwo": "auto"
   },
+  "badanie": {
+    "wykonawca": "biezacy"
+  },
   "hooki": {
     "formatowanie": true,
     "kontrola": true,
