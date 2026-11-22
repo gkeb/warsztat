@@ -20,7 +20,7 @@ Zasada nadrzędna: **niczego nie nadpisujesz i niczego nie przenosisz bez zgody*
 - Warsztat: czy istnieją `.ai/`, `AGENTS.md`, `CLAUDE.md`.
 - Stos: `package.json` / `tsconfig.json` → TypeScript; `pyproject.toml` / `requirements*.txt` → Python.
 - Komendy, które faktycznie istnieją: skrypty `test`, `typecheck`, `lint`; `ruff`, `pytest`, `mypy`.
-- **Klasa aplikacji** (profile w `../../profile/`): `astro.config.*` albo inny generator stron → `strona`; `index.html` z ręcznie utrzymywanymi plikami HTML/CSS i bez generatora lub frameworka → `html`; `[project.scripts]` w `pyproject.toml`, pole `bin` w `package.json` albo parser argumentów jako punkt wejścia → `cli`. Pusty projekt — klasę ustali `pomysl produkt`, zapytaj tylko, jeśli użytkownik już ją zna.
+- **Klasa aplikacji** (profile w `../../profile/`): `astro.config.*` albo inny generator stron → `strona`; `index.html` z ręcznie utrzymywanymi plikami HTML/CSS i bez generatora lub frameworka → `html`; `[project.scripts]` w `pyproject.toml`, pole `bin` w `package.json` albo parser argumentów jako punkt wejścia → `cli`; serwer HTTP (Hono, Fastify, Express, FastAPI) razem z interfejsem w przeglądarce (np. katalog `client`/`web` z Vite) → `aplikacja` (gdy serwer uruchamia się poleceniem, także `cli`). Pusty projekt — klasę ustali `pomysl produkt`, zapytaj tylko, jeśli użytkownik już ją zna.
 - **Tryb:**
   - **pusty projekt** — brak kodu źródłowego (najwyżej README, licencja, konfiguracja);
   - **zastany kod** — wszystko inne.

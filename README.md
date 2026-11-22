@@ -328,7 +328,7 @@ Ten sam sposób prowadzenia działa w grillu konkretnej zdolności: `pomysl <slu
 
 Proces jest wspólny, ale decyzje zależą od tego, co budujesz. Narzędzie CLI ma kody wyjścia, stdout kontra stderr i instalację. Strona w Astro ma tryb renderowania, SEO, hosting, dostępność i treści, które ktoś edytuje. **Profil** to lista decyzji dla klasy aplikacji, nie podręcznik: dzięki niemu nic nie umyka przypadkiem.
 
-- **Profile** w `plugins/ai/profile/`: `przekrojowe` (zawsze: środowisko, testy, CI, sekrety, RODO, błędy, logi, wersjonowanie, historia zmian, wdrożenie, wycofanie, pielęgnacja, licencja, testy mutacyjne), `cli`, `html` i `strona`. Każdy ma też sekcje: doświadczenie (UX), testy akceptacyjne (jak testować publiczny interfejs), typowe niedowiezienia, wydanie i pielęgnację.
+- **Profile** w `plugins/ai/profile/`: `przekrojowe` (zawsze: środowisko, testy, CI, sekrety, RODO, błędy, logi, wersjonowanie, historia zmian, wdrożenie, wycofanie, pielęgnacja, licencja, testy mutacyjne), `cli`, `html`, `strona` i `aplikacja` (serwer z interfejsem w przeglądarce, lokalny albo hostowany). Każdy ma też sekcje: doświadczenie (UX), testy akceptacyjne (jak testować publiczny interfejs), typowe niedowiezienia, wydanie i pielęgnację.
 - **Rozstrzygnięcia** trafiają do `.ai/profil.md`: każda pozycja → ADR, zasada, `pominięte: powód`, `później` albo `otwarte`. Mały pomocnik CLI na własny użytek może pominąć połowę listy — byle świadomie. Przechodzi ją `pomysl produkt` (nowy projekt) albo `poznaj` (zastany kod, z tym, co już rozstrzygnął). `gdzie tydzien` pokazuje, co otwarte.
 - **Wygląd i UX** — rodzaj zdolności `wyglad`: przepływy jako scenariusze, stany (pusty, błąd, sukces), szerokości kontrolne, dostępność. Logika idzie przez TDD, a reszta przez kontrole automatyczne (axe, linki, Lighthouse), zrzuty ekranu i **Twoją akceptację** wpisaną w tickecie.
 - **Wydanie** — skill `wydaj`, uruchamiany tylko przez Ciebie: co wchodzi od ostatniego wydania, wersja, historia zmian, build, podgląd, publikacja albo wdrożenie (każda komenda pokazana przed uruchomieniem), sprawdzenie na produkcji, wycofanie, gdy nie przeszło. Historia zmian dla użytkowników (`CHANGELOG.md`, sekcja `Niewydane`) rośnie na bieżąco — dopisują ją `zamknij` i `napraw`. Rejestr `.ai/wydania.md` mówi, co i kiedy trafiło na produkcję, także przy samych zmianach treści.
@@ -503,7 +503,7 @@ plugins/ai/
   skills/prototyp/*.md                # instrukcje ról eksperymentatora i oceniającego eksperyment  agents/*.md                         # subagenci Claude Code: model i narzędzia, treść z plików ról
   szablony/                           # szablony plików .ai/, sekcji AGENTS.md, PR, hooka pre-commit, .gitignore, deny, rulesetu GitHuba
   wzorce/                             # wzorce wspólne dla projektów: INDEKS.md + plik na wzorzec (pisze retro)
-  profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, html, strona (rozwija retro)
+  profile/                            # listy decyzji klas aplikacji: przekrojowe, cli, html, strona, aplikacja (rozwija retro)
   hooks/hooks.json                    # SessionStart → stan.mjs; PostToolUse, Stop, PermissionRequest → kod.mjs
   scripts/stan.mjs                    # zbiera „gdzie jesteśmy” (Node, bez zależności)
   scripts/aktualnosc-map.mjs           # lokalna kontrola źródeł map; moduł hooka i raport JSON dla gdzie
