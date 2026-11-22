@@ -37,7 +37,8 @@
     "przekrojowe"
   ],
   "walidacja": [
-    "claude plugin validate plugins/ai"
+    "claude plugin validate plugins/ai",
+    "node --test \"tests/**/*.test.mjs\""
   ],
   "mutacje": null,
   "odniesienie": {
