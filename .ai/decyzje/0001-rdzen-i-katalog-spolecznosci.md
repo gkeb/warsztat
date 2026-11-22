@@ -17,6 +17,7 @@ Rdzeń zmienia tylko opiekun. Od innych przyjmuje wyłącznie zgłoszenia (Issue
 
 - **Wkłady w rdzeniu jako `kandydat`.** Plus: jedno miejsce do utrzymania. Minus: kandydaci rozdymają indeks i profile u wszystkich, także u tych, którzy ich nie chcą, a każdy PR dotyka repozytorium rdzenia.
 - **PR-y wszędzie, także do rdzenia.** Plus: najszybszy rozwój. Minus: jeden opiekun bez testów skilli nie oceni, czy zmiana promptu nie psuje reszty procesu.
+- **Katalog społeczności w rdzeniu, włączany flagą w `warsztat.json`** (z drugiej opinii). Plus: jedno repozytorium, jedno wydanie i jeden hook odczytu (ten sam co w Z14). Minus: cudze PR-y lądują w repozytorium rdzenia, Z01 trzeba zawęzić do ścieżek, a wkłady leżą na dysku każdego użytkownika. Opiekun przedłożył izolację repozytorium rdzenia.
 - **Tylko zgłoszenia, bez PR-ów.** Plus: pełna kontrola. Minus: gotowy profil od kogoś, kto zna inny stos, opiekun musi przepisać sam albo przepada.
 
 ## Konsekwencje

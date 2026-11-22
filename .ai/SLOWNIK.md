@@ -18,6 +18,10 @@
 
 **Zgłoszenie** — opis problemu procesu warsztatu z wystąpieniami i proponowanym kierunkiem; dziś wpis w `ZGLOSZENIA.md`, po publikacji Issue w repozytorium warsztatu.
 
+**Wystąpienie** — jedno potwierdzone zdarzenie danego problemu; liczone w trzech miejscach: w lekcji (kolejne zdarzenie w tym samym projekcie — próg lokalny zgłoszenia: 3), w zgłoszeniu (komentarz „Wystąpienie” — sygnał globalny liczony po różnych osobach: 2), we wzorcu (kolejny projekt — `potwierdzony` od 2). _Nie mylić:_ trzech liczników nie sumujemy.
+
+**Próg** — minimalna liczba wystąpień, od której skill coś proponuje. _Nie mylić z:_ bramką, czyli skillem uruchamianym tylko przez człowieka.
+
 ## Czym to nie jest
 
 <!-- Zdania w stylu: „Faktura nie jest Zamówieniem — zamówienie może istnieć bez faktury”. -->
