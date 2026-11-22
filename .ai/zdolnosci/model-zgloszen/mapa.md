@@ -11,11 +11,11 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill prototyp model-zgloszen na komputerze z `codex` (jedyne pytanie blokujące spec), potem skill spec model-zgloszen
+Decyzja opiekuna po wyniku Codex CLI: nowy pomiar przekazania kontekstu i odczytu (skill prototyp model-zgloszen), rozstrzygnięcie w grillu z zapisanym ryzykiem albo odłożenie pytania.
 
 ## Otwarte pytania
 
-- [ ] [prototyp] Czy w Codexie hook pluginu społeczności podaje ścieżkę indeksu i czy agent ją odczyta (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`, odczyt poza workspace) — blokuje spec — warunek powrotu: komputer z `codex` — eksperyment: [wynik Claude Code](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci.md)
+- [ ] [prototyp] Czy w Codexie hook pluginu społeczności podaje ścieżkę indeksu i czy agent ją odczyta (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`, odczyt poza workspace) — blokuje spec — eksperyment: [wynik Codex CLI](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci-codex.md) — warunek powrotu: osobne pomiary przekazania kontekstu i odczytu
 - [ ] [prototyp] Czy po aktualizacji wersji pluginu z marketplace hook podaje ścieżkę nowej wersji (Z4, wymaga tymczasowej instalacji w `~/.claude`) — nie blokuje spec
 
 ## Decyzje

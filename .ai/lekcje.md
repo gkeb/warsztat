@@ -5,3 +5,5 @@
 Ostatnie retro: —
 
 <!-- - [obszar | zdolność | projekt] problem — założyliśmy X, okazało się Y → teraz Z (link do śladu). Wzorzec: plik. Wystąpienia: RRRR-MM-DD kto-wykrył; RRRR-MM-DD kto-wykrył -->
+
+- [model-zgloszen] Zapis raportu przez `String.replace` rozwinął sekwencję z dolarem i backtickiem w nazwie uchwytu konsoli i powielił wcześniejszy tekst. Przy wstawianiu dowolnego tekstu przekazujemy funkcję zwracającą tekst i po zapisie sprawdzamy liczbę nagłówków. Wystąpienia: 2026-11-22 Codex.
