@@ -17,6 +17,14 @@
 - Wyjątki: —
 -->
 
+### Z01. Rdzeń nie przyjmuje zmian ani treści rozszerzeń od innych osób
+
+- Siła: twarda
+- Egzekwowanie: przegląd — `przeglad` i opiekun przy każdej zmianie `plugins/ai`; po wdrożeniu `model-zgloszen` automat: CODEOWNERS i ruleset z wymaganą akceptacją opiekuna
+- Status: obowiązuje
+- Dlaczego: [ADR 0001](decyzje/0001-rdzen-i-katalog-spolecznosci.md)
+- Wyjątki: pozycje katalogu społeczności przeniesione przez opiekuna po statusie `potwierdzony`
+
 ## Wzorce
 
 <!-- Wzorce, których używamy (i gdzie), oraz te, których świadomie unikamy. -->

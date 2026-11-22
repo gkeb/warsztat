@@ -12,7 +12,7 @@
 
 **Rozszerzenie** — profile klas aplikacji i wzorce: wiedza, którą się głównie dopisuje, a nie zmienia.
 
-**Katalog społeczności** — osobne repozytorium albo plugin z profilami i wzorcami od innych osób, włączany przez użytkownika świadomie. _Zawsze:_ do rdzenia trafia z niego tylko to, co opiekun uznał za sprawdzone.
+**Katalog społeczności** — osobny plugin z profilami i wzorcami od innych osób, instalowany przez użytkownika świadomie ([ADR 0001](decyzje/0001-rdzen-i-katalog-spolecznosci.md)). _Zawsze:_ do rdzenia trafia z niego tylko to, co opiekun uznał za sprawdzone.
 
 **Opiekun** — osoba, która utrzymuje warsztat i jako jedyna wdraża zmiany w rdzeniu.
 
