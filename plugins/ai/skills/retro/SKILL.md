@@ -47,7 +47,7 @@ Rozwiązanie zapisujesz jako sprawdzone tylko wtedy, gdy potwierdził je użytko
 
 ## Tryb warsztatu — retro w repozytorium warsztatu
 
-Katalog roboczy to repozytorium warsztatu (jest `plugins/ai/KONTRAKT.md`, nie ma `.ai/ROADMAP.md`) → materiałem nie są lekcje projektu, tylko:
+Katalog roboczy to repozytorium warsztatu (jest `plugins/ai/KONTRAKT.md`) → materiałem są poniższe pozycje. Gdy repozytorium ma też `.ai/ROADMAP.md` (warsztat prowadzi sam siebie), najpierw przejdź zwykły tryb na jego `.ai/lekcje.md`, potem ten:
 
 - `ZGLOSZENIA.md` — najpierw zgłoszenia z wystąpieniami w kilku projektach, potem `przyjete`, na końcu `nowe` i `do-dyskusji`;
 - wzorce `kandydat` z nowymi wystąpieniami i kandydaci do `wycofany` (`plugins/ai/wzorce/INDEKS.md`);
