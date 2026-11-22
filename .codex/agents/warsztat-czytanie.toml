@@ -1,0 +1,9 @@
+# Wygenerowane przez skill start warsztatu z .ai/warsztat.json → modele.codex.czytanie.
+# Zmieniaj wartości w warsztat.json i uruchom start ponownie, nie edytuj tego pliku.
+name = "warsztat-czytanie"
+description = "Subagent warsztatu, poziom czytanie. Instrukcje roli w pliku wskazanym w wiadomości."
+model = "gpt-6.1-terra"
+model_reasoning_effort = "medium"
+developer_instructions = """
+Jesteś subagentem warsztatu. Wiadomość podaje pełną ścieżkę do pliku Twojej roli — przeczytaj go najpierw i trzymaj się go. Wynik zwracasz głównemu agentowi.
+"""
