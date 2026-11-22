@@ -11,16 +11,18 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill prototyp model-zgloszen — hook pluginu społeczności w Codexie i Claude Code; równolegle skill decyzja — ADR granicy rdzeń / katalog społeczności
+prototyp Codexa na komputerze z `codex` (skill prototyp model-zgloszen), potem skill pomysl model-zgloszen druga-opinia i skill spec model-zgloszen
 
 ## Otwarte pytania
 
-- [ ] [prototyp] Czy hook SessionStart pluginu społeczności niezawodnie podaje ścieżkę swojego indeksu w Codexie (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`) i w Claude Code po aktualizacji wersji — blokuje spec — badanie: [wynik](../../badania/2026-11-22-odczyt-plikow-innego-pluginu.md)
+- [ ] [prototyp] Czy w Codexie hook pluginu społeczności podaje ścieżkę indeksu i czy agent ją odczyta (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`, odczyt poza workspace) — blokuje spec — warunek powrotu: komputer z `codex` — eksperyment: [wynik Claude Code](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci.md)
+- [ ] [prototyp] Czy po aktualizacji wersji pluginu z marketplace hook podaje ścieżkę nowej wersji (Z4, wymaga tymczasowej instalacji w `~/.claude`) — nie blokuje spec
+- [ ] [badanie] Czy rdzeń warsztatu ma ten sam problem z odczytem własnego `wzorce/INDEKS.md` z cache pluginu (odmowa w `-p`, pytanie w sesji interaktywnej) — nie blokuje spec
 
 ## Decyzje
 
 2026-11-22 — Rdzeń (skille, kontrakt, szablony) przyjmuje od innych tylko Issues z opisem problemu, zmiany wdraża opiekun; rozszerzenia (profile klas aplikacji, wzorce) przyjmują też PR-y — jeden opiekun utrzyma spójność procesu, a wiedza o obcych stosach przyjdzie od ludzi
-2026-11-22 — Profile i wzorce od innych trafiają do osobnego katalogu społeczności (osobne repo albo plugin), który użytkownik włącza świadomie; do rdzenia opiekun przenosi tylko sprawdzone — rdzeń zostaje czysty niezależnie od liczby wkładów; koszt: drugie miejsce do utrzymania (kandydat na ADR: granica modułu)
+2026-11-22 — Profile i wzorce od innych trafiają do osobnego katalogu społeczności (osobne repo albo plugin), który użytkownik włącza świadomie; do rdzenia opiekun przenosi tylko sprawdzone — rdzeń zostaje czysty niezależnie od liczby wkładów; koszt: drugie miejsce do utrzymania (ADR: [0001](../../decyzje/0001-rdzen-i-katalog-spolecznosci.md))
 2026-11-22 — Retro u użytkownika pokazuje oczyszczoną treść zgłoszenia problemu procesu i po jego zgodzie zakłada Issue w repozytorium warsztatu przez `gh issue create` z konta użytkownika — wygoda daje więcej sygnałów; ryzyko pochopnego „tak” ogranicza filtr prywatności (otwarte pytanie)
 2026-11-22 — Bramka lokalna: retro proponuje wysłanie Issue dopiero, gdy lekcja `[warsztat]` ma co najmniej 3 wystąpienia w projekcie; problem bezpieczeństwa (wyciek sekretu, ominięta kontrola) albo utraty danych wychodzi od pierwszego wystąpienia — mniej szumu i silniejszy sygnał, kosztem tego, że rzadkie skille mogą nie dobić progu. Przykłady: 2 wystąpienia zgrzytu w `spec` → zostaje lekcją; 3 → propozycja Issue; 1 wystąpienie, gdy `buduj` zacommitował `.env` → propozycja Issue od razu
 2026-11-22 — Deduplikacja i ślad: przed wysłaniem retro szuka podobnego Issue (`gh issue list --search`) i przy trafieniu dopisuje wystąpienie komentarzem; wysłana lekcja zostaje w `lekcje.md` z dopiskiem `Zgłoszenie: <link>`, a kolejne wystąpienia idą jako komentarze do tego Issue — bez śladu licznik startowałby od zera i powstawałyby duplikaty, bez wyszukiwania każda osoba zakładałaby własne Issue; zmienia dzisiejszą regułę, że retro usuwa lekcję przeniesioną do zgłoszenia
@@ -32,6 +34,7 @@ skill prototyp model-zgloszen — hook pluginu społeczności w Codexie i Claude
 2026-11-22 — Zabezpieczenia katalogu społeczności: format w CI (wymagane sekcje wzorca i pozycji profilu), wejście jako `kandydat` (`potwierdzony` po drugim niezależnym projekcie), CODEOWNERS i ruleset z wymaganą akceptacją opiekuna, przegląd agentem (duplikaty, sprzeczności z kontraktem, dane projektu) i budżet długości `INDEKS.md` i profilu — każde łapie inny rodzaj szumu; zła pozycja szkodzi każdemu, kto włączył katalog [wartości budżetu do ustalenia w specu]
 2026-11-22 — Awans do rdzenia: warunek konieczny `potwierdzony`, decyduje ocena opiekuna, czy pozycja dotyczy większości użytkowników; plik przechodzi do rdzenia, w katalogu społeczności zostaje tylko wpis indeksu „przeniesiony do rdzenia” bez treści — jedno źródło, autor widzi efekt, kandydat zostaje wskazówką, nie regułą
 2026-11-22 — Katalog społeczności to osobny plugin z własnym hookiem SessionStart, który wypisuje ścieżkę swojego indeksu wzorców i profili; skille warsztatu przeszukują wszystkie indeksy podane przez hooki, bez szukania cudzego pluginu w cache — instalacja i aktualizacja z marketplace jak sam warsztat; bezpośredni odczyt innego pluginu jest nieudokumentowany i zmienia ścieżkę z wersją (badanie: [wynik](../../badania/2026-11-22-odczyt-plikow-innego-pluginu.md)); odrzucony klon w znanym katalogu — aktualizacja spadałaby na użytkownika
+2026-11-22 — W Claude Code sam hook SessionStart nie wystarcza: Read pliku spoza projektu (katalog pluginu) jest odrzucany przy domyślnych uprawnieniach w `claude -p`. Plugin społeczności dostaje hook `PreToolUse` dla `Read`, który zezwala tylko na pliki własnego indeksu, wzorców i profili w `${CLAUDE_PLUGIN_ROOT}`; hook podaje ścieżkę w pełnej postaci (nie 8.3) — potwierdzone na atrapach (eksperyment: [wynik](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci.md)); hook przyznający uprawnienia to granica bezpieczeństwa — jego zakres sprawdza przegląd bezpieczeństwa przy wdrożeniu
 
 ## Plasterki
 
