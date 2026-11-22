@@ -10,12 +10,12 @@
 
 ## Teraz
 
-- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — grill — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
+- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — spec — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
 
 ## Dalej
 
 - wersja-angielska — pomysl — angielski jako jedyny język, nowa nazwa narzędzia i katalogu stanu, migracja istniejących projektów
-- publikacja — pomysl — README, Issues zamiast ZGLOSZENIA.md, wersjonowanie i changelog dla publicznych użytkowników
+- publikacja — pomysl — README, adres repozytorium w manifeście pluginu, wersjonowanie i changelog dla publicznych użytkowników
 
 ## Mgła
 

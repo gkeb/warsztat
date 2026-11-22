@@ -3,7 +3,7 @@
 Rodzaj: funkcja
 Grill: Claude Code / claude-opus-5-5
 Druga opinia: Claude Code / claude-sonnet-5-5, 2026-11-22 (częściowo nieniezależna — przed własnym zdaniem zobaczyła decyzje mapy)
-Spec: [spec.md](spec.md) — _powstanie po grillu_
+Spec: [spec.md](spec.md) — zaakceptowany 2026-11-22
 
 ## Problem
 
@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill spec model-zgloszen
+skill pokroj model-zgloszen
 
 ## Otwarte pytania
 
@@ -46,6 +46,9 @@ skill spec model-zgloszen
 2026-11-22 — „Różne osoby” w sygnale globalnym to różne konta GitHub, bez weryfikacji; ryzyko wielu kont akceptujemy, bo sygnał tylko porządkuje listę, a decyduje opiekun; retro przy sygnale pokazuje wiek kont i ich aktywność. Niezależny projekt dla statusu `potwierdzony` wzorca — bez zmian (inne repozytorium)
 2026-11-22 — Awaria hooka pluginu społeczności w jednym narzędziu: warsztat działa dalej na samym rdzeniu, a hook rdzenia — gdy `warsztat.json` deklaruje włączony katalog społeczności, a jego indeksu nie ma w sesji — zgłasza na starcie „katalog społeczności niedostępny w tym narzędziu”; wymaga klucza w `warsztat.json` deklarującego katalog społeczności
 2026-11-22 — W Codexie katalog społeczności udostępnia własny skill, który podaje ścieżkę indeksu wzorców i profili względem swojego `SKILL.md`; hook SessionStart i `PreToolUse` działają jako mechanizm tylko w Claude Code — pomiar w Codexie (codex-cli 0.171.0-alpha.13, Windows, App Server): hooki zainstalowanego pluginu nie trafiły do `hooks/list`, a hook podpięty ręcznie uruchomił się, lecz ani JSON `additionalContext`, ani zwykły tekst nie dotarły do modelu; plik spoza projektu ze znaną ścieżką Codex odczytał w `read-only` bez prośby o zgodę, więc odpowiednik `PreToolUse` nie jest potrzebny (eksperymenty: [hook pluginu](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci-codex.md), [kontekst startowy](../../eksperymenty/2026-11-22-kontekst-startowy-codex.md); badanie: [format kontekstu](../../badania/2026-11-22-kontekst-hookow-codex.md)). Decyzja mimo niepewności (pytanie `[prototyp]` nierozstrzygnięte zamienione na `[grill]`): ryzyko — agent w Codexie musi sam sięgnąć po skill katalogu, więc wzorce społeczności są tam słabiej widoczne niż w Claude Code; nie sprawdzono natywnego TUI po przeglądzie `/hooks`. Warunek powrotu: hooki pluginów w Codexie trafiają do kontekstu modelu (pomiar znacznikiem w świeżej sesji) → hook staje się wspólnym mechanizmem. Ten sam brak dotyczy hooka rdzenia `stan.mjs` w Codexie — osobne zgłoszenie warsztatu
+2026-11-22 — Katalog społeczności przyjmuje tylko całe profile nowych klas aplikacji (status w linii na początku pliku, awans całego pliku, kolizja nazw → wygrywa rdzeń); pojedyncze pozycje do profili rdzenia idą jako zgłoszenia — jedna jednostka jak we wzorcu, bez drugiego rejestru numerów (bramka specu, po recenzji planu)
+2026-11-22 — Brak katalogu w sesji (S24) wykrywa skill przy przeszukiwaniu wzorców i profili, nie hook startowy rdzenia — hook rdzenia nie widzi wyniku hooka innego pluginu, a w Codexie hooki nie docierają do modelu (zmienione przy specu, było: komunikat hooka rdzenia)
+2026-11-22 — Recenzja planu specu: przyjęte wszystkie uwagi (jednostka profilu, wybór profilu z katalogu S32, droga wystąpienia pozycji katalogu S30, źródło adresu oficjalnego repozytorium, definicja utraty danych, rozpoznanie autora w CI S27, dane kont w S17, słownik, zakres zmian retro i kontraktu, test S9); odpartych brak
 
 ## Plasterki
 
