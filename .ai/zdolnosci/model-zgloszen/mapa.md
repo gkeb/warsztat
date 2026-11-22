@@ -15,7 +15,7 @@ Decyzja opiekuna po wyniku Codex CLI: nowy pomiar przekazania kontekstu i odczyt
 
 ## Otwarte pytania
 
-- [ ] [prototyp] Czy w Codexie hook pluginu społeczności podaje ścieżkę indeksu i czy agent ją odczyta (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`, odczyt poza workspace) — blokuje spec — eksperyment: [wynik Codex CLI](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci-codex.md) — warunek powrotu: osobne pomiary przekazania kontekstu i odczytu
+- [ ] [prototyp] Czy w Codexie hook pluginu społeczności podaje ścieżkę indeksu i czy agent ją odczyta (zaufanie hooków, ponowny przegląd po zmianie skryptu, `PLUGIN_ROOT`, odczyt poza workspace) — blokuje spec — eksperyment: [wynik Codex CLI](../../eksperymenty/2026-11-22-hook-pluginu-spolecznosci-codex.md) — warunek powrotu: osobne pomiary przekazania kontekstu i odczytu — badanie formatu kontekstu: [wynik](../../badania/2026-11-22-kontekst-hookow-codex.md) (zwykły stdout trafia do kontekstu, ale stdout zaczynający się od `[` lub `{` jest parsowany jako JSON; przyczyna pustego wyniku eksperymentu nieustalona)
 - [ ] [prototyp] Czy po aktualizacji wersji pluginu z marketplace hook podaje ścieżkę nowej wersji (Z4, wymaga tymczasowej instalacji w `~/.claude`) — nie blokuje spec
 
 ## Decyzje
