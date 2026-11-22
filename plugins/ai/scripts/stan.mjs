@@ -471,4 +471,8 @@ if (smieci.length > 0) {
   wyjscie.push('', `Śmieci z listy sprzatanie.smieci na dysku: ${smieci.join(', ')} — można je usunąć.`);
 }
 
-process.stdout.write(wyjscie.join('\n') + '\n');
+// JSON, nie zwykły tekst: Codex parsuje stdout zaczynający się od „[” jako JSON i przy błędzie
+// odrzuca kontekst; additionalContext przyjmują Codex i Claude Code.
+process.stdout.write(
+  JSON.stringify({ hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: wyjscie.join('\n') } }) + '\n',
+);
