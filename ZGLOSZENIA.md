@@ -91,3 +91,31 @@ Statusy: `nowe` (zapisane, nieocenione) · `przyjete` (wiadomo, co zmienić, cze
 - Wystąpienia: 2026-11-19 tenta (weryfikacja `rejestr-projektow` R1.5: `grep S20` w jednym pliku testów zwraca scenariusz szkieletu i scenariusz rejestru)
 - Problem: „Ślad w nazwie” (`kontrakt/praca.md`, „Test — podwójna pętla”) zakłada, że `grep Sx` znajduje test scenariusza. Numery są unikalne tylko w specu jednej zdolności, więc gdy kolejne zdolności dopisują testy akceptacyjne do tego samego pliku, ślad wskazuje kilka różnych scenariuszy, a `weryfikuj` musi rozróżniać je ręcznie.
 - Propozycja: rozstrzygnąć konwencję w `kontrakt/praca.md` → „Ślad w nazwie” i w `skills/weryfikuj/SKILL.md` (wyszukiwanie po numerze): (a) prefiks slugu zdolności w nazwie testu (`it("rejestr-projektow S3: …")`, `grep "rejestr-projektow S3"`), albo (b) osobny plik testów akceptacyjnych na zdolność. Istniejących testów nie przemianowywać hurtem — jak przy starszych specach, przy najbliższej zmianie.
+
+## Z10 — Krok, który wykonuje człowiek albo świat, nie ma typu w mapie
+
+- Status: przyjete
+- Wystąpienia: 2026-11-22 użytkownik (przegląd skilli Matta Pococka: typ „task” w `/wayfinder`, skrypt-kreator `wizard`)
+- Problem: otwarte pytania w mapie mają typy `[grill]`, `[badanie]`, `[prototyp]` — każdy z komendą, która go prowadzi. Rzeczy typu „załóż konto u dostawcy”, „zdobądź klucz API”, „zapytaj księgową”, „kup domenę” nie mają typu ani prowadzącego, więc wiszą bez opisu, na co czekamy, albo agent próbuje zrobić je sam (także z sekretami).
+- Propozycja: (1) `kontrakt/formaty.md` → „Otwarte pytania w mapie”: typ `[zadanie]` — rozstrzyga człowiek poza sesją; wpis mówi, kto, co i na co czekamy (`— czeka na: klucz API od dostawcy`), a po wykonaniu wynik trafia do `## Decyzje` jak przy pozostałych typach. `gdzie` pokazuje `[zadanie]` osobno, jako rzeczy do zrobienia przez człowieka. (2) Kreator: gdy zadanie ma kroki na komputerze z sekretami (logowanie, wklejenie klucza do `.env`, sekret w GitHubie przez `gh secret set`), agent przygotowuje skrypt prowadzący człowieka krok po kroku — Node, nie bash (Windows), sekret czytany z wejścia bez echa i zapisywany prosto do celu, agent go nie widzi. Miejsce: `kontrakt/bezpieczenstwo.md` (zasada) i szablon skryptu w `szablony/`. Skrypt jednorazowy, poza gitem albo w katalogu prób.
+
+## Z11 — Zależności między otwartymi pytaniami mapy
+
+- Status: przyjete
+- Wystąpienia: 2026-11-22 użytkownik (przegląd skilli Matta Pococka: relacje blokujące w `/wayfinder`)
+- Problem: pytanie w mapie może dziś tylko „blokować spec” albo „nie blokować”. Przy dużej, niejasnej zdolności część pytań da się zadać dopiero po rozstrzygnięciu innych; bez zapisu zależności nie widać, co jest odblokowane teraz, a co jeszcze „we mgle”, i każda sesja ustala to od nowa.
+- Propozycja: `kontrakt/formaty.md` → „Otwarte pytania w mapie”: opcjonalne `— czeka na: <początek treści pytania>` (bez numerów, żeby nie kolidowały po przenosinach do Decyzji). `gdzie` i `pomysl` wybierają najpierw pytania odblokowane. Powiązane z Z12 (rundy w grillu korzystają z tej samej informacji) i Z10.
+
+## Z12 — Pytania rundami w grillu i reguła prostego języka
+
+- Status: przyjete
+- Wystąpienia: 2026-11-22 użytkownik (przegląd skilli Matta Pococka: poprawiony `/grill-me` z rundami według grafu zależności, `/wait-what`)
+- Problem: (a) „Jedno pytanie naraz” (`skills/pomysl/SKILL.md`, „Jak pytać”) pod koniec rozmowy robi się żmudne — zostają proste potwierdzenia rekomendacji, każde w osobnej turze. (b) Model bywa rozwlekły, używa żargonu i pojęć spoza słownika projektu; dziś pilnuje tego tylko recenzent-planu, i to w specu, nie w rozmowie.
+- Propozycja: (a) `skills/pomysl/SKILL.md` i `tryb-produkt.md`: trudne i otwarte pytania nadal po jednym; zamknięte pytania z rekomendacją, które nic nie blokuje (Z11), zadawane paczką do kilku sztuk — „zatwierdź wszystkie albo popraw numer”. Tryb sokratejski bez zmian. (b) `kontrakt/rozmowa.md`: reguła stylu dla odpowiedzi do człowieka — krótkie zdania, jedno pojęcie jednym słowem, terminy z `.ai/SLOWNIK.md`, nowe pojęcie wyjaśnione przy pierwszym użyciu (inspiracja: ASD-STE100). Słowo „prościej” od użytkownika → przepisz ostatnią odpowiedź według tej reguły, bez nowej treści.
+
+## Z13 — Procedura pisania tekstów czytanych przez agentów
+
+- Status: przyjete
+- Wystąpienia: 2026-11-22 użytkownik (przegląd skilli Matta Pococka: `/writing-for-agents`; obawa, że `retro` dopisujące reguły rozdmucha `AGENTS.md`)
+- Problem: `retro` i `start` dopisują reguły do `AGENTS.md`, a warsztat sam jest w całości tekstem dla agentów. Nie ma wspólnych zasad, jak pisać taki tekst ani kiedy wydzielić fragment z `AGENTS.md` do skilla albo pliku czytanego na żądanie. Plik ładowany na starcie każdej sesji rośnie i zjada kontekst.
+- Propozycja: `procedury/pisanie-dla-agentow.md` — zwięzłość i przewidywalność (polecenie, warunek, wyjątek; bez uzasadnień, które nie zmieniają działania), jedno źródło prawdy i odsyłacz zamiast powtórzenia, budżet `AGENTS.md` (np. liczba linii) i reguła wydzielania: wiedza potrzebna tylko w jednym rodzaju pracy → skill albo plik z odsyłaczem. Używają jej `retro` (przed dopisaniem reguły: czy to ma być w `AGENTS.md`), `start` i zmiany w samym warsztacie. `gdzie tydzien` ostrzega, gdy `AGENTS.md` przekroczy budżet.
