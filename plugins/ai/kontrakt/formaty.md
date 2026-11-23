@@ -33,7 +33,7 @@ Nagłówek: data, krótki opis podejścia, w nawiasie zdolność albo obszar. `H
 - [platnosci] Webhook przychodził podwójnie — założyliśmy jedno doręczenie, dostawca gwarantuje „co najmniej raz” → idempotencja po `event_id` ([ADR 0006](decyzje/0006-idempotencja.md)). Wzorzec: doreczenie-co-najmniej-raz. Wystąpienia: 2026-10-02 test; 2026-10-15 przegląd
 ```
 
-Jedna linijka: `[znacznik] problem — założyliśmy X, okazało się Y → teraz Z`. Znacznik to jeden slug: obszaru (z `.ai/obszary/` albo nazwa modułu), zdolności albo `projekt` — dla lekcji o całym projekcie (narzędzia, środowisko, proces) albo kilku obszarach naraz. Dalej opcjonalnie link do śladu i `Wzorzec:`, na końcu zawsze `Wystąpienia:` — data i kto wykrył (`użytkownik`, `test`, `błąd`, `badanie`, `przegląd`, `weryfikacja`), rozdzielone średnikami. Powtórka dopisuje kolejne wystąpienie na końcu linijki.
+Jedna linijka: `[znacznik] problem — założyliśmy X, okazało się Y → teraz Z`. Znacznik to jeden slug: obszaru (z `.ai/obszary/` albo nazwa modułu), zdolności albo `projekt` — dla lekcji o całym projekcie (narzędzia, środowisko, proces) albo kilku obszarach naraz. Dalej opcjonalnie link do śladu, `Wzorzec:` i `Zgłoszenie: <link>` (lekcja `[warsztat]` wysłana jako zgłoszenie warsztatu), na końcu zawsze `Wystąpienia:` — data i kto wykrył (`użytkownik`, `test`, `błąd`, `badanie`, `przegląd`, `weryfikacja`), rozdzielone średnikami. Powtórka dopisuje kolejne wystąpienie na końcu linijki.
 
 ### Zasada — wpis w `ZASADY.md`
 

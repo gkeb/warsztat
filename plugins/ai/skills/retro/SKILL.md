@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Zamienia lekcje i powtarzające się problemy w trwałe mechanizmy — automatyczne kontrole, reguły w AGENTS.md, zmiany w samym warsztacie albo wzorce wspólne dla projektów — od najmocniejszego. Użyj po zamknięciu zdolności, w cotygodniowym przeglądzie, gdy lekcje.md urósł, ten sam błąd wraca albo użytkownik prosi o retro. Uruchomiony w repozytorium warsztatu wdraża zgłoszenia z ZGLOSZENIA.md. Proponuje, a zmienia dopiero po zgodzie.
+description: Zamienia lekcje i powtarzające się problemy w trwałe mechanizmy — automatyczne kontrole, reguły w AGENTS.md, zmiany w samym warsztacie albo wzorce wspólne dla projektów — od najmocniejszego. Użyj po zamknięciu zdolności, w cotygodniowym przeglądzie, gdy lekcje.md urósł, ten sam błąd wraca albo użytkownik prosi o retro. W projekcie proponuje wysłanie zgłoszenia warsztatu jako Issue (szkic po filtrze prywatności, wysyłka po zgodzie); uruchomiony w repozytorium warsztatu wdraża zgłoszenia z ZGLOSZENIA.md. Proponuje, a zmienia dopiero po zgodzie.
 argument-hint: "[sesja]"
 ---
 
@@ -40,7 +40,7 @@ Przejdź po sesji według tej listy i każde znalezisko zapisz **tam, gdzie jest
 | powtarzalny wzorzec w prośbach użytkownika | `AGENTS.md` albo `lekcje.md` |
 | preferencja użytkownika | `AGENTS.md` albo `lekcje.md` |
 | krok usunięty jako zbędny, uproszczenie | spec → Poza zakresem albo mapa → Decyzje |
-| pominięty albo pospieszny krok procesu, brak miejsca w szablonie, niejasna instrukcja skilla | zmiana warsztatu albo zgłoszenie w `ZGLOSZENIA.md` (krok 3, punkt 3) |
+| pominięty albo pospieszny krok procesu, brak miejsca w szablonie, niejasna instrukcja skilla | zmiana warsztatu albo zgłoszenie warsztatu (krok 3, punkt 3) |
 | podejście, które nie zadziałało, odłożona ścieżka, problem bez rozwiązania | `proby.md` |
 
 Rozwiązanie zapisujesz jako sprawdzone tylko wtedy, gdy potwierdził je użytkownik albo test. Jeśli próba została przerwana, zanim dało się ją ocenić, oznacz ją `odlozone`; jeśli problem nadal nie ma znanej przyczyny ani rozwiązania, oznacz go `nierozwiazane`. Podejście zweryfikowane jako nieskuteczne dostaje `nie-dziala` wraz z dowodem. Potem przechodzisz do kroków 2–5 dla wzorców, które się powtarzają.
@@ -65,7 +65,11 @@ Osobno oceń, czy problem jest **ogólny** — nie zależy od domeny projektu (z
 
 1. **Automatyczna kontrola** — test, reguła lint albo typów, skrypt w `walidacja` w `.ai/warsztat.json`, hook. Agent nie może jej zapomnieć. Wraca ten sam zły wzorzec w kodzie (np. `console.log` zamiast Sentry)? Najtańszy automat to wpis w `hooki.zakazane` (`../../kontrakt/narzedzia.md`, „Hooki kodu”) razem z zasadą w `ZASADY.md`.
 2. **Zasada w `ZASADY.md`** (gdy dotyczy kodu) albo **reguła w `AGENTS.md`** (gdy dotyczy zachowania agenta lub projektu — poza blokiem warsztatu). Zasada twarda z `Egzekwowanie: przegląd` albo `brak`, łamana ponownie, wraca do punktu 1 — jako automat.
-3. **Zmiana w warsztacie** — skill, kontrakt, szablon, hook albo skrypt. Wybierz ją, gdy problem leży w samym procesie i dotyczy wszystkich projektów. Repozytorium warsztatu znajdziesz według „Zgłoszenia warsztatu” w `../../kontrakt/pamiec.md`; kopii w cache pluginów nie edytujesz. Wdrażasz od razu (zgoda w tej sesji) → zmiana i osobny commit w repozytorium warsztatu. Nie wdrażasz od razu → wpis w `ZGLOSZENIA.md` (to samo zgłoszenie już jest → nowe wystąpienie). Repozytorium niedostępne → lekcja `[warsztat]` w `lekcje.md` projektu z gotową zmianą: plik i tekst. Propozycja tylko w czacie ginie — nie kończ na niej.
+3. **Zmiana w warsztacie** — skill, kontrakt, szablon, hook albo skrypt. Wybierz ją, gdy problem leży w samym procesie i dotyczy wszystkich projektów. Repozytorium warsztatu znajdziesz według „Zgłoszenia warsztatu” w `../../kontrakt/pamiec.md`; kopii w cache pluginów nie edytujesz. Wdrażasz od razu (zgoda w tej sesji, repozytorium dostępne) → zmiana i osobny commit w repozytorium warsztatu. Nie wdrażasz od razu:
+   - w repozytorium warsztatu → wpis w `ZGLOSZENIA.md` (to samo zgłoszenie już jest → nowe wystąpienie);
+   - w projekcie → lekcja `[warsztat]` w `lekcje.md` projektu z gotową zmianą (plik i kierunek) i ścieżka zgłoszeń według `zgloszenie.md` obok tego pliku: rodzaj problemu (bezpieczeństwo → kanał bezpieczeństwa), próg, repozytorium zgłoszeń, szkic po filtrze prywatności i skanie sekretów, zgoda, wysyłka. Do `ZGLOSZENIA.md` nie piszesz, nawet gdy klon warsztatu jest dostępny. Poniżej progu albo bez wysyłki lekcja zostaje lekcją.
+
+   Propozycja tylko w czacie ginie — nie kończ na niej.
 4. **Wzorzec w `wzorce/`** (katalog pluginu, sekcja „Wzorce — wiedza między projektami” w `../../kontrakt/pamiec.md`) — dla problemu ogólnego. Łączy się z punktami 1–3: projekt dostaje mechanizm, inne projekty — wiedzę. Najpierw przeszukaj `wzorce/INDEKS.md`:
    - jest pasujący wzorzec → dopisz wystąpienie; przypadek różnił się → wariant albo zawężenie `Warunki` / `Nie dotyczy`; drugi niezależny projekt → status `potwierdzony`;
    - wzorzec nie pasował, choć wyglądał (lekcja z `Wzorzec:` i opisem różnicy) → doprecyzuj `Nie dotyczy`; kolejne chybienia → zaproponuj `wycofany`;
@@ -83,7 +87,7 @@ Najwyżej 5, od najpoważniejszego (koszt powtórki × częstość). Każda: pro
 
 - Wprowadź wybrane zmiany. Nowa automatyczna kontrola musi przejść na obecnym kodzie — albo najpierw naprawiasz kod, albo pytasz.
 - Nowa zasada w `.ai/ZASADY.md` dostaje kolejny wolny numer `Zxx` i link do ADR albo źródła (testu, kodu lub commita), które ją uzasadnia. Wycofanych numerów nie używaj ponownie.
-- Lekcje, które stały się mechanizmem, wystąpieniem wzorca albo zgłoszeniem warsztatu, usuń z `lekcje.md`. Historię trzyma git. Powtarzające się lekcje połącz w jedną, sumując wystąpienia.
+- Lekcje, które stały się mechanizmem, wystąpieniem wzorca albo wpisem w `ZGLOSZENIA.md` (repozytorium warsztatu), usuń z `lekcje.md`. Historię trzyma git. Lekcja wysłana z projektu jako zgłoszenie zostaje z dopiskiem `Zgłoszenie: <link>` (`zgloszenie.md`, krok 8). Powtarzające się lekcje połącz w jedną, sumując wystąpienia.
 - Wzorce: plik wzorca i jego linia w `wzorce/INDEKS.md` (tytuł, status, hasła, sygnały). Profile: nowa pozycja w pliku profilu; w projekcie od razu jej rozstrzygnięcie w `.ai/profil.md`. Jedne i drugie edytujesz tylko wtedy, gdy katalog pluginu jest repozytorium źródłowym; w przeciwnym razie podaj gotowy tekst.
 - Uporządkuj `proby.md`: wpisy dotyczące usuniętego kodu usuń; wpisy ze spełnionym warunkiem powrotu oznacz do ponownego sprawdzenia; zduplikowane połącz.
 - Ustaw `Ostatnie retro: RRRR-MM-DD` na górze `lekcje.md`.

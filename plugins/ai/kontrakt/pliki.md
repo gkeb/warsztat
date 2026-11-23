@@ -11,7 +11,7 @@ CLAUDE.md                    # importuje @AGENTS.md
 .githooks/pre-commit         # skan sekretów przed każdym commitem; włączany przez core.hooksPath (skill start)
 .claude/settings.json        # permissions.deny: Claude Code nie czyta plików z sekretami (skill start)
 .ai/
-  warsztat.json              # konfiguracja: walidacja i jej punkt odniesienia, ścieżki, git, bezpieczeństwo, tracker, modele subagentów
+  warsztat.json              # konfiguracja: walidacja i jej punkt odniesienia, ścieżki, git, bezpieczeństwo, tracker, modele subagentów, repozytorium zgłoszeń warsztatu (`zgloszenia`, bez klucza w szablonie)
   ROADMAP.md                 # MAPA — cel produktu i jedyne źródło statusu zdolności
   SLOWNIK.md                 # słownik domeny: byty, nie-byty, granice
   ZASADY.md                  # zasady projektu: architektura, wzorce, kod, testy, niefunkcjonalne — czego kod ma się trzymać

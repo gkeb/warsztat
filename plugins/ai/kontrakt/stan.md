@@ -48,7 +48,7 @@ Część [kontraktu warsztatu](../KONTRAKT.md). Czytaj sekcje potrzebne do zadan
 | podejścia sprawdzone w praktyce, które nie zadziałały, odłożone albo nierozwiązane | `proby.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | rozwiązane problemy: fałszywe założenie i jak robimy teraz | `lekcje.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | uogólnione problemy i rozwiązania, wspólne dla projektów | `wzorce/` w katalogu pluginu | tylko skill `retro`, za zgodą człowieka |
-| zgłoszenia zmian procesu warsztatu (skille, kontrakt, szablony, hooki) | `ZGLOSZENIA.md` w repozytorium warsztatu, nad katalogiem pluginu | tylko skill `retro`: w projekcie dopisuje, w repozytorium warsztatu wdraża i usuwa |
+| zgłoszenia zmian procesu warsztatu (skille, kontrakt, szablony, hooki) | z projektu: Issues w repozytorium zgłoszeń (`warsztat.json` → `zgloszenia`); w repozytorium warsztatu: `ZGLOSZENIA.md` nad katalogiem pluginu | tylko skill `retro`: w projekcie wysyła po zgodzie, w repozytorium warsztatu dopisuje, wdraża i usuwa |
 | profile klas aplikacji projektu | `warsztat.json` → `profile` | skill `start`, `pomysl produkt`; zmiana za zgodą człowieka |
 | rozstrzygnięcie każdej pozycji profilu | `profil.md` (wynik i link; treść w ADR, zasadzie albo specu) | skill `pomysl produkt`, `poznaj`, `decyzja`, `gdzie tydzien` |
 | listy decyzji dla klas aplikacji | `profile/` w katalogu pluginu | tylko skill `retro`, za zgodą człowieka |

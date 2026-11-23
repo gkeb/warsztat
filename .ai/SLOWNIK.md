@@ -30,6 +30,8 @@
 
 **Wystąpienie** — jedno potwierdzone zdarzenie danego problemu; liczone w trzech miejscach: w lekcji (kolejne zdarzenie w tym samym projekcie — próg lokalny zgłoszenia: 3), w zgłoszeniu (komentarz „Wystąpienie” — sygnał globalny liczony po różnych osobach: 2), we wzorcu (kolejny projekt — `potwierdzony` od 2). _Nie mylić:_ trzech liczników nie sumujemy.
 
+**Rodzaj problemu** — ocena lekcji `[warsztat]` przez retro, podawana w szkicu zgłoszenia: zwykły, utrata danych albo bezpieczeństwo. Utrata danych to sytuacja, w której skill albo hook warsztatu usunął lub nadpisał pracę użytkownika (pliki, niezacommitowane zmiany, zapisy w `.ai/`) tak, że nie da się jej odzyskać z gita. Bezpieczeństwo to wyciek sekretu, ominięta kontrola albo przyznane za szerokie uprawnienie. _Zawsze:_ problem bezpieczeństwa idzie kanałem bezpieczeństwa, nie do szkicu; użytkownik może zmienić rodzaj przed zgodą.
+
 **Próg** — minimalna liczba wystąpień, od której skill coś proponuje. _Nie mylić z:_ bramką, czyli skillem uruchamianym tylko przez człowieka.
 
 ## Czym to nie jest
