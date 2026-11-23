@@ -32,6 +32,7 @@ Architektura, wzorce i zasady kodu: `.ai/ZASADY.md`. Przeczytaj przed zmianą st
 - To repozytorium jest źródłem pluginu: zmiany procesu robisz tutaj, nigdy w kopii pluginu w cache Claude Code/Codex.
 - Zmiana w `plugins/ai` przy wydaniu → podbij wersję w obu manifestach naraz.
 - Codex CLI na tym komputerze nie jest w `PATH` — używaj pełnej ścieżki do `codex.exe` z rozszerzenia VS Code (sprawdź `--version`); ten plik wymaga `--no-daemon`, a interfejs `/hooks` działa w zwykłej konsoli Windows, nie przez ConPTY. W hookach Codexa na Windows `commandWindows` z pełnymi ścieżkami do `node.exe` i skryptu.
+- Gdy `pwsh` w `PATH` to alias aplikacji z `WindowsApps`, narzędzie PowerShell w `claude -p` odrzuca każde polecenie („The command line is too long”). Katalog prawdziwego `pwsh.exe` musi stać w `PATH` przed `WindowsApps` — uprząż sesji testowych (`testy/sesja.mjs`) robi to sama.
 
 <!-- warsztat:start v0.27.0 — blok zarządzany przez plugin warsztatu. Nie edytuj wewnątrz: własne reguły dopisz poza blokiem. Skill start aktualizuje go do nowej wersji pluginu. -->
 ## Jak pracujemy
