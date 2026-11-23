@@ -10,7 +10,7 @@
 
 ## Teraz
 
-- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — plan — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
+- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — budowa — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
 
 ## Dalej
 

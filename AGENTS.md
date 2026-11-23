@@ -9,7 +9,8 @@
 ### Uruchamianie
 
 - Walidacja manifestu pluginu: `claude plugin validate plugins/ai`.
-- Skrypty hooków (`plugins/ai/scripts/*.mjs`) uruchamia Node (sprawdzone na v22); testów brak.
+- Skrypty hooków (`plugins/ai/scripts/*.mjs`) uruchamia Node (sprawdzone na v22).
+- Sesje testowe agenta (testy akceptacyjne skilli): `node --test "testy/*.test.mjs"` (Node 22 nie przyjmuje samego katalogu) — każda sesja to `claude -p` z pluginem z `plugins/ai` w tymczasowym projekcie i atrapą `gh`, więc **kosztuje wywołania modelu** (minuty na test); uruchamiasz świadomie, nie w `walidacja`. Model: zmienna `WARSZTAT_TEST_MODEL` (domyślnie `sonnet`).
 
 ### Mapa kodu
 
@@ -20,6 +21,7 @@
 - `plugins/ai/hooks/`, `plugins/ai/scripts/` — hooki i ich skrypty.
 - `plugins/ai/plugin.json`, `plugins/ai/.claude-plugin/plugin.json` — dwa manifesty z tą samą wersją; `.claude-plugin/`, `.agents/plugins/` w korzeniu — marketplace'y.
 - `ZGLOSZENIA.md`, `docs/` — zgłoszenia zmian procesu i dokumentacja rozwoju.
+- `testy/` — sesje testowe agenta: uprząż (`sesja.mjs`), atrapa `gh`, fikstury projektów; poza pluginem.
 
 ### Zasady
 

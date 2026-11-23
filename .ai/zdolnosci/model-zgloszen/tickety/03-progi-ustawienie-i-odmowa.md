@@ -43,3 +43,4 @@ Odmowa, odpowiedź „nie mam konta” albo koniec tury na pytaniu zostawiają l
 
 - „Sesja nie pozwala zapytać” (S3): retro kończy turę pytaniem i przed końcem tury zapisuje `niewysłane`. Odpowiedź „tak” w następnej turze wysyła zgłoszenie i podmienia dopisek na link.
 - S11 porównuje datę z dopisku `niewysłane` z datą ostatniego wystąpienia lekcji.
+- Z przeglądu ticketu 01: fikstura S1 (`testy/fikstury/retro-dwa-wystapienia`) nie ma jeszcze ustawienia repozytorium zgłoszeń — przy tym tickecie dostaje je jawnie, inaczej wiersz „2 wystąpienia” nie odróżni „poniżej progu” od „brak funkcji wysyłki”. Retro w sesji z `haiku` uznało też problem z fikstury za już naprawiony w warsztacie (commit w skillu `spec`) — fikstura z 3 wystąpieniami potrzebuje zgrzytu, którego warsztat nie poprawił.
