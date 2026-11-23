@@ -10,10 +10,11 @@
 
 ## Teraz
 
-- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — spec — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
+- [model-zgloszen](zdolnosci/model-zgloszen/mapa.md) — plan — jak poprawki procesu od wielu użytkowników trafiają do warsztatu bez bałaganu w rdzeniu
 
 ## Dalej
 
+- [katalog-spolecznosci](zdolnosci/katalog-spolecznosci/mapa.md) — spec — osobny plugin z profilami i wzorcami od innych osób; spec zaakceptowany w ramach model-zgloszen, czeka na miejsce w Teraz
 - wersja-angielska — pomysl — angielski jako jedyny język, nowa nazwa narzędzia i katalogu stanu, migracja istniejących projektów
 - publikacja — pomysl — README, adres repozytorium w manifeście pluginu, wersjonowanie i changelog dla publicznych użytkowników
 

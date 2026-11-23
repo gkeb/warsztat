@@ -11,11 +11,11 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill pokroj model-zgloszen
+skill buduj model-zgloszen → ticket 01
 
 ## Otwarte pytania
 
-- [ ] [prototyp] Czy po aktualizacji wersji pluginu z marketplace hook podaje ścieżkę nowej wersji (Z4, wymaga tymczasowej instalacji w `~/.claude`) — nie blokuje spec
+<!-- pytanie [prototyp] o ścieżkę po aktualizacji z marketplace przeniesione 2026-11-22 do katalog-spolecznosci -->
 
 ## Decyzje
 
@@ -50,6 +50,19 @@ skill pokroj model-zgloszen
 2026-11-22 — Brak katalogu w sesji (S24) wykrywa skill przy przeszukiwaniu wzorców i profili, nie hook startowy rdzenia — hook rdzenia nie widzi wyniku hooka innego pluginu, a w Codexie hooki nie docierają do modelu (zmienione przy specu, było: komunikat hooka rdzenia)
 2026-11-22 — Recenzja planu specu: przyjęte wszystkie uwagi (jednostka profilu, wybór profilu z katalogu S32, droga wystąpienia pozycji katalogu S30, źródło adresu oficjalnego repozytorium, definicja utraty danych, rozpoznanie autora w CI S27, dane kont w S17, słownik, zakres zmian retro i kontraktu, test S9); odpartych brak
 
+2026-11-22 — zmiana specu: S21–S32 (katalog społeczności) wydzielone do zdolności [katalog-spolecznosci](../katalog-spolecznosci/mapa.md) z tymi samymi numerami — przy krojeniu wyszło ok. 11 ticketów, dwie niemal niezależne części; zakres całości bez zmian, decyzja użytkownika
+
+2026-11-22 — przy podziale specu decyzja o automacie Z01 (właściciele kodu i reguła gałęzi w repozytorium warsztatu) omyłkowo wypadła z model-zgloszen; przywrócona w Decyzjach projektowych i Zakresie — treść jak w zaakceptowanym specu
+2026-11-22 — recenzja planu ticketów: przyjęte wszystkie uwagi — wydzielony ticket 01 z sesjami testowymi i regułą wyniku (2 kolejne przejścia), kanał bezpieczeństwa zawsze w oficjalnym repozytorium, skan szkicu `gitleaks stdin` (sprawdzone: gitleaks 8.30.1, kod 1 przy trafieniu), retro w projekcie nie pisze już do pliku zgłoszeń, test S19, oznaczenie S20 w raporcie, repozytorium opiekuna = `github.repo`, pomiar limitu bez szablonu formularza, automat Z01 w tickecie 06, zamknięte zgłoszenie przy S8 (doprecyzowanie założenia „zgłoszenie otwarte”), pełna lista miejsc w migracji, wpis słownika „Rodzaj problemu”, schemat pola `repository`; odpartych brak
 ## Plasterki
+
+1. [01 — Sesje testowe agenta z atrapą gh](tickety/01-sesje-testowe-agenta.md)
+2. [02 — Szkic zgłoszenia z filtrem i wysyłka po zgodzie](tickety/02-szkic-i-wysylka-zgloszenia.md) — po 01
+3. [03 — Progi, domyślne repozytorium zgłoszeń i odmowa](tickety/03-progi-ustawienie-i-odmowa.md) — po 02
+4. [04 — Podobne zgłoszenia i komentarz „wystąpienie”](tickety/04-podobne-zgloszenia-i-wystapienia.md) — po 02
+5. [05 — Zgłoszenie bez gh i sprawdzenie nowszej wersji](tickety/05-bez-gh-i-nowsza-wersja.md) — po 02
+6. [06 — Repozytorium warsztatu — kanał bezpieczeństwa, formularz, ochrona rdzenia](tickety/06-kanal-bezpieczenstwa-i-formularz.md) — po 02
+7. [07 — Issues jedynym źródłem zgłoszeń — migracja pliku zgłoszeń](tickety/07-issues-jedynym-zrodlem.md) — po 03, 04, 06
+8. [08 — Retro opiekuna — sygnał globalny, zgłoszenia opiekuna, treść jako dane](tickety/08-retro-opiekuna-na-issues.md) — po 07
 
 ## Stan sesji

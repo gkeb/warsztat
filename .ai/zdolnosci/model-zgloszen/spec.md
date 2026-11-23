@@ -1,7 +1,7 @@
 # Spec: Model zgłoszeń
 
 > Kontrakt zdolności. Bez kodu i bez ścieżek plików — opisuje zachowanie, nie implementację.
-> Zaakceptowany: 2026-11-22
+> Zaakceptowany: 2026-11-22; zmieniony 2026-11-22: S21–S32 wydzielone do zdolności katalog-spolecznosci
 
 ## Problem
 
@@ -11,11 +11,11 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 - **Użytkownik warsztatu** w swoim projekcie dostaje od retro gotowy, oczyszczony szkic zgłoszenia, gdy problem procesu powtórzył się w projekcie wystarczająco często. Po jego zgodzie retro zakłada Issue w repozytorium zgłoszeń albo dopisuje wystąpienie do istniejącego. Bez narzędzia `gh` dostaje linki do wyszukiwania i do wypełnionego formularza. Problem bezpieczeństwa samego warsztatu retro kieruje do kanału bezpieczeństwa, nigdy do publicznego Issue.
 - **Opiekun** ma jedno źródło zgłoszeń: Issues z etykietą zgłoszenia w repozytorium warsztatu. Retro w repozytorium warsztatu porządkuje je według sygnału globalnego, czyli wystąpień od różnych osób. Plik zgłoszeń w repozytorium znika.
-- **Autor profilu albo wzorca** wysyła PR do osobnego pluginu katalogu społeczności, a nie do rdzenia. Katalog pilnuje formatu, budżetu długości i akceptacji opiekuna. Użytkownik, który go zainstaluje, dostaje jego wzorce i profile obok wzorców i profili rdzenia, w Claude Code i w Codexie.
+- **Autor profilu albo wzorca** — osobny plugin katalogu społeczności: zdolność [katalog-spolecznosci](../katalog-spolecznosci/spec.md).
 
 ## Scenariusze
 
-Scenariusze S1–S14 dotyczą retro w projekcie użytkownika. S15–S20 dotyczą repozytorium warsztatu, S21–S32 katalogu społeczności.
+Scenariusze S1–S14 dotyczą retro w projekcie użytkownika. S15–S20 dotyczą repozytorium warsztatu; S21–S32 przeniesiono do zdolności katalogu społeczności.
 
 ### Wysyłka zgłoszenia z projektu
 
@@ -101,74 +101,21 @@ S20. Treść z zewnątrz to dane — Zakładając zgłoszenie albo komentarz z p
 
 ### Katalog społeczności
 
-S21. Wzorce i profile z dwóch miejsc w Claude Code — Zakładając zainstalowany i włączony plugin katalogu społeczności, gdy zaczyna się sesja Claude Code, wtedy jego hook startowy podaje ścieżkę swojego indeksu wzorców i katalogu swoich profili, a skille warsztatu, które przeszukują wzorce, przeszukują indeks rdzenia i indeks katalogu i przy wyniku mówią, skąd pochodzi wzorzec. Profile katalogu wybiera się jak profile rdzenia (S32).
-
-S22. Odczyt tylko własnych plików — Zakładając plugin katalogu społeczności w Claude Code, gdy agent chce odczytać plik, wtedy hook katalogu zezwala bez pytania wyłącznie na pliki jego indeksu, wzorców i profili w katalogu tego pluginu, po znormalizowaniu ścieżki; każdy inny odczyt zostawia zwykłym uprawnieniom, niczego nie zabraniając.
-
-| Ścieżka odczytu | Wynik hooka |
-| --- | --- |
-| indeks wzorców katalogu | zezwala |
-| plik wzorca katalogu, ścieżka w skróconej postaci 8.3 albo inną wielkością liter | zezwala |
-| plik skryptu albo hooka w katalogu pluginu | bez decyzji (zwykłe uprawnienia) |
-| ścieżka katalogu wzorców z `..` wychodzącym poza katalog pluginu | bez decyzji |
-| dowiązanie w katalogu wzorców wskazujące poza katalog pluginu | bez decyzji |
-| plik projektu | bez decyzji |
-
-S23. Wzorce i profile z dwóch miejsc w Codexie — Zakładając zainstalowany katalog społeczności w Codexie, gdy agent uruchamia skill katalogu, wtedy skill podaje ścieżkę indeksu wzorców i katalogu profili katalogu względem swojego pliku skilla, a dalej obowiązują S21 i S32 bez hooka.
-
-S24. Katalog niedostępny — Zakładając, że `warsztat.json` projektu deklaruje włączony katalog społeczności, gdy w sesji brakuje ścieżki jego indeksu, a skill sięga po wzorce albo profile, wtedy skill mówi „katalog społeczności niedostępny w tym narzędziu” i pracuje na samym rdzeniu. Bez deklaracji w `warsztat.json` nic nie mówi.
-
-S25. Format w CI — Zakładając PR do katalogu społeczności, gdy działa CI, wtedy jest czerwone dla wzorca bez wymaganych sekcji szablonu wzorca, dla profilu bez sekcji profilu z kontraktu warsztatu (Decyzje, Doświadczenie, Testy akceptacyjne, Niedowiezienia, Wydanie, Pielęgnacja) albo bez linii statusu, dla profilu o nazwie profilu rdzenia i dla nowej pozycji (wzorca albo profilu) ze statusem innym niż `kandydat`. Katalog przyjmuje tylko całe profile nowych klas aplikacji; status profilu to jedna linia na początku pliku.
-
-S26. Budżet długości — Zakładając PR do katalogu społeczności, gdy działa CI, wtedy jest czerwone, jeśli indeks wzorców katalogu przekroczy 15 000 znaków albo pojedynczy plik profilu katalogu przekroczy 12 000 znaków.
-
-| Rozmiar po zmianie | CI |
-| --- | --- |
-| indeks 15 000 znaków | zielone |
-| indeks 15 001 znaków | czerwone |
-| profil 12 000 znaków | zielone |
-| profil 12 001 znaków | czerwone |
-
-S27. Hooki i skrypty tylko od opiekuna — Zakładając PR, którego autor nie jest właścicielem hooków i skryptów w pliku właścicieli kodu katalogu, gdy PR zmienia hooki albo skrypty pluginu katalogu, wtedy CI jest czerwone. Jedynym właścicielem tych ścieżek w pliku właścicieli kodu jest opiekun; PR opiekuna przechodzi tę kontrolę.
-
-S28. Scalanie tylko przez opiekuna — Zakładając PR od innej osoby, gdy nie ma akceptacji opiekuna albo CI nie jest zielone, wtedy PR nie da się scalić; opiekun scala własne zmiany sam przez obejście administratora. — ręcznie: reguły repozytorium GitHuba, sprawdzane odczytem ich ustawień.
-
-S29. Przegląd agentem — Zakładając PR do katalogu społeczności, gdy opiekun uruchamia przegląd, wtedy przegląd zgłasza duplikat istniejącej pozycji (katalogu albo rdzenia), sprzeczność z kontraktem warsztatu, dane projektu autora i polecenia dla agenta w treści.
-
-S30. Potwierdzenie — Zakładając pozycję `kandydat` w katalogu, gdy retro w innym projekcie trafia na problem opisany tą pozycją, wtedy proponuje komentarz „wystąpienie” do zgłoszenia tej pozycji w repozytorium katalogu (wyszukanie i zgoda jak w S5–S7, bez progu 3, bo licznik wzorca liczy projekty, nie zdarzenia; bez `gh` — linki jak w S10), a nie edytuje kopii katalogu u siebie. Opiekun, widząc wystąpienie z drugiego niezależnego projektu (innego repozytorium), zmienia status pozycji na `potwierdzony`.
-
-S31. Awans do rdzenia — Zakładając pozycję katalogu, gdy opiekun przenosi ją do rdzenia, wtedy warunkiem jest status `potwierdzony`; plik pozycji trafia do rdzenia, a w katalogu zostaje tylko wpis indeksu „przeniesiony do rdzenia” bez treści. Pozycji `kandydat` nie da się przenieść.
-
-| Status pozycji | Przeniesienie do rdzenia |
-| --- | --- |
-| `kandydat` | odmowa |
-| `potwierdzony` | możliwe, decyduje opiekun |
-| `wycofany` | odmowa |
-
-S32. Wybór profilu z katalogu — Zakładając nazwę profilu w ustawieniu `profile` projektu, gdy skill albo hook startowy ustala pliki profili, wtedy szuka jej najpierw w rdzeniu, potem w katalogu społeczności, i podaje, skąd wziął profil oraz jego status.
-
-| Nazwa w `profile` | Wynik |
-| --- | --- |
-| `cli` (profil rdzenia) | profil rdzenia |
-| `django` (tylko w katalogu, `kandydat`) | profil katalogu, ze statusem `kandydat` |
-| `cli`, gdy katalog ma też `cli` (np. sprzed awansu albo błąd) | profil rdzenia i ostrzeżenie o kolizji |
-| `django` bez zainstalowanego katalogu | S24: „katalog społeczności niedostępny…”, gdy katalog jest zadeklarowany; inaczej „nieznany profil: django” |
+S21–S32 — przeniesione 2026-11-22 do zdolności [katalog-spolecznosci](../katalog-spolecznosci/spec.md), z tymi samymi numerami: podział przy krojeniu (zdolność za duża na jeden cykl).
 
 ## Zakres
 
 - Retro w projekcie: próg lokalny, szkic w stałych polach, filtr prywatności ze skanem sekretów, wyszukiwanie podobnych, komentarz „wystąpienie”, ślad `Zgłoszenie:` i `niewysłane`, sprawdzenie wersji i historii zmian, wariant bez `gh`, kanał bezpieczeństwa, procedura po wycieku.
-- Ustawienie repozytorium zgłoszeń i deklaracja katalogu społeczności w `warsztat.json` projektu, z opisem w kontrakcie i szablonie konfiguracji.
-- Repozytorium warsztatu: etykiety, formularz zgłoszenia, polityka bezpieczeństwa z włączonym prywatnym zgłaszaniem podatności, migracja pliku zgłoszeń, retro opiekuna na Issues, `gdzie tydzien` liczący zgłoszenia z Issues.
+- Ustawienie repozytorium zgłoszeń w `warsztat.json` projektu, z opisem w kontrakcie i szablonie konfiguracji.
+- Repozytorium warsztatu: etykiety, formularz zgłoszenia, polityka bezpieczeństwa z włączonym prywatnym zgłaszaniem podatności, plik właścicieli kodu i reguła gałęzi głównej (automat zasady Z01), migracja pliku zgłoszeń, retro opiekuna na Issues, `gdzie tydzien` liczący zgłoszenia z Issues.
 - Zmiana kontraktu: zgłoszenia warsztatu jako Issues (sekcja o zgłoszeniach w części o lekcjach i wzorcach, tabela jednego źródła prawdy, tabela działów kontraktu), retro już nie usuwa lekcji przeniesionej do zgłoszenia (krok wdrożenia i krok doboru mechanizmu w retro, opis skilla), `gdzie` i `pomysl` bez odwołań do pliku zgłoszeń.
 - Adres oficjalnego repozytorium warsztatu w jednym miejscu pluginu (pole repozytorium w manifeście pluginu); ustawienie projektu i kanał bezpieczeństwa biorą go stamtąd. Wartość wpisuje zdolność `publikacja`; do tego czasu działa wiersz „plugin nie podaje adresu” z S12.
-- Plugin katalogu społeczności: osobne repozytorium, szablon pozycji, hook startowy i hook odczytu dla Claude Code, skill dla Codexa, CI formatu i budżetu, właściciele kodu, reguły scalania, zasady wkładu.
-- Wszystkie publiczne teksty tej zdolności (etykiety, formularz, komentarz „wystąpienie”, polityka bezpieczeństwa, zasady wkładu, opis katalogu) po angielsku; adres repozytorium zgłoszeń jest wartością ustawienia, nie stałą w tekstach.
+- Wszystkie publiczne teksty tej zdolności (etykiety, formularz, komentarz „wystąpienie”, polityka bezpieczeństwa) po angielsku; adres repozytorium zgłoszeń jest wartością ustawienia, nie stałą w tekstach.
 
 ## Poza zakresem
 
-- Pojedyncze pozycje dokładane przez innych do profili rdzenia (np. nowa pozycja w profilu CLI) — to zgłoszenie do opiekuna; katalog przyjmuje tylko całe profile nowych klas aplikacji (decyzja przy bramce specu 2026-11-22).
+- Plugin katalogu społeczności (S21–S32) — zdolność [katalog-spolecznosci](../katalog-spolecznosci/spec.md), wydzielona przy krojeniu 2026-11-22.
 - PR-y od innych osób do rdzenia — rdzeń przyjmuje tylko zgłoszenia ([ADR 0001](../../decyzje/0001-rdzen-i-katalog-spolecznosci.md)).
-- Katalog społeczności w rdzeniu włączany flagą i klon katalogu w znanym katalogu na dysku — odrzucone w grillu i po drugiej opinii (ADR 0001 → Rozważane alternatywy).
 - Plik zgłoszeń jako lokalna kolejka obok Issues — odrzucone po drugiej opinii; jedno źródło wygrało z pracą offline.
 - Podział zdolności na etapy przed i po publikacji — opiekun wybrał pełny zakres od publikacji.
 - Weryfikacja tożsamości kont w sygnale globalnym — ryzyko wielu kont przyjęte, sygnał tylko porządkuje listę.
@@ -179,36 +126,25 @@ S32. Wybór profilu z katalogu — Zakładając nazwę profilu w ustawieniu `pro
 
 ## Decyzje projektowe
 
-- **Granica rdzeń / katalog społeczności** — [ADR 0001](../../decyzje/0001-rdzen-i-katalog-spolecznosci.md); zasada Z01 w zasadach projektu dostaje po wdrożeniu automat: właściciele kodu i reguły scalania w repozytorium warsztatu.
+- **Rdzeń przyjmuje od innych tylko zgłoszenia** — [ADR 0001](../../decyzje/0001-rdzen-i-katalog-spolecznosci.md); zasada Z01 dostaje po wdrożeniu automat: plik właścicieli kodu i reguła gałęzi głównej z wymaganą akceptacją opiekuna w repozytorium warsztatu.
 - **Kto wysyła.** Retro w projekcie użytkownika, z jego konta, przez `gh`; każda wysyłka (Issue i komentarz) po jawnej zgodzie na pokazanym szkicu. Wysyłki nie robi żaden hook ani inny skill.
 - **Kolejność sprawdzeń przed szkicem:** próg i rodzaj problemu (bezpieczeństwo → kanał bezpieczeństwa, koniec) → ustawienie repozytorium zgłoszeń (`null` → koniec) → wersja i historia zmian (S9) → filtr prywatności (S5) → wyszukiwanie podobnych (S6) → pytanie o zgodę.
 - **Trzy liczniki wystąpień** ze słownika pozostają rozłączne: próg lokalny 3 (lekcja w projekcie), sygnał globalny 2 konta (zgłoszenie), `potwierdzony` od 2 projektów (wzorzec, pozycja katalogu).
 - **Etykiety po angielsku** (propozycja do akceptacji): `process-report` dla zgłoszenia oraz statusy `status: new`, `status: accepted`, `status: discussion`; komentarz „wystąpienie” zaczyna się nagłówkiem `Occurrence`. Mapa nazywała je po polsku — decyzja o języku publicznej wersji ma pierwszeństwo.
 - **Limit linku formularza: 6 000 znaków** pełnego adresu — wartość ostrożna; budowa sprawdza ją pomiarem na GitHubie i może ją tylko obniżyć.
-- **Budżet katalogu: indeks 15 000 znaków, profil 12 000 znaków** — dziś indeks rdzenia ma ok. 3 600 znaków przy 8 wzorcach, największy profil rdzenia ok. 10 000; budżet daje miejsce na kilkadziesiąt pozycji, a nadal mieści się w kontekście.
-- **Wykrycie braku katalogu (S24) w skillu, nie w hooku rdzenia.** Mapa zakładała komunikat hooka startowego rdzenia, ale hook rdzenia nie widzi wyniku hooka innego pluginu (hooki startowe działają niezależnie), a w Codexie hooki rdzenia nie docierają do modelu. Sprawdzenie robi więc skill w chwili przeszukiwania wzorców i profili.
-- **Mechanizm w Codexie:** skill katalogu zamiast hooka; warunek powrotu do hooka jako wspólnego mechanizmu: hooki pluginów w Codexie docierają do kontekstu modelu (mapa → Decyzje, eksperymenty z 2026-11-22).
-- **Hook odczytu przyznaje uprawnienia** — granica bezpieczeństwa; jego zakres sprawdza przegląd bezpieczeństwa przy budowie.
 
 ## Testy
 
-- **Poziom.** Warsztat nie ma dziś testów skilli; testem akceptacyjnym scenariusza retro (S1–S13, S17–S20, S24) jest skryptowana sesja agenta (`claude -p`) w tymczasowym projekcie poza repozytorium, z przygotowanymi plikami `.ai/` i atrapą `gh`, która zapisuje wywołania i zwraca zadane odpowiedzi — GitHub to jedyna mockowana granica. Wynik sprawdza skrypt testu: wywołania atrapy (czy było `issue create`, `issue comment`, z jaką treścią), plik lekcji po sesji i tekst odpowiedzi. Zgodę i odmowę daje kolejna tura sesji. Atrapa `gh` sprawdza argumenty, a nie przyjmuje wszystkiego.
+- **Poziom.** Warsztat nie ma dziś testów skilli; testem akceptacyjnym scenariusza retro (S1–S13, S17–S20) jest skryptowana sesja agenta (`claude -p`) w tymczasowym projekcie poza repozytorium, z przygotowanymi plikami `.ai/` i atrapą `gh`, która zapisuje wywołania i zwraca zadane odpowiedzi — GitHub to jedyna mockowana granica. Wynik sprawdza skrypt testu: wywołania atrapy (czy było `issue create`, `issue comment`, z jaką treścią), plik lekcji po sesji i tekst odpowiedzi. Zgodę i odmowę daje kolejna tura sesji. Atrapa `gh` sprawdza argumenty, a nie przyjmuje wszystkiego.
 - **S9** atrapa `gh` zwraca najnowsze wydanie i historię zmian z wpisem o danym skillu i kroku (oraz bez wpisu); bez `gh` test sprawdza komunikat o pominięciu.
-- **Wybór profilu** (S32): uruchomienie hooka startowego rdzenia w tymczasowym projekcie dla każdego wiersza tabeli, z katalogiem zainstalowanym i bez niego.
-- **Hooki katalogu** (S21, S22): uruchomienie skryptu hooka z wejściem JSON dla każdego wiersza tabeli S22 i sprawdzenie decyzji; S21 dodatkowo jedną sesją `claude -p` z zainstalowanym katalogiem z lokalnego marketplace'u.
-- **CI katalogu** (S25–S27): uruchomienie kontroli katalogu na przygotowanych przykładach, w tym na wartościach granicznych z tabeli S26.
-- **Codex** (S23): jedna sesja Codexa z zainstalowanym katalogiem według procedury pomiaru z eksperymentu z 2026-11-22.
 - **Migracja i jedno źródło** (S15, S16): skrypt sprawdzający, że pliku zgłoszeń nie ma, że w pluginie nie ma do niego odwołań i że każdy numer wpisu z ostatniej wersji pliku ma Issue albo odnośnik w mapie lub roadmapie.
-- **Konfiguracja GitHuba** (S14, S28, polityka bezpieczeństwa): odczyt ustawień przez `gh api` (etykiety, reguły scalania, prywatne zgłaszanie podatności) plus ręczne obejrzenie formularza — lista w odbiorze.
+- **Konfiguracja GitHuba** (S14, polityka bezpieczeństwa): odczyt ustawień przez `gh api` (etykiety, prywatne zgłaszanie podatności) plus ręczne obejrzenie formularza — lista w odbiorze.
 - **Ślad.** Każdy test ma numer scenariusza w nazwie (`S5: …`).
-- **Niezmienniki ze słownika:** zgłoszenie bez danych projektu — S5; problem bezpieczeństwa poza publicznym zgłoszeniem — S4, S12; rdzeń zmienia tylko opiekun — S27, S28; do rdzenia tylko sprawdzone pozycje katalogu — S31; trzy liczniki nie sumują się — S1, S17, S30.
+- **Niezmienniki ze słownika:** zgłoszenie bez danych projektu — S5; problem bezpieczeństwa poza publicznym zgłoszeniem — S4, S12; trzy liczniki nie sumują się — S1, S17 (licznik wzorca — zdolność katalogu).
 
 ## Ryzyka i kwestie nieblokujące
 
 - **Filtr prywatności nie jest szczelny** — opis słowami warsztatu może nadal zdradzić projekt. Zabezpieczenia: stałe pola, kontrola każdego pola, skan sekretów i zgoda na pokazanym szkicu; reszta to procedura po wycieku (S13).
 - **Brzmienie cytatów** z dokumentacji GitHuba w procedurze po wycieku pochodzi z narzędzia streszczającego; przy budowie sprawdzić dosłownie na stronach źródłowych ([badanie](../../badania/2026-11-22-wyciek-w-issue-github.md)).
-- **Ścieżka katalogu po aktualizacji z marketplace'u** — otwarte pytanie `[prototyp]` w mapie, nieblokujące; gdy hook po aktualizacji poda starą ścieżkę, S21 wymaga poprawki mechanizmu, nie zachowania.
-- **Codex słabiej widzi katalog** — agent musi sam sięgnąć po skill katalogu (S23).
 - **Rzadkie skille mogą nie dobić progu 3** — świadomy koszt mniejszego szumu.
 - **Zależność od GitHuba** — praca nad zgłoszeniami opiekuna wymaga GitHuba; świadomy koszt jednego źródła.
-- **Rozjazd z roadmapą:** linia zdolności `publikacja` w Dalej obiecuje „Issues zamiast pliku zgłoszeń”, a ten spec to obejmuje — linia wymaga poprawki za zgodą człowieka.
