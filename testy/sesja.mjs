@@ -123,10 +123,14 @@ function uruchomClaude(argumenty, { cwd, env }) {
  * odpowiedziGh: lista { argumenty: [...prefiks], stdout?, stderr?, kod? } — reszta wywołań kończy się błędem.
  * pliki: { "ścieżka w projekcie": treść } — nadpisuje albo dodaje pliki fikstury przed pierwszym commitem
  * (np. wariant ustawienia albo dane, których nie wolno trzymać w repozytorium, jak syntetyczny token).
+ * repozytoriumPluginu: adres oficjalnego repozytorium warsztatu — sesja dostaje kopię pluginu z tym adresem
+ * w polu `repository` obu manifestów (`""` → kopia z pustym polem, niezależnie od repozytorium);
+ * bez niego sesja używa pluginu z repozytorium.
  */
-export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {} }) {
+export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repozytoriumPluginu }) {
   const korzen = realpathSync.native(mkdtempSync(join(tmpdir(), "warsztat-sesja-")));
   const katalog = join(korzen, "projekt");
+  const plugin = repozytoriumPluginu === undefined ? katalogPluginu : join(korzen, "plugin", "ai");
   const katalogAtrapy = join(korzen, "atrapa");
   const katalogBin = join(korzen, "bin");
   const katalogTmp = join(korzen, "tmp");
@@ -146,6 +150,14 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {} }) {
     for (const [sciezka, tresc] of Object.entries(pliki)) {
       mkdirSync(dirname(join(katalog, sciezka)), { recursive: true });
       writeFileSync(join(katalog, sciezka), tresc);
+    }
+    if (plugin !== katalogPluginu) {
+      cpSync(katalogPluginu, plugin, { recursive: true });
+      for (const manifest of ["plugin.json", join(".claude-plugin", "plugin.json")]) {
+        const sciezka = join(plugin, manifest);
+        const tresc = JSON.parse(readFileSync(sciezka, "utf8"));
+        writeFileSync(sciezka, JSON.stringify({ ...tresc, repository: repozytoriumPluginu }, null, 2) + "\n");
+      }
     }
     writeFileSync(join(katalogAtrapy, "odpowiedzi.json"), JSON.stringify(odpowiedziGh, null, 2));
     opakowaniaGh(katalogBin, katalogAtrapy);
@@ -175,7 +187,7 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {} }) {
         "--model",
         model,
         "--plugin-dir",
-        katalogPluginu,
+        plugin,
         "--setting-sources",
         "project,local",
         "--permission-mode",

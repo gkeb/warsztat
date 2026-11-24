@@ -69,6 +69,8 @@ Osobno oceń, czy problem jest **ogólny** — nie zależy od domeny projektu (z
    - w repozytorium warsztatu → wpis w `ZGLOSZENIA.md` (to samo zgłoszenie już jest → nowe wystąpienie);
    - w projekcie → lekcja `[warsztat]` w `lekcje.md` projektu z gotową zmianą (plik i kierunek) i ścieżka zgłoszeń według `zgloszenie.md` obok tego pliku: rodzaj problemu (bezpieczeństwo → kanał bezpieczeństwa), próg, repozytorium zgłoszeń, szkic po filtrze prywatności i skanie sekretów, zgoda, wysyłka. Do `ZGLOSZENIA.md` nie piszesz, nawet gdy klon warsztatu jest dostępny. Poniżej progu albo bez wysyłki lekcja zostaje lekcją.
 
+   W projekcie ścieżkę zgłoszeń przechodzisz dla każdej lekcji `[warsztat]`, także gdy proponujesz wdrożenie od razu w dostępnym klonie warsztatu — jej wynik należy do propozycji.
+
    Propozycja tylko w czacie ginie — nie kończ na niej.
 4. **Wzorzec w `wzorce/`** (katalog pluginu, sekcja „Wzorce — wiedza między projektami” w `../../kontrakt/pamiec.md`) — dla problemu ogólnego. Łączy się z punktami 1–3: projekt dostaje mechanizm, inne projekty — wiedzę. Najpierw przeszukaj `wzorce/INDEKS.md`:
    - jest pasujący wzorzec → dopisz wystąpienie; przypadek różnił się → wariant albo zawężenie `Warunki` / `Nie dotyczy`; drugi niezależny projekt → status `potwierdzony`;

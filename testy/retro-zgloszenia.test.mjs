@@ -90,6 +90,43 @@ const odpowiedziWysylki = [
 ];
 const zgoda = "Tak, zgadzam się — wyślij to zgłoszenie dokładnie w tej postaci.";
 const zalozenia = (wywolania) => wywolania.filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "create");
+const liniaLekcji = (lekcje) => lekcje.split("\n").find((l) => l.startsWith("- [warsztat]"));
+const niewyslane = /Zgłoszenie: niewysłane \d{4}-\d{2}-\d{2}/;
+const repoArgument = (argumenty) => {
+  const i = argumenty.findIndex((a) => a === "--repo" || a === "-R");
+  return i >= 0 ? argumenty[i + 1] : argumenty.find((a) => a.startsWith("--repo="))?.slice(7);
+};
+// Oficjalne repozytorium warsztatu w kopii pluginu (pole `repository` manifestów); w repozytorium pole jest puste.
+const repoOficjalne = "przyklad-warsztat/warsztat";
+const adresOficjalny = `https://github.com/${repoOficjalne}`;
+const ustawieniaTrzech = JSON.parse(
+  readFileSync(join(fikstury, "retro-trzy-wystapienia", ".ai", "warsztat.json"), "utf8"),
+);
+const zUstawieniem = (zgloszenia) => {
+  const ustawienia = { ...ustawieniaTrzech };
+  if (zgloszenia === undefined) delete ustawienia.zgloszenia;
+  else ustawienia.zgloszenia = zgloszenia;
+  return { ".ai/warsztat.json": JSON.stringify(ustawienia, null, 2) + "\n" };
+};
+const lekcjeTrzech = readFileSync(join(fikstury, "retro-trzy-wystapienia", ".ai", "lekcje.md"), "utf8");
+
+const bezZmianGh = (projekt, opis) =>
+  assert.deepEqual(projekt.wywolaniaGh().filter((w) => zmieniaStan(w.argumenty)), [], `wywołania gh zmieniające stan\n${opis}`);
+
+/** Wariant tekstu fikstury; zamiana, która nic nie zmieniła, oznacza rozjazd z fiksturą. */
+function zamien(tekst, co, naCo) {
+  const wynik = tekst.replace(co, naCo);
+  assert.notEqual(wynik, tekst, `wariant fikstury: nie znaleziono „${co}”`);
+  return wynik;
+}
+
+/** Jedna tura retro bez propozycji wysyłki: brak szkicu, brak zmian w GitHubie, lekcja bez zmian. */
+function bezPropozycji(projekt, tekst, lekcjePrzed) {
+  const opis = opisSesji(projekt);
+  assert.doesNotMatch(tekst, /Proposed direction/, `retro pokazało szkic zgłoszenia\n${opis}`);
+  bezZmianGh(projekt, opis);
+  assert.equal(liniaLekcji(projekt.czytaj(".ai/lekcje.md")), liniaLekcji(lekcjePrzed), `lekcja zmieniona\n${opis}`);
+}
 
 describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => {
   const przebiegi = [];
@@ -103,11 +140,13 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
       try {
         const szkic = await projekt.tura("/ai:retro");
         const poSzkicu = projekt.wywolaniaGh();
+        const lekcjePoSzkicu = projekt.czytaj(".ai/lekcje.md");
         await projekt.tura(zgoda);
         przebiegi.push({
           opis: opisSesji(projekt),
           szkic: szkic.tekst,
           poSzkicu,
+          lekcjePoSzkicu,
           wywolania: projekt.wywolaniaGh(),
           lekcje: projekt.czytaj(".ai/lekcje.md"),
         });
@@ -165,6 +204,15 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
       assert.ok(linia, `lekcja zniknęła z lekcje.md\n${p.lekcje}`);
       assert.ok(linia.includes(`Zgłoszenie: ${linkZgloszenia}`), `brak dopisku Zgłoszenie\n${linia}`);
       assert.ok(linia.indexOf("Zgłoszenie:") < linia.indexOf("Wystąpienia:"), `Zgłoszenie: po Wystąpienia:\n${linia}`);
+      assert.doesNotMatch(linia, /niewysłane/, `link nie zastąpił dopisku niewysłane\n${linia}`);
+    });
+  });
+
+  test("S3: sesja zakończona na pytaniu o zgodę zostawia lekcję z dopiskiem niewysłane", () => {
+    kazdy((p, opis) => {
+      assert.deepEqual(p.poSzkicu.filter((w) => zmieniaStan(w.argumenty)), [], `wysyłka przed zgodą\n${opis}`);
+      const linia = liniaLekcji(p.lekcjePoSzkicu);
+      assert.match(linia ?? "", niewyslane, `po turze z pytaniem brak dopisku niewysłane\n${p.lekcjePoSzkicu}\n${opis}`);
     });
   });
 
@@ -235,3 +283,106 @@ for (const [wariant, ustawienie] of [
     });
   });
 }
+
+/** Jedna sesja retro w 2 kolejnych uruchomieniach; `sprawdz(projekt)` dostaje projekt przed sprzątnięciem. */
+function sesjaRetro(ustawienia, sprawdz) {
+  return dwaKolejnePrzejscia(async () => {
+    const projekt = przygotujProjekt({ odpowiedziGh: odpowiedziWysylki, ...ustawienia });
+    try {
+      await sprawdz(projekt);
+    } finally {
+      projekt.usun();
+    }
+  });
+}
+
+const trzy = join(fikstury, "retro-trzy-wystapienia");
+
+test("S1: utrata danych daje szkic zgłoszenia już przy pierwszym wystąpieniu", limit, () =>
+  sesjaRetro({ fikstura: join(fikstury, "retro-utrata-danych") }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    for (const pole of pola) assert.ok(tekst.includes(pole), `szkic bez pola ${pole}\n${opis}`);
+    assert.match(tekst, /data loss/i, `szkic bez rodzaju data loss\n${opis}`);
+    bezZmianGh(projekt, opis);
+  }));
+
+test("S3: odmowa w drugiej turze — nic nie wychodzi, lekcja z dopiskiem niewysłane", limit, () =>
+  sesjaRetro({ fikstura: trzy }, async (projekt) => {
+    const szkic = await projekt.tura("/ai:retro");
+    assert.match(szkic.tekst, /Proposed direction/, `brak szkicu w pierwszej turze\n${opisSesji(projekt)}`);
+    await projekt.tura("Nie, nie wysyłaj tego zgłoszenia.");
+    const opis = opisSesji(projekt);
+    bezZmianGh(projekt, opis);
+    assert.match(liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "", niewyslane, `brak dopisku niewysłane\n${opis}`);
+  }));
+
+test("S11: „nie mam konta” zostawia lekcję z dopiskiem niewysłane", limit, () =>
+  sesjaRetro({ fikstura: trzy }, async (projekt) => {
+    await projekt.tura("/ai:retro");
+    await projekt.tura("Nie mam konta na GitHubie, nie wysyłam.");
+    const opis = opisSesji(projekt);
+    bezZmianGh(projekt, opis);
+    const linia = liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "";
+    assert.match(linia, niewyslane, `brak dopisku niewysłane\n${opis}`);
+    assert.ok(linia.indexOf("Zgłoszenie:") < linia.indexOf("Wystąpienia:"), `Zgłoszenie: po Wystąpienia:\n${linia}`);
+  }));
+
+// Lekcja po wcześniejszej odmowie: dopisek z datą po ostatnim wystąpieniu fikstury (2026-11-03).
+const lekcjeNiewyslane = zamien(lekcjeTrzech, "Wystąpienia:", "Zgłoszenie: niewysłane 2026-11-10. Wystąpienia:");
+
+test("S11: ponowne retro bez nowego wystąpienia nie proponuje wysyłki", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcjeNiewyslane } }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    bezPropozycji(projekt, tekst, lekcjeNiewyslane);
+  }));
+
+test("S11: ponowne retro po nowym wystąpieniu proponuje wysyłkę", limit, () => {
+  const lekcje = zamien(lekcjeNiewyslane, "2026-11-03 przegląd", "2026-11-03 przegląd; 2026-11-15 użytkownik");
+  return sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcje } }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    assert.match(tekst, /Proposed direction/, `brak szkicu po nowym wystąpieniu\n${opis}`);
+    bezZmianGh(projekt, opis);
+  });
+});
+
+test("S12: brak klucza — zgłoszenie idzie do oficjalnego repozytorium z manifestu pluginu", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: zUstawieniem(undefined), repozytoriumPluginu: adresOficjalny }, async (projekt) => {
+    await projekt.tura("/ai:retro");
+    await projekt.tura(zgoda);
+    const opis = opisSesji(projekt);
+    const issue = zalozenia(projekt.wywolaniaGh());
+    assert.equal(issue.length, 1, `oczekiwane jedno Issue\n${opis}`);
+    assert.equal(repoArgument(issue[0].argumenty), repoOficjalne, `złe repozytorium: ${issue[0].argumenty.join(" ")}\n${opis}`);
+  }));
+
+test("S12: jawne oficjalne repozytorium — szkic wskazuje je jako docelowe", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: zUstawieniem(repoOficjalne), repozytoriumPluginu: adresOficjalny }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    assert.match(tekst, /Proposed direction/, `brak szkicu\n${opis}`);
+    assert.ok(tekst.includes(repoOficjalne), `szkic nie wskazuje oficjalnego repozytorium\n${opis}`);
+    bezZmianGh(projekt, opis);
+  }));
+
+test("S12: brak klucza i adresu w pluginie — jak null, z informacją „repozytorium zgłoszeń nieznane”", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: zUstawieniem(undefined), repozytoriumPluginu: "" }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    assert.match(tekst, /repozytorium zgłoszeń nieznane/i, `brak informacji o nieznanym repozytorium\n${opisSesji(projekt)}`);
+    bezPropozycji(projekt, tekst, lekcjeTrzech);
+  }));
+
+test("S12: null — brak propozycji wysyłki mimo 3 wystąpień, lekcja zostaje", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: zUstawieniem(null), repozytoriumPluginu: adresOficjalny }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    bezPropozycji(projekt, tekst, lekcjeTrzech);
+  }));
+
+test("S4: z adresem oficjalnego repozytorium odpowiedź podaje adres jego polityki bezpieczeństwa", limit, () =>
+  sesjaRetro({ fikstura: join(fikstury, "retro-bezpieczenstwo"), repozytoriumPluginu: adresOficjalny }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    assert.ok(tekst.includes(`${adresOficjalny}/security`), `brak adresu kanału bezpieczeństwa\n${opis}`);
+    bezZmianGh(projekt, opis);
+  }));

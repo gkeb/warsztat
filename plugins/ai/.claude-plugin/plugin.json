@@ -6,5 +6,6 @@
   "author": {
     "name": "Grzegorz"
   },
-  "keywords": ["workflow", "roadmap", "spec", "tdd"]
+  "keywords": ["workflow", "roadmap", "spec", "tdd"],
+  "repository": ""
 }
