@@ -10,7 +10,7 @@
 
 - Walidacja manifestu pluginu: `claude plugin validate plugins/ai`.
 - Skrypty hooków (`plugins/ai/scripts/*.mjs`) uruchamia Node (sprawdzone na v22).
-- Sesje testowe agenta (testy akceptacyjne skilli): `node --test "testy/*.test.mjs"` (Node 22 nie przyjmuje samego katalogu) — każda sesja to `claude -p` z pluginem z `plugins/ai` w tymczasowym projekcie i atrapą `gh`, więc **kosztuje wywołania modelu** (minuty na test); uruchamiasz świadomie, nie w `walidacja`. Model: zmienna `WARSZTAT_TEST_MODEL` (domyślnie `sonnet`).
+- Sesje testowe agenta (testy akceptacyjne skilli): `node --test "testy/*.test.mjs"` (Node 22 nie przyjmuje samego katalogu) — każda sesja to `claude -p` z pluginem z `plugins/ai` w tymczasowym projekcie i atrapą `gh`, więc **kosztuje wywołania modelu** (minuty na test); uruchamiasz świadomie, nie w `walidacja`. Model: zmienna `WARSZTAT_TEST_MODEL` (domyślnie `sonnet`). W trakcie budowy uruchamiasz tylko testy zmiany (`--test-name-pattern="S6: |S8: "`) z `WARSZTAT_TEST_PRZEBIEGI=1` (jedno uruchomienie zamiast dwóch); pełny plik z domyślną regułą 2 kolejnych przejść — raz, przed commitem. Koszt każdej tury i suma przebiegu idą na stderr (`[sesja] …`).
 
 ### Mapa kodu
 
@@ -31,6 +31,7 @@ Architektura, wzorce i zasady kodu: `.ai/ZASADY.md`. Przeczytaj przed zmianą st
 
 - To repozytorium jest źródłem pluginu: zmiany procesu robisz tutaj, nigdy w kopii pluginu w cache Claude Code/Codex.
 - Zmiana w `plugins/ai` przy wydaniu → podbij wersję w obu manifestach naraz.
+- Pełny przebieg sesji testowych (`testy/retro-zgloszenia.test.mjs`, 2026-11-24: 26 testów) to około 65 tur `sonnet` i około 50 minut; dwa takie przebiegi i próby w jednej sesji wyczerpały limit wydatków konta (`claude -p` kończy się „You've hit your monthly spend limit”). Nie uruchamiaj go odruchowo po każdej poprawce.
 - Codex CLI na tym komputerze nie jest w `PATH` — używaj pełnej ścieżki do `codex.exe` z rozszerzenia VS Code (sprawdź `--version`); ten plik wymaga `--no-daemon`, a interfejs `/hooks` działa w zwykłej konsoli Windows, nie przez ConPTY. W hookach Codexa na Windows `commandWindows` z pełnymi ścieżkami do `node.exe` i skryptu.
 - Gdy `pwsh` w `PATH` to alias aplikacji z `WindowsApps`, narzędzie PowerShell w `claude -p` odrzuca każde polecenie („The command line is too long”). Katalog prawdziwego `pwsh.exe` musi stać w `PATH` przed `WindowsApps` — uprząż sesji testowych (`testy/sesja.mjs`) robi to sama.
 

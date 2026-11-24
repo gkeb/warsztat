@@ -83,7 +83,7 @@ const pola = [
 const odpowiedziWysylki = [
   { argumenty: ["--version"], stdout: "gh version 2.0.0 (atrapa)\n" },
   { argumenty: ["auth", "status"], stdout: "github.com\n  ✓ Logged in to github.com account test-user\n" },
-  { argumenty: ["issue", "list"], stdout: "" },
+  { argumenty: ["issue", "list"], stdout: "[]\n" },
   { argumenty: ["search"], stdout: "" },
   { argumenty: ["label", "list"], stdout: "" },
   { argumenty: ["issue", "create"], stdout: `${linkZgloszenia}\n` },
@@ -386,3 +386,198 @@ test("S4: z adresem oficjalnego repozytorium odpowiedź podaje adres jego polity
     assert.ok(tekst.includes(`${adresOficjalny}/security`), `brak adresu kanału bezpieczeństwa\n${opis}`);
     bezZmianGh(projekt, opis);
   }));
+
+// Podobne zgłoszenia i kolejne wystąpienia (S6, S8). Komentarz „wystąpienie” ma stałe pola po angielsku.
+const polaWystapienia = ["Date", "Workshop version", "Agent and model", "Skill and step", "Symptom"];
+const komentarze = (wywolania) => wywolania.filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "comment");
+const linkIssue = (nr) => `https://github.com/${repoZgloszen}/issues/${nr}`;
+const odpowiedzi = (...dodatkowe) => [...dodatkowe, ...odpowiedziWysylki];
+const widokIssue = (nr, stan) => ({
+  argumenty: ["issue", "view"],
+  stdout:
+    JSON.stringify({
+      number: nr,
+      title: "[spec] Spec skill writes a scenario without asking for numeric thresholds",
+      url: linkIssue(nr),
+      createdAt: "2026-11-05T10:00:00Z",
+      closedAt: null,
+      state: "OPEN",
+      stateReason: "",
+      comments: [],
+      ...stan,
+    }) + "\n",
+});
+const komentarzDodany = (nr) => ({ argumenty: ["issue", "comment"], stdout: `${linkIssue(nr)}#issuecomment-9001\n` });
+
+/** Komentarz do zgłoszenia `nr`: cel, repozytorium, nagłówek, pola i brak danych projektu. */
+function sprawdzKomentarz(komentarz, nr, opis) {
+  const argumenty = komentarz.argumenty.join(" ");
+  const cel = komentarz.argumenty[2] ?? "";
+  assert.ok(cel === String(nr) || cel === linkIssue(nr), `komentarz nie do zgłoszenia #${nr}: ${argumenty}\n${opis}`);
+  if (!cel.startsWith("https://")) {
+    assert.equal(repoArgument(komentarz.argumenty), repoZgloszen, `złe repozytorium komentarza: ${argumenty}\n${opis}`);
+  }
+  const tresc = komentarz.tresc ?? "";
+  const pierwsza = tresc.split("\n").find((l) => l.trim());
+  assert.match(pierwsza ?? "", /^#+\s*Occurrence\b/, `komentarz nie zaczyna się nagłówkiem Occurrence\n${tresc}\n${opis}`);
+  const pozycje = polaWystapienia.map((pole) => tresc.indexOf(pole));
+  assert.ok(pozycje.every((x) => x >= 0), `komentarz bez któregoś pola: ${pozycje}\n${tresc}\n${opis}`);
+  assert.deepEqual([...pozycje].sort((a, b) => a - b), pozycje, `pola komentarza w złej kolejności\n${tresc}`);
+  for (const zakazane of [/src\/billing/i, /invoice\.ts/i, /faktur/i, /Kowalski/i, /jan@example\.com/i]) {
+    assert.doesNotMatch(`${argumenty}\n${tresc}`, zakazane, `dane projektu w komentarzu (${zakazane})\n${tresc}`);
+  }
+}
+
+const podobne = {
+  argumenty: ["issue", "list"],
+  stdout:
+    JSON.stringify([
+      { number: 57, title: "[spec] Spec skill does not ask for numeric thresholds before a scenario", url: linkIssue(57) },
+    ]) + "\n",
+};
+
+/** S6: pierwsza tura retro, potem wybór użytkownika; zwraca wywołania i lekcję po sesji. */
+async function wyborPodobnego(projekt, wybor) {
+  const szkic = await projekt.tura("/ai:retro");
+  const opis = opisSesji(projekt);
+  const [szukanie] = projekt.wywolaniaGh().filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "list");
+  assert.ok(szukanie, `retro nie szukało podobnych zgłoszeń\n${opis}`);
+  const argumenty = szukanie.argumenty.join(" ");
+  assert.equal(repoArgument(szukanie.argumenty), repoZgloszen, `szukanie w złym repozytorium: ${argumenty}`);
+  assert.match(argumenty, /--label[ =]process-report/, `szukanie bez etykiety process-report: ${argumenty}`);
+  assert.match(argumenty, /--state[ =]open/, `szukanie nie tylko otwartych: ${argumenty}`);
+  assert.match(argumenty, /--search[ =].*spec/i, `szukanie bez nazwy skilla: ${argumenty}`);
+  assert.match(szkic.tekst, /#+\s*Occurrence\b/, `brak szkicu komentarza Occurrence\n${opis}`);
+  assert.match(szkic.tekst, /#57|issues\/57/, `brak wskazania podobnego zgłoszenia\n${opis}`);
+  bezZmianGh(projekt, opis);
+  await projekt.tura(wybor);
+  return { wywolania: projekt.wywolaniaGh(), linia: liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "", opis: opisSesji(projekt) };
+}
+
+test("S6: podobne otwarte zgłoszenie — wybór komentarza daje gh issue comment", limit, () =>
+  sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(podobne, widokIssue(57), komentarzDodany(57)) }, async (projekt) => {
+    const { wywolania, linia, opis } = await wyborPodobnego(
+      projekt,
+      "Dopisz komentarz do istniejącego zgłoszenia #57, zgadzam się na pokazaną treść komentarza.",
+    );
+    assert.equal(zalozenia(wywolania).length, 0, `założone nowe Issue\n${opis}`);
+    const [komentarz, ...reszta] = komentarze(wywolania);
+    assert.ok(komentarz && reszta.length === 0, `oczekiwany jeden komentarz\n${opis}`);
+    sprawdzKomentarz(komentarz, 57, opis);
+    assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(57)}`), `brak śladu z linkiem do zgłoszenia\n${linia}`);
+    assert.doesNotMatch(linia, /issuecomment|niewysłane/, `ślad z linkiem komentarza albo niewysłane\n${linia}`);
+  }));
+
+test("S6: podobne otwarte zgłoszenie — wybór nowego zgłoszenia daje gh issue create", limit, () =>
+  sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(podobne, widokIssue(57)) }, async (projekt) => {
+    const { wywolania, linia, opis } = await wyborPodobnego(
+      projekt,
+      "Nie komentuj — załóż nowe zgłoszenie, zgadzam się na pokazany szkic zgłoszenia.",
+    );
+    assert.equal(komentarze(wywolania).length, 0, `dodany komentarz\n${opis}`);
+    assert.equal(zalozenia(wywolania).length, 1, `oczekiwane jedno Issue\n${opis}`);
+    assert.ok(linia.includes(`Zgłoszenie: ${linkZgloszenia}`), `brak śladu z linkiem nowego zgłoszenia\n${linia}`);
+  }));
+
+// Wysłana lekcja: zgłoszenie założone 2026-11-05, nowe wystąpienie 2026-11-20 (jedno, poniżej progu 3).
+const lekcjeWyslane = (link) =>
+  zamien(
+    zamien(lekcjeTrzech, "Wystąpienia:", `Zgłoszenie: ${link}. Wystąpienia:`),
+    "2026-11-03 przegląd",
+    "2026-11-03 przegląd; 2026-11-20 użytkownik",
+  );
+
+test("S8: nowe wystąpienie wysłanej lekcji — komentarz do zgłoszenia z linku, bez nowego Issue", limit, () =>
+  sesjaRetro(
+    {
+      fikstura: trzy,
+      pliki: { ".ai/lekcje.md": lekcjeWyslane(linkIssue(101)) },
+      odpowiedziGh: odpowiedzi(widokIssue(101), komentarzDodany(101)),
+    },
+    async (projekt) => {
+      const szkic = await projekt.tura("/ai:retro");
+      let opis = opisSesji(projekt);
+      assert.match(szkic.tekst, /#+\s*Occurrence\b/, `brak szkicu komentarza\n${opis}`);
+      bezZmianGh(projekt, opis);
+      const poSzkicu = liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "";
+      assert.match(
+        poSzkicu,
+        new RegExp(`Zgłoszenie: ${linkIssue(101).replaceAll(".", "\\.")}, niewysłane \\d{4}-\\d{2}-\\d{2}`),
+        `po pytaniu brak „<link>, niewysłane”\n${poSzkicu}\n${opis}`,
+      );
+      await projekt.tura(zgoda);
+      opis = opisSesji(projekt);
+      const wywolania = projekt.wywolaniaGh();
+      assert.equal(zalozenia(wywolania).length, 0, `założone nowe Issue\n${opis}`);
+      const [komentarz, ...reszta] = komentarze(wywolania);
+      assert.ok(komentarz && reszta.length === 0, `oczekiwany jeden komentarz\n${opis}`);
+      sprawdzKomentarz(komentarz, 101, opis);
+      assert.match(komentarz.tresc ?? "", /2026-11-20/, `komentarz bez daty nowego wystąpienia\n${komentarz.tresc}`);
+      const linia = liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "";
+      assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(101)}`), `ślad zgubił link\n${linia}`);
+      assert.doesNotMatch(linia, /niewysłane/, `wysłany komentarz nie usunął niewysłane\n${linia}`);
+    },
+  ));
+
+test("S8: zgłoszenie zamknięte jako wdrożone — nowe zgłoszenie z odnośnikiem do starego", limit, () =>
+  sesjaRetro(
+    {
+      fikstura: trzy,
+      pliki: { ".ai/lekcje.md": lekcjeWyslane(linkIssue(101)) },
+      odpowiedziGh: [
+        widokIssue(101, { state: "CLOSED", stateReason: "COMPLETED", closedAt: "2026-11-10T12:00:00Z" }),
+        { argumenty: ["issue", "create"], stdout: `${linkIssue(102)}\n` },
+        ...odpowiedziWysylki,
+      ],
+    },
+    async (projekt) => {
+      const szkic = await projekt.tura("/ai:retro");
+      assert.match(szkic.tekst, /Proposed direction/, `brak szkicu nowego zgłoszenia\n${opisSesji(projekt)}`);
+      await projekt.tura(zgoda);
+      const opis = opisSesji(projekt);
+      const wywolania = projekt.wywolaniaGh();
+      assert.equal(komentarze(wywolania).length, 0, `komentarz do zamkniętego zgłoszenia\n${opis}`);
+      const [issue, ...reszta] = zalozenia(wywolania);
+      assert.ok(issue && reszta.length === 0, `oczekiwane jedno nowe Issue\n${opis}`);
+      assert.match(issue.tresc ?? "", /issues\/101|#101/, `nowe zgłoszenie bez odnośnika do starego\n${issue.tresc}`);
+      const linia = liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "";
+      assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(102)}`), `ślad nie wskazuje nowego zgłoszenia\n${linia}`);
+    },
+  ));
+
+test("S8: zgłoszenie zamknięte jako „not planned” — brak propozycji, powód zamknięcia w odpowiedzi", limit, () => {
+  const lekcje = lekcjeWyslane(linkIssue(101));
+  const zamkniete = widokIssue(101, {
+    state: "CLOSED",
+    stateReason: "NOT_PLANNED",
+    closedAt: "2026-11-10T12:00:00Z",
+    comments: [
+      {
+        author: { login: "opiekun-warsztatu" },
+        body: "Closing as not planned: numeric thresholds are collected by the grill skill, not by spec.",
+        createdAt: "2026-11-10T11:59:00Z",
+        viewerDidAuthor: false,
+      },
+    ],
+  });
+  return sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcje }, odpowiedziGh: odpowiedzi(zamkniete) }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    assert.match(tekst, /grill/i, `odpowiedź nie podaje powodu zamknięcia\n${opis}`);
+    assert.doesNotMatch(tekst, /#+\s*Occurrence\b/, `retro pokazało szkic komentarza\n${opis}`);
+    bezPropozycji(projekt, tekst, lekcje);
+  });
+});
+
+test("S8: link do innego repozytorium — lekcja przechodzi ścieżkę jak nowa, do bieżącego repozytorium", limit, () =>
+  sesjaRetro(
+    { fikstura: trzy, pliki: { ".ai/lekcje.md": lekcjeWyslane("https://github.com/inna-org/inne-zgloszenia/issues/7") } },
+    async (projekt) => {
+      const { tekst } = await projekt.tura("/ai:retro");
+      const opis = opisSesji(projekt);
+      assert.match(tekst, /Proposed direction/, `brak szkicu nowego zgłoszenia\n${opis}`);
+      assert.ok(tekst.includes(repoZgloszen), `szkic nie wskazuje bieżącego repozytorium zgłoszeń\n${opis}`);
+      assert.doesNotMatch(tekst, /#+\s*Occurrence\b/, `retro zaproponowało komentarz do innego repozytorium\n${opis}`);
+      bezZmianGh(projekt, opis);
+    },
+  ));

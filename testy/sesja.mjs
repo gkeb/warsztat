@@ -12,6 +12,12 @@ export const katalogPluginu = join(katalogRepo, "plugins", "ai");
 const atrapa = join(katalogTestow, "atrapa-gh.mjs");
 
 export const model = process.env.WARSZTAT_TEST_MODEL || "sonnet";
+// Liczba kolejnych uruchomień w regule wyniku: 2 (domyślnie, przebieg przed commitem) albo 1 (w trakcie budowy).
+const przebiegi = process.env.WARSZTAT_TEST_PRZEBIEGI === "1" ? 1 : 2;
+
+// Koszt z `total_cost_usd` każdej tury, sumowany w procesie testów (jeden plik testów).
+let kosztPrzebiegu = 0;
+const dolary = (koszt) => (koszt === undefined ? "koszt nieznany" : `$${koszt.toFixed(2)}`);
 const limitTury = 15 * 60 * 1000;
 
 // Uprawnienia sesji: odczyt wszędzie, edycja plików tylko w projekcie (acceptEdits), `gh` i wybrane podkomendy
@@ -26,6 +32,9 @@ const dozwoloneNarzedzia = [
   "Grep",
   "Bash(cat:*)",
   "PowerShell(Get-Content:*)",
+  // Katalog tymczasowy dla szkicu: dokładnie polecenia z procedury retro (`echo "$TEMP"` w Bash nie da się dopuścić regułą).
+  "Bash(printenv TEMP)",
+  "PowerShell($env:TEMP)",
   ...["Bash", "PowerShell"].flatMap((powloka) => [
     `${powloka}(gh:*)`,
     `${powloka}(gitleaks stdin:*)`,
@@ -209,6 +218,10 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
       idSesji = wynik.session_id;
       const tura = { tekst: wynik.result ?? "", odmowy: wynik.permission_denials ?? [], koszt: wynik.total_cost_usd };
       tury.push(tura);
+      kosztPrzebiegu += tura.koszt ?? 0;
+      process.stderr.write(
+        `[sesja] tura ${tury.length}: ${dolary(tura.koszt)} (sesja ${dolary(tury.reduce((s, t) => s + (t.koszt ?? 0), 0))}, przebieg ${dolary(kosztPrzebiegu)})\n`,
+      );
       return tura;
     },
 
@@ -269,13 +282,14 @@ export function zmieniaStan(argumenty) {
 /**
  * Reguła wyniku sesji: przebieg przechodzi, gdy przejdzie w 2 kolejnych uruchomieniach,
  * każde w świeżym projekcie; porażka któregokolwiek to porażka testu.
+ * `WARSZTAT_TEST_PRZEBIEGI=1` skraca ją do jednego uruchomienia w trakcie budowy — nie zastępuje przebiegu przed commitem.
  */
 export async function dwaKolejnePrzejscia(przebieg) {
-  for (let nr = 1; nr <= 2; nr++) {
+  for (let nr = 1; nr <= przebiegi; nr++) {
     try {
       await przebieg(nr);
     } catch (blad) {
-      blad.message = `uruchomienie ${nr} z 2: ${blad.message}`;
+      blad.message = `uruchomienie ${nr} z ${przebiegi}: ${blad.message}`;
       throw blad;
     }
   }

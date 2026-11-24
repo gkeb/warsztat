@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill buduj model-zgloszen → ticket 04
+skill buduj model-zgloszen → ticket 05
 
 ## Otwarte pytania
 
@@ -54,6 +54,8 @@ skill buduj model-zgloszen → ticket 04
 
 2026-11-22 — przy podziale specu decyzja o automacie Z01 (właściciele kodu i reguła gałęzi w repozytorium warsztatu) omyłkowo wypadła z model-zgloszen; przywrócona w Decyzjach projektowych i Zakresie — treść jak w zaakceptowanym specu
 2026-11-22 — recenzja planu ticketów: przyjęte wszystkie uwagi — wydzielony ticket 01 z sesjami testowymi i regułą wyniku (2 kolejne przejścia), kanał bezpieczeństwa zawsze w oficjalnym repozytorium, skan szkicu `gitleaks stdin` (sprawdzone: gitleaks 8.30.1, kod 1 przy trafieniu), retro w projekcie nie pisze już do pliku zgłoszeń, test S19, oznaczenie S20 w raporcie, repozytorium opiekuna = `github.repo`, pomiar limitu bez szablonu formularza, automat Z01 w tickecie 06, zamknięte zgłoszenie przy S8 (doprecyzowanie założenia „zgłoszenie otwarte”), pełna lista miejsc w migracji, wpis słownika „Rodzaj problemu”, schemat pola `repository`; odpartych brak
+2026-11-24 — Odmowa komentarza „wystąpienie” do wysłanej lekcji (S8 z S3): ślad `Zgłoszenie: <link>, niewysłane RRRR-MM-DD` — link zostaje, a retro nie wraca do lekcji przed wystąpieniem późniejszym niż ta data (jak S11); wysłany komentarz usuwa część `, niewysłane …`. Nowe wystąpienie wysłanej lekcji = data późniejsza niż założenie i zamknięcie zgłoszenia oraz ostatni własny komentarz `Occurrence` (z `gh issue view`), bez daty w śladzie — decyzja użytkownika przy budowie ticketu 04
+2026-11-24 — Reguła wyniku sesji testowych (ticket 01: 2 kolejne przejścia) dostaje skrót na czas budowy: `WARSZTAT_TEST_PRZEBIEGI=1` daje jedno uruchomienie, a domyślnie zostają dwa i przebieg przed commitem idzie na dwóch; uprząż wypisuje koszt każdej tury — trzy przebiegi w jednej sesji wyczerpały limit wydatków, decyzja użytkownika przy budowie ticketu 04
 ## Plasterki
 
 1. [01 — Sesje testowe agenta z atrapą gh](tickety/01-sesje-testowe-agenta.md)
