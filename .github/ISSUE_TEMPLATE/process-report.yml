@@ -1,0 +1,61 @@
+name: Process report
+description: A workshop process problem (skill, contract, template, hook) that keeps recurring in your project.
+title: "[<skill>] "
+labels: ["process-report", "status: new"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This repository is public.** Everything you write here can be read by anyone and is sent by e-mail to watchers. Do not include code, file paths, names or terms from your project, personal data, secrets or tokens. Describe the problem in workshop terms: skill, step, state file, contract concept.
+
+        **Security problems go through the security channel, never a public issue:** a leaked secret, a bypassed check or a too broad permission granted by the workshop. Report it privately as described in `SECURITY.md` (Security tab → Report a vulnerability).
+  - type: input
+    id: workshop-version
+    attributes:
+      label: Workshop version
+      description: "`version` from the plugin manifest."
+    validations:
+      required: true
+  - type: input
+    id: agent-and-model
+    attributes:
+      label: Agent and model
+      description: For example `Claude Code / claude-sonnet-5-5`; `unknown` if you do not know.
+    validations:
+      required: true
+  - type: input
+    id: skill-and-step
+    attributes:
+      label: Skill and step
+      description: A file in the workshop plugin and the step, for example `skills/spec/SKILL.md, step 3`.
+    validations:
+      required: true
+  - type: input
+    id: kind
+    attributes:
+      label: Kind
+      description: "`regular` or `data loss` (a skill or hook removed or overwrote work that cannot be recovered from git)."
+      value: regular
+    validations:
+      required: true
+  - type: textarea
+    id: symptom
+    attributes:
+      label: Symptom
+      description: What happened, in workshop terms.
+    validations:
+      required: true
+  - type: textarea
+    id: occurrences
+    attributes:
+      label: Occurrences
+      description: Number of occurrences and their dates.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-direction
+    attributes:
+      label: Proposed direction
+      description: What change in the workshop would remove the problem.
+    validations:
+      required: true
