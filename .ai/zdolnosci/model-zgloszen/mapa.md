@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill weryfikuj model-zgloszen — w modelu spoza listy `budowal` (wszystkie tickety budował `claude-opus-5-5`), np. w Codexie. Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
+Rozstrzygnąć uwagi blokujące i zaakceptować zakres poprawek po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
 
 ## Otwarte pytania
 
