@@ -123,6 +123,57 @@ const zUstawieniem = (zgloszenia) => {
 };
 const lekcjeTrzech = readFileSync(join(fikstury, "retro-trzy-wystapienia", ".ai", "lekcje.md"), "utf8");
 
+// Filtr prywatności (S5): lekcja fikstury z kodem i nazwą projektu (nagłówek AGENTS.md fikstury) obok ścieżki,
+// pojęcia ze słownika i danych osobowych. Dane projektu nie mogą trafić ani do pokazanego szkicu, ani do wysyłki.
+const lekcjeFiltra = zamien(
+  lekcjeTrzech,
+  "przy pojęciu Faktura korygująca,",
+  "przy pojęciu Faktura korygująca (kod `correctionTotal(original, corrected)` w projekcie rozliczenia-przyklad),",
+);
+const daneProjektu = [/src\/billing/i, /invoice/i, /faktur/i, /Kowalski/i, /jan@example\.com/i, /correctionTotal/i, /rozliczenia/i];
+const skanySzkicu = (wywolania) => wywolania.filter((w) => w.argumenty[0] === "stdin" && w.argumenty.includes("--redact"));
+const normalizuj = (tekst) => (tekst ?? "").replace(/\r\n/g, "\n").trim();
+/** Treść, która wyszła (`--body-file`), była w całości w treści któregoś skanu `gitleaks stdin` przed wysyłką. */
+/** Pusta albo nieodczytana treść (np. `--body` zamiast `--body-file`) nie jest dowodem skanu. */
+const przeskanowana = (skany, wyslane) =>
+  normalizuj(wyslane.tresc) !== "" &&
+  skany.some((s) => s.czas < wyslane.czas && normalizuj(s.tresc).includes(normalizuj(wyslane.tresc)));
+
+/** Szkic zgłoszenia w odpowiedzi: od linii tytułu `[spec] …` przed `Workshop version` do końca pola `Proposed direction`. */
+function pokazanySzkic(tekst) {
+  const linie = tekst.split("\n");
+  const start = linie.findIndex((l) => /^#+\s*Workshop version\b/.test(l.trim()));
+  if (start < 0) return "";
+  let poczatek = start;
+  for (let i = start - 1; i >= Math.max(0, start - 6); i--) {
+    if (/\[spec\]/i.test(linie[i])) {
+      poczatek = i;
+      break;
+    }
+  }
+  const kierunek = linie.findIndex((l, i) => i > start && /^#+\s*Proposed direction\b/.test(l.trim()));
+  let koniec = kierunek < 0 ? linie.length : kierunek + 1;
+  let tresc = false;
+  for (; koniec < linie.length; koniec++) {
+    const l = linie[koniec].trim();
+    if (l.startsWith("```") || l.startsWith("#")) break;
+    if (!l) {
+      if (tresc) break;
+      continue;
+    }
+    tresc = true;
+  }
+  return linie.slice(poczatek, koniec).join("\n");
+}
+
+/** Syntetyczny token GitHuba składany w teście, żeby nie leżał w repozytorium (skan sekretów przy commicie). */
+function tokenSyntetyczny() {
+  const znaki = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return "ghp_" + Array.from(randomBytes(36), (b) => znaki[b % znaki.length]).join("");
+}
+const lekcjeZTokenem = (token) =>
+  zamien(lekcjeTrzech, "→ teraz", `(objaw widać w logu sesji: \`Authorization: token ${token}\`) → teraz`);
+
 const bezZmianGh = (projekt, opis) =>
   assert.deepEqual(projekt.wywolaniaGh().filter((w) => zmieniaStan(w.argumenty)), [], `wywołania gh zmieniające stan\n${opis}`);
 
@@ -149,16 +200,19 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
       const projekt = przygotujProjekt({
         fikstura: join(fikstury, "retro-trzy-wystapienia"),
         odpowiedziGh: odpowiedziWysylki,
+        pliki: { ".ai/lekcje.md": lekcjeFiltra },
       });
       try {
         const szkic = await projekt.tura("/ai:retro");
         const poSzkicu = projekt.wywolaniaGh();
+        const skanyPoSzkicu = skanySzkicu(projekt.wywolaniaGitleaks());
         const lekcjePoSzkicu = projekt.czytaj(".ai/lekcje.md");
         await projekt.tura(zgoda);
         przebiegi.push({
           opis: opisSesji(projekt),
           szkic: szkic.tekst,
           poSzkicu,
+          skanyPoSzkicu,
           lekcjePoSzkicu,
           wywolania: projekt.wywolaniaGh(),
           lekcje: projekt.czytaj(".ai/lekcje.md"),
@@ -197,15 +251,54 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
     });
   });
 
-  test("S5: filtr prywatności — bez ścieżek, pojęć i danych osobowych projektu, ścieżka warsztatu zostaje", () => {
+  test("S5: filtr prywatności — wysłane zgłoszenie bez danych projektu, ścieżka warsztatu zostaje", () => {
     kazdy((p, opis) => {
       const [issue] = zalozenia(p.wywolania);
       assert.ok(issue, `brak issue create po zgodzie\n${opis}`);
       const wychodzi = `${issue.argumenty.join(" ")}\n${issue.tresc ?? ""}`;
-      for (const zakazane of [/src\/billing/i, /invoice\.ts/i, /faktur/i, /Kowalski/i, /jan@example\.com/i]) {
+      for (const zakazane of daneProjektu) {
         assert.doesNotMatch(wychodzi, zakazane, `dane projektu w zgłoszeniu (${zakazane})\n${wychodzi}`);
       }
       assert.ok((issue.tresc ?? "").includes("skills/spec/SKILL.md"), `ścieżka pliku warsztatu nie przeszła filtra\n${wychodzi}`);
+    });
+  });
+
+  // Wiersze tabeli S5 w szkicu pokazanym do zgody: ścieżka, pojęcie i dane osobowe przepisane, kod i nazwa projektu
+  // odfiltrowane, ścieżka warsztatu zostaje.
+  test("S5: pokazany szkic bez ścieżki, pojęcia, kodu, nazwy i danych osobowych projektu, ścieżka warsztatu zostaje", () => {
+    kazdy((p, opis) => {
+      const szkic = pokazanySzkic(p.szkic);
+      assert.match(szkic, /Proposed direction/, `brak pełnego szkicu w odpowiedzi\n${opis}`);
+      for (const zakazane of daneProjektu) {
+        assert.doesNotMatch(szkic, zakazane, `dane projektu w pokazanym szkicu (${zakazane})\n${szkic}\n${opis}`);
+      }
+      assert.ok(szkic.includes("skills/spec/SKILL.md"), `ścieżka pliku warsztatu nie przeszła filtra w szkicu\n${szkic}`);
+    });
+  });
+
+  test("S5: odpowiedź mówi, które pole zmienił filtr i dlaczego", () => {
+    // Linia listy z nazwą pola na początku (`- Symptom: …`, `- **Title**: …`), jak w procedurze filtra.
+    const nazwaPola = /^\s*[-*]\s*[*`]*(Title|Tytuł|Symptom|Proposed direction|Occurrences|Skill and step)[*`]*\s*:/i;
+    const rodzaje = [
+      ["ścieżka pliku projektu", /ścieżk/i],
+      ["pojęcie ze słownika projektu", /słownik/i],
+      ["kod", /\bkod\b/i],
+      ["nazwa projektu", /nazw\w* projektu/i],
+      ["dane osobowe", /osobow/i],
+    ];
+    kazdy((p, opis) => {
+      const linie = p.szkic.split("\n").filter((l) => nazwaPola.test(l));
+      for (const [rodzaj, wzor] of rodzaje) {
+        assert.ok(linie.some((l) => wzor.test(l)), `brak zmiany filtra „${rodzaj}” przy nazwie pola\n${opis}`);
+      }
+    });
+  });
+
+  test("S5: wysłana treść przeszła skan sekretów przed pokazaniem szkicu", () => {
+    kazdy((p, opis) => {
+      const [issue] = zalozenia(p.wywolania);
+      assert.ok(issue, `brak issue create po zgodzie\n${opis}`);
+      assert.ok(przeskanowana(p.skanyPoSzkicu, issue), `treść Issue nie przeszła skanu w turze szkicu\n${opis}`);
     });
   });
 
@@ -240,27 +333,62 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
   });
 });
 
-test("S5: token w lekcji nie wychodzi w żadnym wywołaniu gh", limit, async () => {
-  // Token składany w teście, żeby nie leżał w repozytorium (skan sekretów przy commicie).
-  const znaki = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const token = "ghp_" + Array.from(randomBytes(36), (b) => znaki[b % znaki.length]).join("");
-  const lekcje = readFileSync(join(fikstury, "retro-trzy-wystapienia", ".ai", "lekcje.md"), "utf8").replace(
-    "→ teraz",
-    `(objaw widać w logu sesji: \`Authorization: token ${token}\`) → teraz`,
-  );
+/** Wysłane zgłoszenia i komentarze (`issue create`, `issue comment`) z zapisu atrapy `gh`. */
+const wysylki = (wywolania) =>
+  wywolania.filter((w) => w.argumenty[0] === "issue" && ["create", "comment"].includes(w.argumenty[1]));
 
+// Atrapa skanera w trybie domyślnym zgłasza syntetyczny token: filtr go usuwa i treść przechodzi skan, a gdy filtr
+// go przepuści, trafienie skanu zatrzymuje wysyłkę. W obu drogach token nie wychodzi, a to, co wyszło, było skanowane.
+test("S5: token w lekcji nie wychodzi ani w odpowiedzi, ani w wywołaniu gh; wysłana treść przeszła skan", limit, async () => {
+  const token = tokenSyntetyczny();
   await dwaKolejnePrzejscia(async () => {
     const projekt = przygotujProjekt({
       fikstura: join(fikstury, "retro-trzy-wystapienia"),
       odpowiedziGh: odpowiedziWysylki,
-      pliki: { ".ai/lekcje.md": lekcje },
+      pliki: { ".ai/lekcje.md": lekcjeZTokenem(token) },
     });
     try {
       await projekt.tura("/ai:retro");
       await projekt.tura(zgoda);
+      const opis = opisSesji(projekt);
       for (const w of projekt.wywolaniaGh()) {
         const wychodzi = `${w.argumenty.join(" ")}\n${w.tresc ?? ""}`;
-        assert.ok(!wychodzi.includes(token.slice(4)), `token w wywołaniu gh\n${opisSesji(projekt)}`);
+        assert.ok(!wychodzi.includes(token.slice(4)), `token w wywołaniu gh\n${opis}`);
+      }
+      for (const t of projekt.tury) assert.ok(!t.tekst.includes(token.slice(4)), `token w odpowiedzi\n${opis}`);
+      const skany = skanySzkicu(projekt.wywolaniaGitleaks());
+      assert.ok(skany.length > 0, `brak skanu gitleaks stdin --redact\n${opis}`);
+      for (const w of wysylki(projekt.wywolaniaGh())) {
+        assert.ok(przeskanowana(skany, w), `wysłana treść bez wcześniejszego skanu: ${w.argumenty.join(" ")}\n${opis}`);
+      }
+    } finally {
+      projekt.usun();
+    }
+  });
+});
+
+// Skaner zgłasza trafienie, którego filtr nie zauważył (atrapa w trybie `zawsze`): wysyłka zatrzymana także po zgodzie.
+test("S5: trafienie skanu sekretów zatrzymuje wysyłkę, odpowiedź bez treści sekretu", limit, async () => {
+  const token = tokenSyntetyczny();
+  await dwaKolejnePrzejscia(async () => {
+    const projekt = przygotujProjekt({
+      fikstura: join(fikstury, "retro-trzy-wystapienia"),
+      odpowiedziGh: odpowiedziWysylki,
+      pliki: { ".ai/lekcje.md": lekcjeZTokenem(token) },
+      gitleaks: { trafienie: "zawsze" },
+    });
+    try {
+      await projekt.tura("/ai:retro");
+      await projekt.tura(zgoda);
+      const opis = opisSesji(projekt);
+      assert.ok(skanySzkicu(projekt.wywolaniaGitleaks()).some((w) => w.kod === 1), `brak skanu z trafieniem\n${opis}`);
+      const wyslane = wysylki(projekt.wywolaniaGh()).map((w) => w.argumenty.join(" "));
+      assert.deepEqual(wyslane, [], `wysyłka mimo trafienia skanu\n${opis}`);
+      for (const t of projekt.tury) assert.ok(!t.tekst.includes(token.slice(4)), `token w odpowiedzi\n${opis}`);
+      // Komunikat o trafieniu skanu (nie samo słowo „sekret” z listy rodzajów filtra) w turze szkicu i po zgodzie.
+      for (const t of projekt.tury) {
+        assert.match(t.tekst, /skan|scan|gitleaks/i, `odpowiedź nie mówi o skanie\n${opis}`);
+        assert.match(t.tekst, /sekret|secret|wyciek|leak/i, `odpowiedź nie mówi o trafieniu skanu\n${opis}`);
       }
     } finally {
       projekt.usun();
@@ -437,7 +565,7 @@ function sprawdzKomentarz(komentarz, nr, opis) {
   const pozycje = polaWystapienia.map((pole) => tresc.indexOf(pole));
   assert.ok(pozycje.every((x) => x >= 0), `komentarz bez któregoś pola: ${pozycje}\n${tresc}\n${opis}`);
   assert.deepEqual([...pozycje].sort((a, b) => a - b), pozycje, `pola komentarza w złej kolejności\n${tresc}`);
-  for (const zakazane of [/src\/billing/i, /invoice\.ts/i, /faktur/i, /Kowalski/i, /jan@example\.com/i]) {
+  for (const zakazane of daneProjektu) {
     assert.doesNotMatch(`${argumenty}\n${tresc}`, zakazane, `dane projektu w komentarzu (${zakazane})\n${tresc}`);
   }
 }
@@ -522,8 +650,14 @@ async function wyborPodobnego(projekt, wybor, nr = 57) {
   assert.match(szkic.tekst, new RegExp(`#${nr}\\b|issues/${nr}\\b`), `brak wskazania podobnego zgłoszenia #${nr}\n${opis}`);
   assert.match(szkic.tekst, /Proposed direction/, `brak szkicu nowego zgłoszenia obok komentarza\n${opis}`);
   bezZmianGh(projekt, opis);
+  const skanyPoSzkicu = skanySzkicu(projekt.wywolaniaGitleaks());
   await projekt.tura(wybor);
-  return { wywolania: projekt.wywolaniaGh(), linia: liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "", opis: opisSesji(projekt) };
+  return {
+    wywolania: projekt.wywolaniaGh(),
+    skanyPoSzkicu,
+    linia: liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "",
+    opis: opisSesji(projekt),
+  };
 }
 
 /** Komentarz „wystąpienie” do `nr` po wyborze komentarza: bez nowego Issue, ślad z linkiem zgłoszenia. */
@@ -536,13 +670,19 @@ function sprawdzWybranyKomentarz({ wywolania, linia, opis }, nr) {
   assert.doesNotMatch(linia, /issuecomment|niewysłane/, `ślad z linkiem komentarza albo niewysłane\n${linia}`);
 }
 
-test("S6: podobne otwarte zgłoszenie z etykietą — wybór komentarza daje gh issue comment", limit, () =>
+// S5: komentarz „wystąpienie” przygotowany po wyszukiwaniu przechodzi własny filtr (`sprawdzKomentarz`) i skan —
+// drugi skan, po wyszukiwaniu, w turze pokazującej oba warianty.
+test("S6, S5: podobne otwarte zgłoszenie z etykietą — wybór komentarza daje gh issue comment po skanie komentarza", limit, () =>
   sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(podobne, widokIssue(57), komentarzDodany(57)) }, async (projekt) => {
     const wynik = await wyborPodobnego(
       projekt,
       "Dopisz komentarz do istniejącego zgłoszenia #57, zgadzam się na pokazaną treść komentarza.",
     );
     sprawdzWybranyKomentarz(wynik, 57);
+    const [szukanie] = wynik.wywolania.filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "list");
+    const [komentarz] = komentarze(wynik.wywolania);
+    const poSzukaniu = wynik.skanyPoSzkicu.filter((s) => s.czas > szukanie.czas);
+    assert.ok(przeskanowana(poSzukaniu, komentarz), `komentarz bez skanu po wyszukiwaniu, przed pokazaniem\n${wynik.opis}`);
   }));
 
 test("S6: podobne otwarte zgłoszenie z etykietą — wybór nowego zgłoszenia daje gh issue create", limit, () =>
@@ -756,6 +896,24 @@ test("S9, S10: brak gh w PATH — linki i komunikat o pominięciu sprawdzenia we
     assert.match(tekst, sprawdzeniePominiete, `brak komunikatu o pominięciu sprawdzenia wersji\n${opis}`);
     assert.deepEqual(projekt.wywolaniaGh(), [], `wywołanie atrapy gh mimo braku gh\n${opis}`);
   }));
+
+// Dowód procedury poza tekstem S5: bez skanera nie ma wysyłki ani linków formularza — z działającym `gh` także po zgodzie.
+for (const [wariant, ustawienia, tury] of [
+  ["z działającym gh", {}, ["/ai:retro", zgoda]],
+  ["bez gh", { bezGh: true }, ["/ai:retro"]],
+]) {
+  test(`S5: brak gitleaks w PATH (${wariant}) — bez wysyłki i bez linków, z powodem`, limit, () =>
+    sesjaRetro({ fikstura: trzy, bezGitleaks: true, ...ustawienia }, async (projekt) => {
+      const teksty = [];
+      for (const t of tury) teksty.push((await projekt.tura(t)).tekst);
+      const opis = opisSesji(projekt);
+      bezZmianGh(projekt, opis);
+      for (const tekst of teksty) {
+        assert.doesNotMatch(tekst, /github\.com\/[^\s)]*\/issues(\/new|\?q=)/, `link wyszukiwania albo formularza\n${opis}`);
+      }
+      assert.match(teksty[0], /gitleaks/i, `odpowiedź nie podaje powodu (brak gitleaks)\n${opis}`);
+    }));
+}
 
 const wydanie = { argumenty: ["release", "view"], stdout: JSON.stringify({ tagName: `v${nowszaWersja}` }) + "\n" };
 const historiaZmian = (wpis) => ({

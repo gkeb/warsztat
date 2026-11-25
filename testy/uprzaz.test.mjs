@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -56,6 +56,46 @@ for (const [opis, argumenty, oczekiwane] of [
 ]) {
   test(`zmieniaStan: ${opis} → ${oczekiwane ? "zmiana" : "odczyt"}`, () => {
     assert.equal(zmieniaStan(argumenty), oczekiwane);
+  });
+}
+
+// Atrapa `gitleaks` (S5): przyjmuje tylko polecenia z procedury retro i skan commita z fikstury, zapisuje wywołania
+// z treścią ze stdin i zwraca kod 1 dla syntetycznego tokenu — albo dla każdej treści w trybie `zawsze`.
+const atrapaGitleaks = join(dirname(fileURLToPath(import.meta.url)), "atrapa-gitleaks.mjs");
+const tokenTestowy = "ghp_" + "A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8";
+for (const [opis, argumenty, stdin, kod, ustawienia] of [
+  ["version", ["version"], "", 0],
+  ["stdin z --redact, bez sekretu", ["stdin", "--redact", "--no-banner"], "### Symptom\nplain text\n", 0],
+  ["stdin z --redact, z tokenem", ["stdin", "--redact", "--no-banner"], `token ${tokenTestowy}\n`, 1],
+  ["stdin bez --redact → odrzucone", ["stdin", "--no-banner"], "plain\n", 2],
+  ["stdin z nieznaną flagą → odrzucone", ["stdin", "--redact", "--report-path", "x.json"], "plain\n", 2],
+  [
+    "skan commita z fikstury retro-warsztat",
+    JSON.parse(
+      readFileSync(join(dirname(fileURLToPath(import.meta.url)), "fikstury", "retro-warsztat", ".ai", "warsztat.json"), "utf8"),
+    ).bezpieczenstwo.skanSekretow
+      .split(" ")
+      .slice(1),
+    "",
+    0,
+  ],
+  ["inne polecenie → odrzucone", ["detect", "--source", "."], "", 2],
+  ["tryb zawsze: trafienie bez tokenu", ["stdin", "--redact"], "plain\n", 1, { trafienie: "zawsze" }],
+]) {
+  test(`atrapa gitleaks: ${opis} → kod ${kod}`, () => {
+    const katalog = mkdtempSync(join(tmpdir(), "warsztat-atrapa-"));
+    try {
+      if (ustawienia) writeFileSync(join(katalog, "gitleaks.json"), JSON.stringify(ustawienia));
+      const wynik = spawnSync(process.execPath, [atrapaGitleaks, katalog, ...argumenty], { input: stdin, encoding: "utf8" });
+      assert.equal(wynik.status, kod, `stdout: ${wynik.stdout}\nstderr: ${wynik.stderr}`);
+      assert.ok(!`${wynik.stdout}${wynik.stderr}`.includes(tokenTestowy), "atrapa wypisała treść sekretu");
+      const [wpis] = readFileSync(join(katalog, "gitleaks.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+      assert.deepEqual(wpis.argumenty, argumenty);
+      assert.equal(wpis.kod, kod);
+      assert.equal(wpis.tresc, argumenty[0] === "stdin" && kod !== 2 ? stdin : null);
+    } finally {
+      rmSync(katalog, { recursive: true, force: true });
+    }
   });
 }
 

@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-`skill buduj model-zgloszen` → ticket 13 (poprawki po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła), tickety 09–15; 09–12 zrobione — retro opiekuna czyta wszystkie otwarte Issues bez filtra etykiety, a skrypt sygnału oddziela zgłoszenia czekające (grupa „bez etykiety”, etykiety po zgodzie opiekuna, 12)). Sesja testu linku wyszukiwania po 09 (S10) niesprawdzona; testy ticketów 10–12 zielone w 2 przebiegach (sesje S17–S20 po 12 — w 1 przebiegu, `gdzie tydzien` po 12 niesprawdzone). Po 15 — runda R2 weryfikacji (`skill weryfikuj model-zgloszen`, inny model niż budujący). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
+`skill buduj model-zgloszen` → ticket 14 (poprawki po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła), tickety 09–15; 09–13 zrobione — 13: atrapa `gitleaks` w sesjach, S5 sprawdza pokazany szkic, zmiany filtra per pole, zatrzymanie po trafieniu skanu, skan komentarza i brak skanera). Sesja testu linku wyszukiwania po 09 (S10) niesprawdzona; testy ticketów 10–13 zielone w 2 przebiegach (sesje S17–S20 po 12 — w 1 przebiegu, `gdzie tydzien` po 12 niesprawdzone; S6 i S8 po zaostrzeniu listy danych projektu w 13 niesprawdzone). Po 15 — runda R2 weryfikacji (`skill weryfikuj model-zgloszen`, inny model niż budujący). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
 
 ## Otwarte pytania
 

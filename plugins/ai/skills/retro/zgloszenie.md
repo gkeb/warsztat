@@ -139,11 +139,17 @@ Repozytorium zgłoszeń jest publiczne. Sprawdź **tytuł i każde pole każdego
 
 - pojęcia ze słownika projektu (`.ai/SLOWNIK.md`, także odmiany i tłumaczenia);
 - ścieżki i nazwy plików śledzonych w projekcie (`git ls-files`); ścieżki plików pluginu warsztatu (`skills/…`, `kontrakt/…`) zostają;
-- kod, nazwy projektu, produktu, klienta, repozytorium;
+- kod, nazwy projektu, produktu, klienta, repozytorium — nazwę projektu bierzesz z nagłówka `AGENTS.md` albo `README`, z nazwy katalogu projektu i z `github.repo`, a każde jej wystąpienie w treści lekcji to trafienie `nazwa projektu`;
 - dane osobowe: imiona, nazwiska, adresy e-mail, loginy;
 - sekrety i tokeny.
 
-Pole z trafieniem przepisz słowami warsztatu albo usuń z niego trafienie. Potem powiedz użytkownikowi, które pole zmieniłeś i dlaczego (rodzaj trafienia), nie powtarzając usuniętej treści.
+Pole z trafieniem przepisz słowami warsztatu albo usuń z niego trafienie. Pola piszesz z treści lekcji, więc trafienie w tej treści, którego nie przeniosłeś do pola od razu, też jest zmianą tego pola.
+
+Potem powiedz użytkownikowi, które pole zmieniłeś i dlaczego, nie powtarzając usuniętej treści — przed szkicem, jedna linia na zmienione pole: nazwa pola dosłownie (`Title`, `Symptom`, `Proposed direction`, …), dwukropek, rodzaje trafień słowami z listy — `pojęcie ze słownika projektu`, `ścieżka pliku projektu`, `kod`, `nazwa projektu`, `dane osobowe`, `sekret` — i co zrobiłeś. Ogólne zdanie o całym szkicu nie zastępuje tych linii. Przykład:
+
+```text
+- Symptom: ścieżka pliku projektu, dane osobowe — przepisane słowami warsztatu
+```
 
 ## 9. Skan sekretów
 

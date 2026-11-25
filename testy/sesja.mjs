@@ -10,6 +10,7 @@ const katalogTestow = dirname(fileURLToPath(import.meta.url));
 export const katalogRepo = dirname(katalogTestow);
 export const katalogPluginu = join(katalogRepo, "plugins", "ai");
 const atrapa = join(katalogTestow, "atrapa-gh.mjs");
+const atrapaGitleaks = join(katalogTestow, "atrapa-gitleaks.mjs");
 
 export const model = process.env.WARSZTAT_TEST_MODEL || "sonnet";
 // Liczba kolejnych uruchomień w regule wyniku: 2 (domyślnie, przebieg przed commitem) albo 1 (w trakcie budowy).
@@ -23,7 +24,7 @@ const limitTury = 15 * 60 * 1000;
 // Uprawnienia sesji: odczyt wszędzie, edycja plików tylko w projekcie (acceptEdits), `gh` i wybrane podkomendy
 // `git` w obu powłokach. Prefiksy podkomend wykluczają `git -C <inny katalog>` i `git -c alias...`.
 // `cat` i `Get-Content` (odczyt szkicu do skanu) czytają dowolny plik, jak `Read`; `gitleaks` tylko `stdin` (skan) i `version`
-// (sprawdzenie obecności — bez niego procedura retro nie wysyła).
+// (sprawdzenie obecności — bez niego procedura retro nie wysyła); `gitleaks` w sesji to atrapa (`atrapa-gitleaks.mjs`).
 // Skan przed commitem (wdrożenie w trybie warsztatu): dokładnie komenda `bezpieczenstwo.skanSekretow` z fikstury.
 // To granica miękka (np. `gh.cmd` przepuszcza argumenty przez cmd) — fikstury i odpowiedzi atrapy muszą być zaufane.
 const podkomendyGit = ["status", "log", "diff", "show", "add", "commit", "ls-files"];
@@ -52,17 +53,17 @@ const tokenyGitHuba = ["GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHU
 
 const naUkosniki = (sciezka) => sciezka.replaceAll("\\", "/");
 
-function opakowaniaGh(katalogBin, katalogAtrapy) {
-  mkdirSync(katalogBin, { recursive: true });
+/** Opakowania atrapy dla Bash (`<nazwa>`) i PowerShell (`<nazwa>.cmd`); stdin przechodzi do atrapy (`gitleaks stdin`). */
+function opakowania(katalogBin, nazwa, skrypt, katalogAtrapy) {
   const node = process.execPath;
   writeFileSync(
-    join(katalogBin, "gh"),
-    `#!/bin/sh\nATRAPA_POWLOKA=bash exec "${naUkosniki(node)}" "${naUkosniki(atrapa)}" "${naUkosniki(katalogAtrapy)}" "$@"\n`,
+    join(katalogBin, nazwa),
+    `#!/bin/sh\nATRAPA_POWLOKA=bash exec "${naUkosniki(node)}" "${naUkosniki(skrypt)}" "${naUkosniki(katalogAtrapy)}" "$@"\n`,
     { mode: 0o755 },
   );
   writeFileSync(
-    join(katalogBin, "gh.cmd"),
-    `@echo off\r\nset ATRAPA_POWLOKA=cmd\r\n"${node}" "${atrapa}" "${katalogAtrapy}" %*\r\n`,
+    join(katalogBin, `${nazwa}.cmd`),
+    `@echo off\r\nset ATRAPA_POWLOKA=cmd\r\n"${node}" "${skrypt}" "${katalogAtrapy}" %*\r\n`,
   );
 }
 
@@ -81,11 +82,13 @@ function katalogPwsh() {
   }
 }
 
-// PATH sesji: atrapa na początku, bez katalogów, w których leży prawdziwy `gh`.
+// PATH sesji: atrapy na początku, bez katalogów, w których leży prawdziwy `gh` albo `gitleaks`. Usuwany jest cały katalog:
+// na tym komputerze oba narzędzia mają własne (WinGet), ale wspólny katalog z innym narzędziem odebrałby sesji i je.
+const prawdziwe = ["gh", "gh.exe", "gitleaks", "gitleaks.exe"];
 function sciezkaSesji(katalogBin) {
   const zostaja = (process.env.PATH ?? "")
     .split(delimiter)
-    .filter((k) => k && !existsSync(join(k, "gh.exe")) && !existsSync(join(k, "gh")));
+    .filter((k) => k && !prawdziwe.some((plik) => existsSync(join(k, plik))));
   return [katalogBin, ...katalogPwsh(), ...zostaja].join(delimiter);
 }
 
@@ -142,8 +145,18 @@ function uruchomClaude(argumenty, { cwd, env }) {
  * w polu `repository` obu manifestów (`""` → kopia z pustym polem, niezależnie od repozytorium);
  * bez niego sesja używa pluginu z repozytorium.
  * bezGh: sesja bez `gh` w PATH (ani atrapy, ani prawdziwego).
+ * gitleaks: ustawienia atrapy skanera, np. { trafienie: "zawsze" } (`atrapa-gitleaks.mjs`).
+ * bezGitleaks: sesja bez `gitleaks` w PATH (ani atrapy, ani prawdziwego).
  */
-export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repozytoriumPluginu, bezGh = false }) {
+export function przygotujProjekt({
+  fikstura,
+  odpowiedziGh = [],
+  pliki = {},
+  repozytoriumPluginu,
+  bezGh = false,
+  gitleaks,
+  bezGitleaks = false,
+}) {
   const korzen = realpathSync.native(mkdtempSync(join(tmpdir(), "warsztat-sesja-")));
   const katalog = join(korzen, "projekt");
   const plugin = repozytoriumPluginu === undefined ? katalogPluginu : join(korzen, "plugin", "ai");
@@ -176,8 +189,10 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
       }
     }
     writeFileSync(join(katalogAtrapy, "odpowiedzi.json"), JSON.stringify(odpowiedziGh, null, 2));
-    if (bezGh) mkdirSync(katalogBin, { recursive: true });
-    else opakowaniaGh(katalogBin, katalogAtrapy);
+    if (gitleaks) writeFileSync(join(katalogAtrapy, "gitleaks.json"), JSON.stringify(gitleaks));
+    mkdirSync(katalogBin, { recursive: true });
+    if (!bezGh) opakowania(katalogBin, "gh", atrapa, katalogAtrapy);
+    if (!bezGitleaks) opakowania(katalogBin, "gitleaks", atrapaGitleaks, katalogAtrapy);
     git(katalog, "init", "-q", "-b", "main");
     git(katalog, "add", "-A");
     git(katalog, "commit", "-q", "-m", "projekt testowy");
@@ -262,6 +277,16 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
     /** Wywołania atrapy `gh` w kolejności. */
     wywolaniaGh() {
       const plik = join(katalogAtrapy, "wywolania.jsonl");
+      if (!existsSync(plik)) return [];
+      return readFileSync(plik, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .map((linia) => JSON.parse(linia));
+    },
+
+    /** Wywołania atrapy `gitleaks` w kolejności: argumenty, treść ze stdin (skan), kod wyjścia, czas. */
+    wywolaniaGitleaks() {
+      const plik = join(katalogAtrapy, "gitleaks.jsonl");
       if (!existsSync(plik)) return [];
       return readFileSync(plik, "utf8")
         .split("\n")
