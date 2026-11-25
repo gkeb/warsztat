@@ -55,6 +55,15 @@ test("S1: lekcja [warsztat] z 2 wystąpieniami zostaje lekcją, bez propozycji w
       assert.match(tekst, /retro/i, `odpowiedź nie wygląda na retro\n${opisSesji(projekt)}`);
       assert.match(tekst, /lekcj/i, `retro nie odniosło się do lekcji\n${opisSesji(projekt)}`);
       assert.match(tekst, /\bspec/i, `retro nie odniosło się do lekcji z fikstury (skill spec)\n${opisSesji(projekt)}`);
+      // Poniżej progu nie ma szkicu (żadnego nagłówka stałych pól) ani pytania o wysyłkę (weryfikacja R1.7).
+      for (const pole of pola) {
+        assert.doesNotMatch(tekst, new RegExp(String.raw`^\s*#+\s*${pole}\b`, "m"), `szkic z polem ${pole}\n${opisSesji(projekt)}`);
+      }
+      // Pytanie o wysłanie albo o założenie Issue; samo słowo „zgłoszenie” w pytaniu o coś innego nie wystarcza.
+      const pytania = tekst
+        .split("\n")
+        .filter((l) => l.includes("?") && /wysł|wyśl|\bsend\b|\bsubmit\b|założ\w*\s+(nowe\s+)?(issue|zgłosz)/i.test(l));
+      assert.deepEqual(pytania, [], `pytanie o wysyłkę zgłoszenia poniżej progu\n${opisSesji(projekt)}`);
       const zmiany = projekt.wywolaniaGh().filter((w) => zmieniaStan(w.argumenty));
       assert.deepEqual(zmiany, [], `wywołania gh zmieniające stan\n${opisSesji(projekt)}`);
       const lekcje = projekt.czytaj(".ai/lekcje.md");
@@ -469,24 +478,34 @@ test("S11: „nie mam konta” zostawia lekcję z dopiskiem niewysłane", limit,
     assert.ok(linia.indexOf("Zgłoszenie:") < linia.indexOf("Wystąpienia:"), `Zgłoszenie: po Wystąpienia:\n${linia}`);
   }));
 
-// Lekcja po wcześniejszej odmowie: dopisek z datą po ostatnim wystąpieniu fikstury (2026-11-03).
-const lekcjeNiewyslane = zamien(lekcjeTrzech, "Wystąpienia:", "Zgłoszenie: niewysłane 2026-11-10. Wystąpienia:");
+// Tabela S11: lekcja po wcześniejszej odmowie (`niewysłane 2026-11-20`) z wystąpieniem z dnia dopisku albo następnego.
+const lekcjeNiewyslane = (data) =>
+  zamien(
+    zamien(lekcjeTrzech, "Wystąpienia:", "Zgłoszenie: niewysłane 2026-11-20. Wystąpienia:"),
+    "2026-11-03 przegląd",
+    `2026-11-03 przegląd; ${data} użytkownik`,
+  );
 
-test("S11: ponowne retro bez nowego wystąpienia nie proponuje wysyłki", limit, () =>
-  sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcjeNiewyslane } }, async (projekt) => {
-    const { tekst } = await projekt.tura("/ai:retro");
-    bezPropozycji(projekt, tekst, lekcjeNiewyslane);
-  }));
-
-test("S11: ponowne retro po nowym wystąpieniu proponuje wysyłkę", limit, () => {
-  const lekcje = zamien(lekcjeNiewyslane, "2026-11-03 przegląd", "2026-11-03 przegląd; 2026-11-15 użytkownik");
+test("S11: niewysłane 2026-11-20, wystąpienie 2026-11-20 — brak propozycji, lekcja czeka na nowe wystąpienie", limit, () => {
+  const lekcje = lekcjeNiewyslane("2026-11-20");
   return sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcje } }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    bezPropozycji(projekt, tekst, lekcje);
+  });
+});
+
+test("S11: niewysłane 2026-11-20, wystąpienie 2026-11-21 — ścieżka od nowa, szkic zgłoszenia", limit, () =>
+  sesjaRetro({ fikstura: trzy, pliki: { ".ai/lekcje.md": lekcjeNiewyslane("2026-11-21") } }, async (projekt) => {
     const { tekst } = await projekt.tura("/ai:retro");
     const opis = opisSesji(projekt);
     assert.match(tekst, /Proposed direction/, `brak szkicu po nowym wystąpieniu\n${opis}`);
+    // Próg liczy wszystkie wystąpienia lekcji: 3 z fikstury i nowe.
+    const wystapienia = tekst.match(/#+\s*Occurrences\b([\s\S]*?)#+\s*Proposed direction/)?.[1] ?? "";
+    for (const d of ["2026-10-02", "2026-10-15", "2026-11-03", "2026-11-21"]) {
+      assert.ok(wystapienia.includes(d), `pole Occurrences bez wystąpienia ${d}\n${opis}`);
+    }
     bezZmianGh(projekt, opis);
-  });
-});
+  }));
 
 test("S12: brak klucza — zgłoszenie idzie do oficjalnego repozytorium z manifestu pluginu", limit, () =>
   sesjaRetro({ fikstura: trzy, pliki: zUstawieniem(undefined), repozytoriumPluginu: adresOficjalny }, async (projekt) => {
@@ -730,13 +749,15 @@ test("S6: ten sam tytuł z innym krokiem w treści i zwykły błąd bez stałych
     bezEtykiet(issue, opis);
   }));
 
-// Wysłana lekcja: zgłoszenie założone 2026-11-05, nowe wystąpienie 2026-11-20 (jedno, poniżej progu 3).
-const lekcjeWyslane = (link) =>
+/** Lekcja fikstury ze śladem `Zgłoszenie: <slad>` i jednym dodatkowym wystąpieniem z datą `data`. */
+const lekcjaZeSladem = (slad, data) =>
   zamien(
-    zamien(lekcjeTrzech, "Wystąpienia:", `Zgłoszenie: ${link}. Wystąpienia:`),
+    zamien(lekcjeTrzech, "Wystąpienia:", `Zgłoszenie: ${slad}. Wystąpienia:`),
     "2026-11-03 przegląd",
-    "2026-11-03 przegląd; 2026-11-20 użytkownik",
+    `2026-11-03 przegląd; ${data} użytkownik`,
   );
+// Wysłana lekcja: zgłoszenie założone 2026-11-05, nowe wystąpienie 2026-11-20 (jedno, poniżej progu 3).
+const lekcjeWyslane = (link) => lekcjaZeSladem(link, "2026-11-20");
 
 test("S8: nowe wystąpienie wysłanej lekcji — komentarz do zgłoszenia z linku, bez nowego Issue", limit, () =>
   sesjaRetro(
@@ -821,6 +842,42 @@ test("S8: zgłoszenie zamknięte jako „not planned” — brak propozycji, pow
     bezPropozycji(projekt, tekst, lekcje);
   });
 });
+
+// Tabela S8, wiersze z równymi datami: wystąpienie z dnia odcięcia jest już zgłoszone (weryfikacja R1.11).
+const wlasneWystapienie = (data) => ({
+  author: { login: "test-user" },
+  body: `## Occurrence\n\n### Date\n${data}\n\n### Symptom\n${objawLekcji}`,
+  createdAt: `${data}T09:00:00Z`,
+  viewerDidAuthor: true,
+});
+const odcieciaS8 = [
+  { wiersz: "otwarte, założone 2026-11-20", data: "2026-11-20", stan: { createdAt: "2026-11-20T08:00:00Z" } },
+  { wiersz: "własny komentarz Occurrence 2026-11-23", data: "2026-11-23", stan: { comments: [wlasneWystapienie("2026-11-23")] } },
+  // Data z dopisku sama wyznacza odcięcie: retro może zakończyć ścieżkę bez sprawdzania stanu zgłoszenia.
+  { wiersz: "link z niewysłane 2026-11-24", data: "2026-11-24", dopisek: ", niewysłane 2026-11-24", stan: {}, widok: false },
+  {
+    wiersz: "zamknięte jako wdrożone 2026-11-20",
+    data: "2026-11-20",
+    stan: { state: "CLOSED", stateReason: "COMPLETED", closedAt: "2026-11-20T12:00:00Z" },
+  },
+];
+for (const { wiersz, data, dopisek = "", stan, widok: wymagaWidoku = true } of odcieciaS8) {
+  test(`S8: ${wiersz}, wystąpienie ${data} — już zgłoszone, brak propozycji`, limit, () => {
+    const lekcje = lekcjaZeSladem(`${linkIssue(101)}${dopisek}`, data);
+    return sesjaRetro(
+      { fikstura: trzy, pliki: { ".ai/lekcje.md": lekcje }, odpowiedziGh: odpowiedzi(widokIssue(101, stan)) },
+      async (projekt) => {
+        const { tekst } = await projekt.tura("/ai:retro");
+        const opis = opisSesji(projekt);
+        const widok = projekt.wywolaniaGh().some((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "view");
+        if (wymagaWidoku) assert.ok(widok, `retro nie sprawdziło stanu zgłoszenia (gh issue view)\n${opis}`);
+        // Szkic komentarza to nagłówek na początku linii; cytat „nagłówek `## Occurrence`” w zdaniu nim nie jest.
+        assert.doesNotMatch(tekst, /^\s*#+\s*Occurrence\b/m, `retro pokazało szkic komentarza\n${opis}`);
+        bezPropozycji(projekt, tekst, lekcje);
+      },
+    );
+  });
+}
 
 test("S8: link do innego repozytorium — lekcja przechodzi ścieżkę jak nowa, do bieżącego repozytorium", limit, () =>
   sesjaRetro(
