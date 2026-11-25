@@ -39,7 +39,9 @@
   "walidacja": [
     "claude plugin validate plugins/ai",
     "node --test testy/linki-zgloszenia.test.mjs",
-    "node --test testy/migracja-zgloszen.test.mjs"
+    "node --test testy/migracja-zgloszen.test.mjs",
+    "node --test testy/sygnal-zgloszen.test.mjs",
+    "node --test testy/uprzaz.test.mjs"
   ],
   "mutacje": null,
   "odniesienie": {

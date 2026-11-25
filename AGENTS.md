@@ -31,7 +31,7 @@ Architektura, wzorce i zasady kodu: `.ai/ZASADY.md`. Przeczytaj przed zmianą st
 
 - To repozytorium jest źródłem pluginu: zmiany procesu robisz tutaj, nigdy w kopii pluginu w cache Claude Code/Codex.
 - Zmiana w `plugins/ai` przy wydaniu → podbij wersję w obu manifestach naraz.
-- Pełny przebieg sesji testowych (`testy/retro-zgloszenia.test.mjs`, 2026-11-25: 29 testów) to około 71 tur `sonnet` i około 55 minut; dwa takie przebiegi i próby w jednej sesji wyczerpały limit wydatków konta (`claude -p` kończy się „You've hit your monthly spend limit”). Nie uruchamiaj go odruchowo po każdej poprawce.
+- Pełny przebieg sesji testowych (`testy/retro-zgloszenia.test.mjs`, 2026-11-25: 32 testy) to około 76 tur `sonnet` i około 55 minut; dwa takie przebiegi i próby w jednej sesji wyczerpały limit wydatków konta (`claude -p` kończy się „You've hit your monthly spend limit”). Nie uruchamiaj go odruchowo po każdej poprawce.
 - Codex CLI na tym komputerze nie jest w `PATH` — używaj pełnej ścieżki do `codex.exe` z rozszerzenia VS Code (sprawdź `--version`); ten plik wymaga `--no-daemon`, a interfejs `/hooks` działa w zwykłej konsoli Windows, nie przez ConPTY. W hookach Codexa na Windows `commandWindows` z pełnymi ścieżkami do `node.exe` i skryptu.
 - Gdy `pwsh` w `PATH` to alias aplikacji z `WindowsApps`, narzędzie PowerShell w `claude -p` odrzuca każde polecenie („The command line is too long”). Katalog prawdziwego `pwsh.exe` musi stać w `PATH` przed `WindowsApps` — uprząż sesji testowych (`testy/sesja.mjs`) robi to sama.
 

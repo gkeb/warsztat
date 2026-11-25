@@ -1,6 +1,7 @@
 // Atrapa `gh` dla sesji testowych agenta.
 // Wywołanie: node atrapa-gh.mjs <katalog-atrapy> <argumenty gh...>
-// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], stdout?, stderr?, kod? } zadana przez test.
+// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], zawiera?: [...fragmenty], stdout?, stderr?, kod? }
+// zadana przez test; pierwsza pasująca wygrywa.
 // <katalog-atrapy>/wywolania.jsonl — każde wywołanie: argumenty, treść z --body-file, powłoka, czy przewidziane.
 import { appendFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -39,7 +40,10 @@ function wczytajTresc() {
 }
 
 const pasuje = (prefiks) => prefiks.length <= argumenty.length && prefiks.every((a, i) => argumenty[i] === a);
-const odpowiedz = wczytajOdpowiedzi().find((o) => pasuje(o.argumenty));
+// `zawiera` (opcjonalnie): każdy fragment występuje w którymś argumencie — np. login w zapytaniu GraphQL,
+// niezależnie od kolejności pól.
+const zawiera = (fragmenty = []) => fragmenty.every((f) => argumenty.some((a) => a.includes(f)));
+const odpowiedz = wczytajOdpowiedzi().find((o) => pasuje(o.argumenty) && zawiera(o.zawiera));
 
 appendFileSync(
   join(katalog, "wywolania.jsonl"),

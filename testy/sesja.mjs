@@ -282,7 +282,39 @@ function apiTylkoCzyta(argumenty) {
   return true;
 }
 
+// `gh api graphql` jest odczytem, gdy każde pole to `query` z dokumentem zaczynającym się od `query` albo `{`,
+// albo zwykła zmienna (np. `login=…`); słowo `mutation` albo `subscription` w dokumencie, `operationName`, `--input`
+// i inna metoda niż POST to zmiana stanu.
+function graphqlTylkoCzyta(argumenty) {
+  let zapytanie = false;
+  for (let i = 2; i < argumenty.length; i++) {
+    const a = argumenty[i];
+    let pole;
+    const zalaczone = /^(?:-[fF]|--field=|--raw-field=)(.+)$/.exec(a);
+    if (/^(-f|-F|--field|--raw-field)$/.test(a)) pole = argumenty[++i] ?? "";
+    else if (zalaczone) pole = zalaczone[1];
+    else if (a === "-X" || a === "--method") {
+      if ((argumenty[++i] ?? "").toUpperCase() !== "POST") return false;
+      continue;
+    } else if (/^(-X|--method)/.test(a)) {
+      if (a.replace(/^(-X=?|--method=)/, "").toUpperCase() !== "POST") return false;
+      continue;
+    } else if (/^--input(=|$)/.test(a)) return false;
+    else continue;
+    const [klucz, ...reszta] = pole.split("=");
+    // Dokument z kilkoma operacjami (`query A {…} mutation B {…}` z `operationName=B`) wykonałby mutację.
+    if (klucz === "operationName") return false;
+    if (klucz === "query") {
+      const dokument = reszta.join("=");
+      if (!/^\s*(query\b|\{)/.test(dokument) || /\b(mutation|subscription)\b/.test(dokument)) return false;
+      zapytanie = true;
+    }
+  }
+  return zapytanie;
+}
+
 export function zmieniaStan(argumenty) {
+  if (argumenty[0] === "api" && argumenty[1] === "graphql") return !graphqlTylkoCzyta(argumenty);
   if (argumenty[0] === "api") return !apiTylkoCzyta(argumenty);
   return !tylkoOdczyt.some((prefiks) => prefiks.every((a, i) => argumenty[i] === a));
 }
