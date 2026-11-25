@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-`skill pokroj model-zgloszen` — tickety poprawek po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła) według zmienionego specu (zaakceptowany 2026-11-25): R1.1 z nowym S33, luki testów i kodu R1.2–R1.13; rozszerzenie atrapy `gh` o nadawanie etykiet i listę bez filtra etykiety. Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
+`skill buduj model-zgloszen` → ticket 09 (poprawki po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła), tickety 09–15). Po 15 — runda R2 weryfikacji (`skill weryfikuj model-zgloszen`, inny model niż budujący). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
 
 ## Otwarte pytania
 
@@ -59,6 +59,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 2026-11-25 — zmiana specu po weryfikacji R1: etykiety zgłoszenia nadaje formularz albo opiekun, retro w projekcie wysyła Issue bez etykiet, nowy S33 (grupa „bez etykiety” w retro opiekuna), deduplikacja S6 także wśród nieoznaczonych (R1.1); pole rodzaju problemu w S2 (R1.6); odcięcie po dacie w S8 i S11 z tabelami — wystąpienie z dnia odcięcia już zgłoszone (R1.11, zgodnie z decyzją z 2026-11-24); S17 — wkłady według kalendarza profilu, mogą obejmować prywatne (R1.4), wszystkie otwarte zgłoszenia i błąd przy niepełnym odczycie (R1.3); Testy — granice S10 w teście skryptu, w sesjach oba widoczne wyniki (R1.8) — dlaczego: weryfikacja R1 wykazała, że konto bez uprawnień nie nada etykiet, a spec był niepełny lub niejednoznaczny w tych miejscach; decyzje użytkownika
 2026-11-25 — recenzja planu zmiany specu: przyjęte — definicja „stałych pól” w słowniku (wszystkie siedem nagłówków, ostrzej niż reguła skryptu linków, która dopuszcza część pól), Issue bez etykiet wymagane w S2, trafienie bez etykiety tylko w stałych polach (S6), link wyszukiwania bez `gh` obejmuje nieoznaczone (S10), kryterium niepełnego odczytu zgłoszeń i komentarzy (S17), stany zamknięte i dopisek `niewysłane` w tabeli S8, zakres decyzji o etykietach dla forka i firmy, nagłówek specu, rozbity wpis „Zgłoszenie”, S33 liczy się od kolejnego retro; odparte — rozszerzenie atrapy `gh` o nadawanie etykiet i listę bez filtra etykiety: krok budowy, trafia do ticketu poprawek
+2026-11-25 — recenzja planu ticketów poprawek 09–15: przyjęte wszystkie uwagi — podział dawnego 09 na skrypt (09) i wysyłkę z deduplikacją (10), 12 po 11 (bez filtra etykiety limit 200 pogłębiałby R1.3), niepełny odczyt wykrywa skrypt z obowiązkowym testem jednostkowym, atrapa `gitleaks` przyjmująca tylko polecenia z procedury, brak skanera jako dowód procedury poza S5, przeszukanie pluginu i README zamiast listy miejsc, `gdzie tydzien` liczy tylko oznaczone zgłoszenia, wersja 0.29.0 raz w 09, konkretne brzmienie kryteriów wkładów i S1, równa data zamknięcia w S8; odpartych brak. Status zdolności zostaje `weryfikacja` (poprawki po rundzie R1, decyzja użytkownika)
 ## Plasterki
 
 1. [01 — Sesje testowe agenta z atrapą gh](tickety/01-sesje-testowe-agenta.md)
@@ -69,5 +70,12 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 6. [06 — Repozytorium warsztatu — kanał bezpieczeństwa, formularz, ochrona rdzenia](tickety/06-kanal-bezpieczenstwa-i-formularz.md) — po 02
 7. [07 — Issues jedynym źródłem zgłoszeń — migracja pliku zgłoszeń](tickety/07-issues-jedynym-zrodlem.md) — po 03, 04, 06
 8. [08 — Retro opiekuna — sygnał globalny, zgłoszenia opiekuna, treść jako dane](tickety/08-retro-opiekuna-na-issues.md) — po 07
+9. [09 — Rozpoznanie stałych pól i link wyszukiwania bez filtra etykiety](tickety/09-skrypt-stalych-pol-i-link-wyszukiwania.md) — początek poprawek po weryfikacji R1 (09–15)
+10. [10 — Wysyłka bez etykiet i podobne zgłoszenia po treści](tickety/10-wysylka-bez-etykiet-i-podobne.md) — po 09
+11. [11 — Pełna lista zgłoszeń opiekuna, wkłady z kalendarza i S20 osobno dla komentarza](tickety/11-pelna-lista-i-dane-kont.md)
+12. [12 — Retro opiekuna nadaje etykiety zgłoszeniom czekającym](tickety/12-opiekun-nadaje-etykiety.md) — po 09, 10, 11
+13. [13 — Dowody filtra prywatności i skanu sekretów](tickety/13-dowody-filtra-i-skanu.md)
+14. [14 — Próg poniżej 3 i daty odcięcia w sesjach](tickety/14-progi-i-daty-odciecia.md)
+15. [15 — Dokładne pola szkicu, link z samym tytułem i kroki po wycieku](tickety/15-pola-szkicu-link-i-wyciek.md) — po 10
 
 ## Stan sesji
