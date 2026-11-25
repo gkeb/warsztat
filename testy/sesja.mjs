@@ -35,6 +35,10 @@ const dozwoloneNarzedzia = [
   // Katalog tymczasowy dla szkicu: dokładnie polecenia z procedury retro (`echo "$TEMP"` w Bash nie da się dopuścić regułą).
   "Bash(printenv TEMP)",
   "PowerShell($env:TEMP)",
+  // Skrypty pluginu (np. linki zgłoszenia bez `gh`): ścieżkę skilla model podaje w różnych postaciach
+  // (ukośniki, cudzysłowy, kopia pluginu), więc reguła obejmuje każde `node` — granica miękka jak `cat`.
+  "Bash(node:*)",
+  "PowerShell(node:*)",
   ...["Bash", "PowerShell"].flatMap((powloka) => [
     `${powloka}(gh:*)`,
     `${powloka}(gitleaks stdin:*)`,
@@ -135,8 +139,9 @@ function uruchomClaude(argumenty, { cwd, env }) {
  * repozytoriumPluginu: adres oficjalnego repozytorium warsztatu — sesja dostaje kopię pluginu z tym adresem
  * w polu `repository` obu manifestów (`""` → kopia z pustym polem, niezależnie od repozytorium);
  * bez niego sesja używa pluginu z repozytorium.
+ * bezGh: sesja bez `gh` w PATH (ani atrapy, ani prawdziwego).
  */
-export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repozytoriumPluginu }) {
+export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repozytoriumPluginu, bezGh = false }) {
   const korzen = realpathSync.native(mkdtempSync(join(tmpdir(), "warsztat-sesja-")));
   const katalog = join(korzen, "projekt");
   const plugin = repozytoriumPluginu === undefined ? katalogPluginu : join(korzen, "plugin", "ai");
@@ -169,7 +174,8 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
       }
     }
     writeFileSync(join(katalogAtrapy, "odpowiedzi.json"), JSON.stringify(odpowiedziGh, null, 2));
-    opakowaniaGh(katalogBin, katalogAtrapy);
+    if (bezGh) mkdirSync(katalogBin, { recursive: true });
+    else opakowaniaGh(katalogBin, katalogAtrapy);
     git(katalog, "init", "-q", "-b", "main");
     git(katalog, "add", "-A");
     git(katalog, "commit", "-q", "-m", "projekt testowy");

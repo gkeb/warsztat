@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-skill buduj model-zgloszen → ticket 05
+skill buduj model-zgloszen → ticket 06
 
 ## Otwarte pytania
 

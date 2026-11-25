@@ -581,3 +581,133 @@ test("S8: link do innego repozytorium — lekcja przechodzi ścieżkę jak nowa,
       bezZmianGh(projekt, opis);
     },
   ));
+
+// Bez `gh` (S10) i nowsza wersja warsztatu (S9). Wydania i historia zmian pochodzą z oficjalnego repozytorium
+// zainstalowanego pluginu (pole `repository` manifestu), nie z repozytorium zgłoszeń.
+const wersjaPluginu = JSON.parse(readFileSync(join(katalogRepo, "plugins", "ai", ".claude-plugin", "plugin.json"), "utf8")).version;
+const nowszaWersja = wersjaPluginu.replace(/^(\d+)\.(\d+)\.\d+$/, (_, glowna, mniejsza) => `${glowna}.${Number(mniejsza) + 1}.0`);
+const sprawdzeniePominiete = /Sprawdzenie nowszej wersji warsztatu pominięte/i;
+const niezalogowany = {
+  argumenty: ["auth", "status"],
+  kod: 1,
+  stderr: "You are not logged into any GitHub hosts. To log in, run: gh auth login\n",
+};
+
+/** Linki z odpowiedzi retro: wyszukiwanie i formularz w repozytorium zgłoszeń. */
+function linkiBezGh(tekst, opis) {
+  const adres = `https://github.com/${repoZgloszen}/issues`;
+  const linki = tekst.match(/https:\/\/github\.com\/[^\s)<>`"\]]+/g) ?? [];
+  const szukanie = linki.find((l) => l.startsWith(`${adres}?q=`));
+  const formularz = linki.find((l) => l.startsWith(`${adres}/new?`));
+  assert.ok(szukanie, `brak linku wyszukiwania\n${opis}`);
+  assert.ok(formularz, `brak linku formularza\n${opis}`);
+  const q = new URL(szukanie).searchParams.get("q") ?? "";
+  assert.match(q, /label:process-report/, `wyszukiwanie bez etykiety process-report: ${q}`);
+  assert.match(q, /\bspec\b/, `wyszukiwanie bez nazwy skilla: ${q}`);
+  const parametry = new URL(formularz).searchParams;
+  assert.match(parametry.get("title") ?? "", /^\[spec\]/, `formularz bez tytułu [spec]: ${formularz}`);
+  assert.equal(
+    parametry.get("labels"),
+    "process-report,status: new",
+    `formularz bez etykiet (${formularz.length} znaków), koniec linku: …${formularz.slice(-300)}\n${opis}`,
+  );
+  assert.ok(formularz.length <= 6000, `link formularza dłuższy niż limit: ${formularz.length}`);
+  const tresc = parametry.get("body") ?? "";
+  const pozycje = pola.map((pole) => tresc.indexOf(pole));
+  assert.ok(pozycje.every((x) => x >= 0), `treść w linku bez któregoś pola: ${pozycje}\n${tresc}\n${opis}`);
+  for (const zakazane of [/src\/billing/i, /invoice\.ts/i, /faktur/i, /Kowalski/i, /jan@example\.com/i]) {
+    assert.doesNotMatch(`${parametry.get("title")}\n${tresc}`, zakazane, `dane projektu w linku (${zakazane})\n${tresc}`);
+  }
+}
+
+test("S10: gh niezalogowany — link wyszukiwania i formularz z tytułem i treścią, nic nie wychodzi", limit, () =>
+  sesjaRetro({ fikstura: trzy, odpowiedziGh: [niezalogowany, ...odpowiedziWysylki] }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    linkiBezGh(tekst, opis);
+    bezZmianGh(projekt, opis);
+    const poAuth = projekt.wywolaniaGh().filter((w) => !["--version", "auth"].includes(w.argumenty[0]));
+    assert.deepEqual(poAuth.map((w) => w.argumenty.join(" ")), [], `wywołania gh mimo braku logowania\n${opis}`);
+    assert.match(liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "", niewyslane, `brak dopisku niewysłane\n${opis}`);
+  }));
+
+test("S9, S10: brak gh w PATH — linki i komunikat o pominięciu sprawdzenia wersji", limit, () =>
+  sesjaRetro({ fikstura: trzy, bezGh: true, repozytoriumPluginu: adresOficjalny }, async (projekt) => {
+    const { tekst } = await projekt.tura("/ai:retro");
+    const opis = opisSesji(projekt);
+    linkiBezGh(tekst, opis);
+    assert.match(tekst, sprawdzeniePominiete, `brak komunikatu o pominięciu sprawdzenia wersji\n${opis}`);
+    assert.deepEqual(projekt.wywolaniaGh(), [], `wywołanie atrapy gh mimo braku gh\n${opis}`);
+  }));
+
+const wydanie = { argumenty: ["release", "view"], stdout: JSON.stringify({ tagName: `v${nowszaWersja}` }) + "\n" };
+const historiaZmian = (wpis) => ({
+  argumenty: ["api"],
+  stdout: [
+    "# Changelog",
+    "",
+    `## [${nowszaWersja}] - 2026-11-20`,
+    "",
+    "### Fixed",
+    "",
+    wpis,
+    "- `gdzie` skill: the weekly review lists dead links once.",
+    "",
+    `## [${wersjaPluginu}] - 2026-11-01`,
+    "",
+    "### Added",
+    "",
+    "- `retro` skill: process reports go to the report repository as Issues.",
+    "",
+  ].join("\n"),
+});
+
+/** S9: wywołania sprawdzenia wersji — wydanie i historia zmian z oficjalnego repozytorium. */
+function sprawdzenieWersji(projekt, opis) {
+  const wywolania = projekt.wywolaniaGh();
+  const [widok] = wywolania.filter((w) => w.argumenty[0] === "release" && w.argumenty[1] === "view");
+  assert.ok(widok, `retro nie sprawdziło najnowszego wydania\n${opis}`);
+  assert.equal(repoArgument(widok.argumenty), repoOficjalne, `wydanie z innego repozytorium: ${widok.argumenty.join(" ")}`);
+  const [historia] = wywolania.filter((w) => w.argumenty[0] === "api" && /CHANGELOG\.md/.test(w.argumenty.join(" ")));
+  assert.ok(historia, `retro nie pobrało historii zmian\n${opis}`);
+  const argumenty = historia.argumenty.join(" ");
+  assert.ok(argumenty.includes(repoOficjalne), `historia zmian z innego repozytorium: ${argumenty}`);
+  assert.ok(argumenty.includes(`v${nowszaWersja}`), `historia zmian nie z najnowszego wydania: ${argumenty}`);
+}
+
+test("S9: starsza wersja i wpis w historii zmian — propozycja aktualizacji zamiast zgłoszenia", limit, () =>
+  sesjaRetro(
+    {
+      fikstura: trzy,
+      repozytoriumPluginu: adresOficjalny,
+      odpowiedziGh: odpowiedzi(
+        wydanie,
+        historiaZmian("- `spec` skill, step 3 (`skills/spec/SKILL.md`): asks for numeric thresholds before writing a scenario."),
+      ),
+    },
+    async (projekt) => {
+      const { tekst } = await projekt.tura("/ai:retro");
+      const opis = opisSesji(projekt);
+      sprawdzenieWersji(projekt, opis);
+      assert.match(tekst, /aktualiz|update/i, `brak propozycji aktualizacji\n${opis}`);
+      assert.ok(tekst.includes(nowszaWersja), `odpowiedź nie podaje nowszej wersji ${nowszaWersja}\n${opis}`);
+      assert.doesNotMatch(tekst, /Proposed direction/, `retro pokazało szkic zgłoszenia\n${opis}`);
+      bezZmianGh(projekt, opis);
+    },
+  ));
+
+test("S9: starsza wersja bez wpisu w historii zmian — zwykły szkic zgłoszenia", limit, () =>
+  sesjaRetro(
+    {
+      fikstura: trzy,
+      repozytoriumPluginu: adresOficjalny,
+      odpowiedziGh: odpowiedzi(wydanie, historiaZmian("- `buduj` skill, step 5: the acceptance test runs before the inner loop.")),
+    },
+    async (projekt) => {
+      const { tekst } = await projekt.tura("/ai:retro");
+      const opis = opisSesji(projekt);
+      sprawdzenieWersji(projekt, opis);
+      for (const pole of pola) assert.ok(tekst.includes(pole), `szkic bez pola ${pole}\n${opis}`);
+      bezZmianGh(projekt, opis);
+    },
+  ));
