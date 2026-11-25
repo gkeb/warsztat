@@ -195,3 +195,73 @@ for (const [opis, argumenty] of [
     assert.match(wynik.stderr, /sygnal-zgloszen: podaj --limit/);
   });
 }
+
+// S33: retro opiekuna czyta wszystkie otwarte Issues bez filtra etykiety; skrypt dzieli je na zgłoszenia z etykietą
+// `process-report` (najpierw / reszta), zgłoszenia czekające na opiekuna (bez etykiety, w stałych polach) i pominięte —
+// tych ostatnich tylko liczy, bez numerów i treści.
+const stalePola = (pola = {}) =>
+  ["Workshop version", "Agent and model", "Skill and step", "Kind", "Symptom", "Occurrences", "Proposed direction"]
+    .map((p) => `### ${p}\n\n${pola[p] ?? ""}`)
+    .join("\n\n");
+const issue = (numer, createdAt, { labels = [], body, comments = [] }) => ({
+  number: numer,
+  title: `issue ${numer}`,
+  url: `https://github.com/przyklad-warsztat/warsztat/issues/${numer}`,
+  createdAt,
+  author: { login: "konto-a" },
+  labels,
+  body,
+  comments,
+});
+const trzyPola = "### Workshop version\n\n0.1.0\n\n### Symptom\n\nSomething.\n\n### Proposed direction\n\nFix it.";
+
+test("S33: tylko Issue w stałych polach bez etykiety trafia do grupy bezEtykiety; reszta pominięta i policzona", () => {
+  const wynik = uruchom([
+    zgloszenie(41, "konto-a", "2026-11-01T10:00:00Z"),
+    issue(42, "2026-11-02T10:00:00Z", { body: stalePola({ Symptom: "Something.", "Workshop version": "0.1.0" }) }),
+    issue(43, "2026-11-03T10:00:00Z", { body: trzyPola }),
+    issue(44, "2026-11-04T10:00:00Z", { body: "The build fails on my machine, please help." }),
+  ]);
+  assert.deepEqual(numery(wynik.reszta), [41]);
+  assert.deepEqual(numery(wynik.najpierw), []);
+  assert.deepEqual(numery(wynik.bezEtykiety), [42]);
+  assert.equal(wynik.pominiete, 2);
+  assert.doesNotMatch(JSON.stringify(wynik), /issues\/4[34]\b|"numer":4[34]\b/);
+});
+
+test("S33: Issue z inną etykietą niż process-report, w stałych polach, czeka na opiekuna", () => {
+  const wynik = uruchom([issue(45, "2026-11-02T10:00:00Z", { labels: [{ name: "bug" }], body: stalePola() })]);
+  assert.deepEqual(numery(wynik.bezEtykiety), [45]);
+});
+
+test("S33: grupa bezEtykiety od najstarszego, z treścią i komentarzami, bez wpływu na konta do sprawdzenia", () => {
+  const wynik = uruchom([
+    issue(47, "2026-11-05T10:00:00Z", { body: stalePola(), comments: [wystapienie("konto-b")] }),
+    issue(46, "2026-11-01T10:00:00Z", { body: stalePola() }),
+  ]);
+  assert.deepEqual(numery(wynik.bezEtykiety), [46, 47]);
+  const [, starsze] = wynik.bezEtykiety;
+  assert.equal(starsze.tresc, stalePola());
+  assert.deepEqual(starsze.komentarze.map((k) => [k.login, k.wystapienie]), [["konto-b", true]]);
+  assert.deepEqual(wynik.kontaDoSprawdzenia, []);
+});
+
+test("S33: Issues tyle co limit pobrania, choć zgłoszeń mniej — niepełny odczyt, kod 3", () => {
+  const lista = [zgloszenie(48, "konto-a", "2026-11-01T10:00:00Z"), ...[1, 2, 3, 4].map((i) => issue(48 + i, "2026-11-02T10:00:00Z", { body: "Bug." }))];
+  const wynik = surowo(["--limit", "5"], JSON.stringify(lista));
+  assert.equal(wynik.status, 3);
+  assert.equal(wynik.stdout, "");
+});
+
+const sto = Array.from({ length: 100 }, (_, i) => ({ author: { login: "konto-b" }, body: `Comment ${i}`, createdAt: "2026-11-02T10:00:00Z" }));
+
+test("S33: zgłoszenie czekające ze 100 komentarzami — niepełny odczyt z jego numerem", () => {
+  const wynik = surowo(["--limit", String(LIMIT)], JSON.stringify([issue(53, "2026-11-01T10:00:00Z", { body: stalePola(), comments: sto })]));
+  assert.equal(wynik.status, 3);
+  assert.match(wynik.stderr, /odczyt niepełny[^\n]*#53\b/);
+});
+
+test("S33: pominięte Issue ze 100 komentarzami nie blokuje odczytu", () => {
+  const wynik = uruchom([issue(54, "2026-11-01T10:00:00Z", { body: "Bug.", comments: sto })]);
+  assert.equal(wynik.pominiete, 1);
+});

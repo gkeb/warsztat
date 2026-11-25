@@ -58,3 +58,23 @@ for (const [opis, argumenty, oczekiwane] of [
     assert.equal(zmieniaStan(argumenty), oczekiwane);
   });
 }
+
+// Atrapa `gh`: odpowiedź z `bezFlag` pasuje tylko do wywołania bez żadnej z flag — lista opiekuna bez filtra etykiety (S33).
+const odpowiedziListy = [{ argumenty: ["issue", "list"], bezFlag: ["--label", "-l"], stdout: "[]\n" }];
+for (const [opis, argumenty, kod] of [
+  ["bez filtra etykiety → lista", ["issue", "list", "--repo", "a/b", "--state", "open"], 0],
+  ["--label → nieprzewidziane", ["issue", "list", "--repo", "a/b", "--label", "process-report"], 1],
+  ["--label=… → nieprzewidziane", ["issue", "list", "--repo", "a/b", "--label=process-report"], 1],
+  ["-l sklejone z wartością → nieprzewidziane", ["issue", "list", "--repo", "a/b", "-lprocess-report"], 1],
+]) {
+  test(`atrapa gh, bezFlag: ${opis}`, () => {
+    const katalog = mkdtempSync(join(tmpdir(), "warsztat-atrapa-"));
+    try {
+      writeFileSync(join(katalog, "odpowiedzi.json"), JSON.stringify(odpowiedziListy));
+      const wynik = spawnSync(process.execPath, [atrapa, katalog, ...argumenty], { encoding: "utf8" });
+      assert.equal(wynik.status, kod, `stdout: ${wynik.stdout}\nstderr: ${wynik.stderr}`);
+    } finally {
+      rmSync(katalog, { recursive: true, force: true });
+    }
+  });
+}

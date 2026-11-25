@@ -1,6 +1,6 @@
 // Atrapa `gh` dla sesji testowych agenta.
 // Wywołanie: node atrapa-gh.mjs <katalog-atrapy> <argumenty gh...>
-// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], zawiera?: [...fragmenty], zFlaga?: [...flagi], stdout?, stderr?, kod? }
+// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], zawiera?: [...fragmenty], zFlaga?: [...flagi], bezFlag?: [...flagi], stdout?, stderr?, kod? }
 // zadana przez test; pierwsza pasująca wygrywa.
 // <katalog-atrapy>/wywolania.jsonl — każde wywołanie: argumenty, treść z --body-file, powłoka, czy przewidziane.
 import { appendFileSync, readFileSync } from "node:fs";
@@ -49,7 +49,12 @@ const krotkaSklejona = (a, f) => /^-[a-zA-Z]$/.test(f) && a.startsWith(f) && a.l
 const zFlaga = (flagi) =>
   flagi === undefined ||
   argumenty.some((a) => flagi.some((f) => a === f || a.startsWith(`${f}=`) || krotkaSklejona(a, f)));
-const odpowiedz = wczytajOdpowiedzi().find((o) => pasuje(o.argumenty) && zawiera(o.zawiera) && zFlaga(o.zFlaga));
+// `bezFlag` (opcjonalnie): wywołanie nie ma żadnej z flag w żadnej z tych postaci — np. lista opiekuna bez filtra
+// etykiety (`--label`, `-l`); z flagą odpowiedź nie pasuje, a bez innej pasującej wywołanie jest nieprzewidziane.
+const bezFlag = (flagi) => flagi === undefined || !zFlaga(flagi);
+const odpowiedz = wczytajOdpowiedzi().find(
+  (o) => pasuje(o.argumenty) && zawiera(o.zawiera) && zFlaga(o.zFlaga) && bezFlag(o.bezFlag),
+);
 
 appendFileSync(
   join(katalog, "wywolania.jsonl"),
