@@ -6,14 +6,16 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dwaKolejnePrzejscia, katalogRepo, przygotujProjekt, zmieniaStan } from "./sesja.mjs";
+import { dwaKolejnePrzejscia, katalogRepo, przebiegi as liczbaPrzebiegow, przygotujProjekt, zmieniaStan } from "./sesja.mjs";
 
 const fikstury = join(dirname(fileURLToPath(import.meta.url)), "fikstury");
 const limit = { timeout: 60 * 60 * 1000 };
 const plikZgloszen = join(katalogRepo, "ZGLOSZENIA.md");
 
 function opisSesji(projekt) {
-  return projekt.tury.map((t, i) => `tura ${i + 1}: ${t.tekst.slice(0, 1500)}\nodmowy: ${JSON.stringify(t.odmowy)}`).join("\n");
+  return projekt.tury
+    .map((t, i) => `tura ${i + 1}: ${t.tekst.slice(0, 1500)}\nodmowy: ${JSON.stringify(t.odmowy)}\npolecenia: ${JSON.stringify(t.polecenia)}`)
+    .join("\n");
 }
 
 // Kontrola uprzęży: `gh` z narzędzia Bash i PowerShell trafia do atrapy (druga tura idzie przez --resume),
@@ -79,7 +81,16 @@ const pola = [
   "Occurrences",
   "Proposed direction",
 ];
+// Konto zgłaszającego zwykle nie może nadawać etykiet w repozytorium zgłoszeń (weryfikacja R1.1): atrapa odrzuca
+// `issue create` z flagą etykiety, a wysyłka z projektu nie przekazuje etykiet (S2, S6).
+const odrzucEtykiety = {
+  argumenty: ["issue", "create"],
+  zFlaga: ["--label", "-l"],
+  kod: 1,
+  stderr: "GraphQL: test-user does not have permission to add labels to issues in this repository (createIssue)\n",
+};
 const odpowiedziWysylki = [
+  odrzucEtykiety,
   { argumenty: ["--version"], stdout: "gh version 2.0.0 (atrapa)\n" },
   { argumenty: ["auth", "status"], stdout: "github.com\n  ✓ Logged in to github.com account test-user\n" },
   { argumenty: ["issue", "list"], stdout: "[]\n" },
@@ -89,6 +100,9 @@ const odpowiedziWysylki = [
 ];
 const zgoda = "Tak, zgadzam się — wyślij to zgłoszenie dokładnie w tej postaci.";
 const zalozenia = (wywolania) => wywolania.filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "create");
+/** Wysyłka z projektu bez flag etykiet (S2): etykiety nadaje formularz albo opiekun. */
+const bezEtykiet = (issue, opis) =>
+  assert.deepEqual(wartosci(issue.argumenty, "--label", "-l"), [], `wysyłka z etykietami: ${issue.argumenty.join(" ")}\n${opis}`);
 const liniaLekcji = (lekcje) => lekcje.split("\n").find((l) => l.startsWith("- [warsztat]"));
 const niewyslane = /Zgłoszenie: niewysłane \d{4}-\d{2}-\d{2}/;
 const repoArgument = (argumenty) => {
@@ -156,8 +170,8 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
   }, limit);
 
   const kazdy = (sprawdz) => {
-    assert.equal(przebiegi.length, 2, "brak dwóch przebiegów sesji");
-    przebiegi.forEach((p, i) => sprawdz(p, `uruchomienie ${i + 1} z 2\n${p.opis}`));
+    assert.equal(przebiegi.length, liczbaPrzebiegow, `oczekiwane przebiegi sesji: ${liczbaPrzebiegow}`);
+    przebiegi.forEach((p, i) => sprawdz(p, `uruchomienie ${i + 1} z ${liczbaPrzebiegow}\n${p.opis}`));
   };
 
   test("S1: lekcja [warsztat] z 3 wystąpieniami daje szkic zgłoszenia i pytanie o zgodę", () => {
@@ -179,8 +193,7 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
       assert.deepEqual([...pozycje].sort((a, b) => a - b), pozycje, `pola w złej kolejności\n${tresc}`);
       const argumenty = issue.argumenty.join(" ");
       assert.match(argumenty, /\[spec\]/, `tytuł bez [spec]: ${argumenty}`);
-      assert.match(argumenty, /process-report/, `brak etykiety process-report: ${argumenty}`);
-      assert.match(argumenty, /status: new/, `brak etykiety status: new: ${argumenty}`);
+      bezEtykiet(issue, opis);
     });
   });
 
@@ -222,6 +235,7 @@ describe("wysyłka zgłoszenia — 3 wystąpienia, własne repozytorium", () => 
       const i = issue.argumenty.findIndex((a) => a === "--repo" || a === "-R");
       const repo = i >= 0 ? issue.argumenty[i + 1] : issue.argumenty.find((a) => a.startsWith("--repo="))?.slice(7);
       assert.equal(repo, repoZgloszen, `złe repozytorium: ${issue.argumenty.join(" ")}`);
+      bezEtykiet(issue, opis);
     });
   });
 });
@@ -354,6 +368,7 @@ test("S12: brak klucza — zgłoszenie idzie do oficjalnego repozytorium z manif
     const issue = zalozenia(projekt.wywolaniaGh());
     assert.equal(issue.length, 1, `oczekiwane jedno Issue\n${opis}`);
     assert.equal(repoArgument(issue[0].argumenty), repoOficjalne, `złe repozytorium: ${issue[0].argumenty.join(" ")}\n${opis}`);
+    bezEtykiet(issue[0], opis);
   }));
 
 test("S12: jawne oficjalne repozytorium — szkic wskazuje je jako docelowe", limit, () =>
@@ -427,55 +442,152 @@ function sprawdzKomentarz(komentarz, nr, opis) {
   }
 }
 
-const podobne = {
-  argumenty: ["issue", "list"],
-  stdout:
-    JSON.stringify([
-      { number: 57, title: "[spec] Spec skill does not ask for numeric thresholds before a scenario", url: linkIssue(57) },
-    ]) + "\n",
-};
+// Wyniki wyszukiwania z treścią (S6). Zgłoszenie w stałych polach o problemie z lekcji fikstury: skill spec, krok 3,
+// scenariusz bez pytania o próg liczbowy.
+const trescZgloszenia = ({ krok = "step 3", objaw }) =>
+  [
+    "### Workshop version",
+    "0.27.0",
+    "### Agent and model",
+    "Claude Code / claude-sonnet-5-5",
+    "### Skill and step",
+    `skills/spec/SKILL.md, ${krok}`,
+    "### Kind",
+    "regular",
+    "### Symptom",
+    objaw,
+    "### Occurrences",
+    "3 occurrences: 2026-09-10, 2026-09-21, 2026-10-01.",
+    "### Proposed direction",
+    "Ask for numeric thresholds in the spec skill before writing the scenario.",
+  ].join("\n\n");
+const objawLekcji = "The spec skill writes a scenario with a rule boundary without asking the user for the numeric threshold.";
+const tytulPodobnego = "[spec] Spec skill does not ask for numeric thresholds before a scenario";
+const etykietyZgloszenia = [{ name: "process-report" }, { name: "status: new" }];
+const trafienie = (number, { title = tytulPodobnego, labels = [], body }) => ({ number, title, url: linkIssue(number), labels, body });
+const wyniki = (...trafienia) => ({ argumenty: ["issue", "list"], stdout: JSON.stringify(trafienia) + "\n" });
+// Tytuły trafień z atrapy — linia z nimi w odpowiedzi to cytat trafienia, nie tytuł szkicu.
+const tytulyTrafien = [tytulPodobnego.slice("[spec] ".length), "spec skill does not ask for numeric thresholds on Windows"];
 
-/** S6: pierwsza tura retro, potem wybór użytkownika; zwraca wywołania i lekcję po sesji. */
-async function wyborPodobnego(projekt, wybor) {
-  const szkic = await projekt.tura("/ai:retro");
-  const opis = opisSesji(projekt);
+const podobne = wyniki(trafienie(57, { labels: etykietyZgloszenia, body: trescZgloszenia({ objaw: objawLekcji }) }));
+// Zgłoszenie czekające na opiekuna: stałe pola bez etykiety (konto bez uprawnień do etykiet).
+const podobneBezEtykiety = wyniki(trafienie(64, { body: trescZgloszenia({ objaw: objawLekcji }) }));
+// Ten sam skill i tytuł, ale inny krok w treści, oraz zwykły błąd bez stałych pól — żadne nie jest podobnym zgłoszeniem.
+const bezPodobnych = wyniki(
+  trafienie(71, {
+    labels: etykietyZgloszenia,
+    body: trescZgloszenia({
+      krok: "step 6",
+      objaw: "At the acceptance gate the spec skill does not show the numeric thresholds changed after the first draft.",
+    }),
+  }),
+  trafienie(72, {
+    title: "spec skill does not ask for numeric thresholds on Windows",
+    body: "When I run the spec skill on Windows it never asks for numeric thresholds and the scenario has none. Please fix!",
+  }),
+);
+
+/** Pierwsze wyszukiwanie podobnych: repozytorium, otwarte, bez filtra etykiety, z treścią, skill i słowo objawu z tytułu szkicu. */
+function sprawdzSzukanie(projekt, szkic, opis) {
   const [szukanie] = projekt.wywolaniaGh().filter((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "list");
   assert.ok(szukanie, `retro nie szukało podobnych zgłoszeń\n${opis}`);
   const argumenty = szukanie.argumenty.join(" ");
   assert.equal(repoArgument(szukanie.argumenty), repoZgloszen, `szukanie w złym repozytorium: ${argumenty}`);
-  assert.match(argumenty, /--label[ =]process-report/, `szukanie bez etykiety process-report: ${argumenty}`);
+  assert.deepEqual(wartosci(szukanie.argumenty, "--label", "-l"), [], `szukanie z filtrem etykiety: ${argumenty}`);
   assert.match(argumenty, /--state[ =]open/, `szukanie nie tylko otwartych: ${argumenty}`);
-  assert.match(argumenty, /--search[ =].*spec/i, `szukanie bez nazwy skilla: ${argumenty}`);
+  assert.ok(wartosci(szukanie.argumenty, "--json").includes("body"), `szukanie bez treści trafień (--json body): ${argumenty}`);
+  const [slowa = ""] = wartosci(szukanie.argumenty, "--search", "-S");
+  assert.match(slowa, /\bspec\b/i, `szukanie bez nazwy skilla: ${argumenty}`);
+  // Słowa objawu: z linii tytułu `[spec] …` w odpowiedzi (szkic) — bez linii z tytułem trafienia z atrapy, nazwy skilla
+  // i słów krótszych niż 4 litery.
+  const linieTytulu = (szkic.match(/\[spec\][^\n]*/gi) ?? []).filter((l) => !tytulyTrafien.some((t) => l.includes(t)));
+  const tytul = new Set(linieTytulu.join(" ").toLowerCase().match(/[a-z]{4,}/g)?.filter((s) => s !== "spec") ?? []);
+  const wspolne = (slowa.toLowerCase().match(/[a-z]{4,}/g) ?? []).filter((s) => tytul.has(s));
+  assert.ok(wspolne.length > 0, `szukanie bez słowa objawu z tytułu szkicu: ${slowa}\n${opis}`);
+}
+
+/** Retro sklasyfikowało trafienie bez etykiety skryptem stałych pól. */
+const skryptStalychPol = (projekt, opis) =>
+  assert.ok(
+    projekt.polecenia().some((p) => /\bnode(\.exe)?["']?\s[^\n]*stale-pola\.mjs/.test(p)),
+    `trafienie bez etykiety bez uruchomienia skryptu stałych pól\n${opis}`,
+  );
+
+/** S6: pierwsza tura retro z propozycją komentarza do `nr`, potem wybór użytkownika; zwraca wywołania i lekcję po sesji. */
+async function wyborPodobnego(projekt, wybor, nr = 57) {
+  const szkic = await projekt.tura("/ai:retro");
+  const opis = opisSesji(projekt);
+  sprawdzSzukanie(projekt, szkic.tekst, opis);
   assert.match(szkic.tekst, /#+\s*Occurrence\b/, `brak szkicu komentarza Occurrence\n${opis}`);
-  assert.match(szkic.tekst, /#57|issues\/57/, `brak wskazania podobnego zgłoszenia\n${opis}`);
+  assert.match(szkic.tekst, new RegExp(`#${nr}\\b|issues/${nr}\\b`), `brak wskazania podobnego zgłoszenia #${nr}\n${opis}`);
+  assert.match(szkic.tekst, /Proposed direction/, `brak szkicu nowego zgłoszenia obok komentarza\n${opis}`);
   bezZmianGh(projekt, opis);
   await projekt.tura(wybor);
   return { wywolania: projekt.wywolaniaGh(), linia: liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "", opis: opisSesji(projekt) };
 }
 
-test("S6: podobne otwarte zgłoszenie — wybór komentarza daje gh issue comment", limit, () =>
+/** Komentarz „wystąpienie” do `nr` po wyborze komentarza: bez nowego Issue, ślad z linkiem zgłoszenia. */
+function sprawdzWybranyKomentarz({ wywolania, linia, opis }, nr) {
+  assert.equal(zalozenia(wywolania).length, 0, `założone nowe Issue\n${opis}`);
+  const [komentarz, ...reszta] = komentarze(wywolania);
+  assert.ok(komentarz && reszta.length === 0, `oczekiwany jeden komentarz\n${opis}`);
+  sprawdzKomentarz(komentarz, nr, opis);
+  assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(nr)}`), `brak śladu z linkiem do zgłoszenia\n${linia}`);
+  assert.doesNotMatch(linia, /issuecomment|niewysłane/, `ślad z linkiem komentarza albo niewysłane\n${linia}`);
+}
+
+test("S6: podobne otwarte zgłoszenie z etykietą — wybór komentarza daje gh issue comment", limit, () =>
   sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(podobne, widokIssue(57), komentarzDodany(57)) }, async (projekt) => {
-    const { wywolania, linia, opis } = await wyborPodobnego(
+    const wynik = await wyborPodobnego(
       projekt,
       "Dopisz komentarz do istniejącego zgłoszenia #57, zgadzam się na pokazaną treść komentarza.",
     );
-    assert.equal(zalozenia(wywolania).length, 0, `założone nowe Issue\n${opis}`);
-    const [komentarz, ...reszta] = komentarze(wywolania);
-    assert.ok(komentarz && reszta.length === 0, `oczekiwany jeden komentarz\n${opis}`);
-    sprawdzKomentarz(komentarz, 57, opis);
-    assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(57)}`), `brak śladu z linkiem do zgłoszenia\n${linia}`);
-    assert.doesNotMatch(linia, /issuecomment|niewysłane/, `ślad z linkiem komentarza albo niewysłane\n${linia}`);
+    sprawdzWybranyKomentarz(wynik, 57);
   }));
 
-test("S6: podobne otwarte zgłoszenie — wybór nowego zgłoszenia daje gh issue create", limit, () =>
+test("S6: podobne otwarte zgłoszenie z etykietą — wybór nowego zgłoszenia daje gh issue create", limit, () =>
   sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(podobne, widokIssue(57)) }, async (projekt) => {
     const { wywolania, linia, opis } = await wyborPodobnego(
       projekt,
       "Nie komentuj — załóż nowe zgłoszenie, zgadzam się na pokazany szkic zgłoszenia.",
     );
     assert.equal(komentarze(wywolania).length, 0, `dodany komentarz\n${opis}`);
-    assert.equal(zalozenia(wywolania).length, 1, `oczekiwane jedno Issue\n${opis}`);
+    const [issue, ...reszta] = zalozenia(wywolania);
+    assert.ok(issue && reszta.length === 0, `oczekiwane jedno Issue\n${opis}`);
+    bezEtykiet(issue, opis);
     assert.ok(linia.includes(`Zgłoszenie: ${linkZgloszenia}`), `brak śladu z linkiem nowego zgłoszenia\n${linia}`);
+  }));
+
+test("S6: podobne zgłoszenie bez etykiety w stałych polach — propozycja komentarza, klasyfikacja skryptem", limit, () =>
+  sesjaRetro(
+    { fikstura: trzy, odpowiedziGh: odpowiedzi(podobneBezEtykiety, widokIssue(64), komentarzDodany(64)) },
+    async (projekt) => {
+      const wynik = await wyborPodobnego(
+        projekt,
+        "Dopisz komentarz do istniejącego zgłoszenia #64, zgadzam się na pokazaną treść komentarza.",
+        64,
+      );
+      skryptStalychPol(projekt, wynik.opis);
+      sprawdzWybranyKomentarz(wynik, 64);
+    },
+  ));
+
+test("S6: ten sam tytuł z innym krokiem w treści i zwykły błąd bez stałych pól — tylko nowe zgłoszenie", limit, () =>
+  sesjaRetro({ fikstura: trzy, odpowiedziGh: odpowiedzi(bezPodobnych) }, async (projekt) => {
+    const szkic = await projekt.tura("/ai:retro");
+    let opis = opisSesji(projekt);
+    sprawdzSzukanie(projekt, szkic.tekst, opis);
+    skryptStalychPol(projekt, opis);
+    assert.match(szkic.tekst, /Proposed direction/, `brak szkicu nowego zgłoszenia\n${opis}`);
+    assert.doesNotMatch(szkic.tekst, /#+\s*Occurrence\b/, `retro zaproponowało komentarz do niepodobnego zgłoszenia\n${opis}`);
+    bezZmianGh(projekt, opis);
+    await projekt.tura(zgoda);
+    opis = opisSesji(projekt);
+    const wywolania = projekt.wywolaniaGh();
+    assert.equal(komentarze(wywolania).length, 0, `dodany komentarz\n${opis}`);
+    const [issue, ...reszta] = zalozenia(wywolania);
+    assert.ok(issue && reszta.length === 0, `oczekiwane jedno Issue\n${opis}`);
+    bezEtykiet(issue, opis);
   }));
 
 // Wysłana lekcja: zgłoszenie założone 2026-11-05, nowe wystąpienie 2026-11-20 (jedno, poniżej progu 3).
@@ -524,6 +636,7 @@ test("S8: zgłoszenie zamknięte jako wdrożone — nowe zgłoszenie z odnośnik
       fikstura: trzy,
       pliki: { ".ai/lekcje.md": lekcjeWyslane(linkIssue(101)) },
       odpowiedziGh: [
+        odrzucEtykiety,
         widokIssue(101, { state: "CLOSED", stateReason: "COMPLETED", closedAt: "2026-11-10T12:00:00Z" }),
         { argumenty: ["issue", "create"], stdout: `${linkIssue(102)}\n` },
         ...odpowiedziWysylki,
@@ -539,6 +652,7 @@ test("S8: zgłoszenie zamknięte jako wdrożone — nowe zgłoszenie z odnośnik
       const [issue, ...reszta] = zalozenia(wywolania);
       assert.ok(issue && reszta.length === 0, `oczekiwane jedno nowe Issue\n${opis}`);
       assert.match(issue.tresc ?? "", /issues\/101|#101/, `nowe zgłoszenie bez odnośnika do starego\n${issue.tresc}`);
+      bezEtykiet(issue, opis);
       const linia = liniaLekcji(projekt.czytaj(".ai/lekcje.md")) ?? "";
       assert.ok(linia.includes(`Zgłoszenie: ${linkIssue(102)}`), `ślad nie wskazuje nowego zgłoszenia\n${linia}`);
     },
@@ -818,6 +932,10 @@ function wartosci(argumenty, ...opcje) {
     for (const opcja of opcje) {
       if (argumenty[i] === opcja) wynik.push(argumenty[i + 1] ?? "");
       else if (argumenty[i].startsWith(`${opcja}=`)) wynik.push(argumenty[i].slice(opcja.length + 1));
+      // Krótka flaga sklejona z wartością (`-lprocess-report`).
+      else if (/^-[a-zA-Z]$/.test(opcja) && argumenty[i].startsWith(opcja) && argumenty[i].length > 2) {
+        wynik.push(argumenty[i].slice(2));
+      }
     }
   }
   return wynik.flatMap((w) => w.split(",")).map((w) => w.trim());

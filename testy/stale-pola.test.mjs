@@ -84,3 +84,11 @@ test("stałe pola: nieczytelny plik → kod 2, bez wyniku", () => {
     (e) => e.status === 2 && e.stdout.length === 0 && /stale-pola: nie da się odczytać/.test(e.stderr),
   );
 });
+
+// Treść Issue pochodzi od dowolnego konta (do 65 536 znaków): rozpoznanie nie może nawracać kwadratowo.
+test("stałe pola: nagłówek z 65 000 spacji przed znakiem → nie, w czasie liniowym", async () => {
+  const { wStalychPolach } = await import(pathToFileURL(skrypt).href);
+  const start = performance.now();
+  assert.equal(wStalychPolach(`### ${" ".repeat(65000)}x`), false);
+  assert.ok(performance.now() - start < 200, `rozpoznanie trwało ${Math.round(performance.now() - start)} ms`);
+});

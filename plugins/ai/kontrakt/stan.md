@@ -48,7 +48,7 @@ Część [kontraktu warsztatu](../KONTRAKT.md). Czytaj sekcje potrzebne do zadan
 | podejścia sprawdzone w praktyce, które nie zadziałały, odłożone albo nierozwiązane | `proby.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | rozwiązane problemy: fałszywe założenie i jak robimy teraz | `lekcje.md` | każdy skill, który na nie trafi; porządkuje `retro` |
 | uogólnione problemy i rozwiązania, wspólne dla projektów | `wzorce/` w katalogu pluginu | tylko skill `retro`, za zgodą człowieka |
-| zgłoszenia zmian procesu warsztatu (skille, kontrakt, szablony, hooki) | Issues z etykietą `process-report` — z projektu w repozytorium zgłoszeń (`warsztat.json` → `zgloszenia`), w repozytorium warsztatu w jego `github.repo` | tylko skill `retro`, po zgodzie: w projekcie wysyła, w repozytorium warsztatu zapisuje, zmienia status, odrzuca i wdraża |
+| zgłoszenia zmian procesu warsztatu (skille, kontrakt, szablony, hooki) | Issues z etykietą `process-report` — z projektu w repozytorium zgłoszeń (`warsztat.json` → `zgloszenia`; wysłane bez etykiet, nadaje je formularz albo opiekun), w repozytorium warsztatu w jego `github.repo` | tylko skill `retro`, po zgodzie: w projekcie wysyła, w repozytorium warsztatu zapisuje, zmienia status, odrzuca i wdraża |
 | adres oficjalnego repozytorium warsztatu (domyślne repozytorium zgłoszeń, kanał bezpieczeństwa) | pole `repository` obu manifestów pluginu | opiekun warsztatu przy wydaniu, w obu manifestach naraz |
 | profile klas aplikacji projektu | `warsztat.json` → `profile` | skill `start`, `pomysl produkt`; zmiana za zgodą człowieka |
 | rozstrzygnięcie każdej pozycji profilu | `profil.md` (wynik i link; treść w ADR, zasadzie albo specu) | skill `pomysl produkt`, `poznaj`, `decyzja`, `gdzie tydzien` |

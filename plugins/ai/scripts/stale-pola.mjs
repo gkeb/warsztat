@@ -18,12 +18,20 @@ export const STALE_POLA = [
   'Proposed direction',
 ];
 
+/** Nagłówek bez końcowych spacji i tabulatorów — liniowo, bez wyrażenia regularnego. */
+function bezKoncowychSpacji(tekst) {
+  let koniec = tekst.length;
+  while (koniec > 0 && (tekst[koniec - 1] === ' ' || tekst[koniec - 1] === '\t')) koniec--;
+  return tekst.slice(0, koniec);
+}
+
 /** Czy treść Issue jest w stałych polach. */
 export function wStalychPolach(tresc) {
   const tekst = String(tresc).replace(/^﻿/, '');
-  const dopasowania = [...tekst.matchAll(/^### ([^\r\n]*?)[ \t]*\r?$/gm)];
+  // Bez leniwego kwantyfikatora przed końcowymi spacjami: treść Issue jest cudza, a nawracanie byłoby kwadratowe.
+  const dopasowania = [...tekst.matchAll(/^### ([^\r\n]*)/gm)];
   if (dopasowania.length === 0 || tekst.slice(0, dopasowania[0].index).trim() !== '') return false;
-  const naglowki = dopasowania.map((n) => n[1]);
+  const naglowki = dopasowania.map((n) => bezKoncowychSpacji(n[1]));
   return naglowki.length === STALE_POLA.length && STALE_POLA.every((pole) => naglowki.includes(pole));
 }
 

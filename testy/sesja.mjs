@@ -13,7 +13,7 @@ const atrapa = join(katalogTestow, "atrapa-gh.mjs");
 
 export const model = process.env.WARSZTAT_TEST_MODEL || "sonnet";
 // Liczba kolejnych uruchomień w regule wyniku: 2 (domyślnie, przebieg przed commitem) albo 1 (w trakcie budowy).
-const przebiegi = process.env.WARSZTAT_TEST_PRZEBIEGI === "1" ? 1 : 2;
+export const przebiegi = process.env.WARSZTAT_TEST_PRZEBIEGI === "1" ? 1 : 2;
 
 // Koszt z `total_cost_usd` każdej tury, sumowany w procesie testów (jeden plik testów).
 let kosztPrzebiegu = 0;
@@ -199,8 +199,11 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
       const argumenty = [
         "-p",
         tekst,
+        // stream-json: ostatnia linia `result` ma pola wyniku jak `json`, a wcześniejsze wiadomości `assistant` —
+        // wywołania narzędzi, z których test bierze polecenia powłoki (np. czy klasyfikował skrypt, a nie model).
         "--output-format",
-        "json",
+        "stream-json",
+        "--verbose",
         "--model",
         model,
         "--plugin-dir",
@@ -216,21 +219,44 @@ export function przygotujProjekt({ fikstura, odpowiedziGh = [], pliki = {}, repo
       ];
       if (idSesji) argumenty.push("--resume", idSesji);
       const { kod, stdout, stderr } = await uruchomClaude(argumenty, { cwd: katalog, env });
-      let wynik;
-      try {
-        wynik = JSON.parse(stdout);
-      } catch {
-        throw new Error(`claude -p bez wyniku JSON (kod ${kod}).\nstdout: ${stdout.slice(0, 2000)}\nstderr: ${stderr.slice(0, 2000)}`);
+      const wiadomosci = stdout
+        .split("\n")
+        .filter((linia) => linia.trim())
+        .flatMap((linia) => {
+          try {
+            return [JSON.parse(linia)];
+          } catch {
+            return [];
+          }
+        });
+      const wynik = wiadomosci.findLast((w) => w.type === "result");
+      if (!wynik) {
+        throw new Error(`claude -p bez wyniku JSON (kod ${kod}).\nstdout: ${stdout.slice(-2000)}\nstderr: ${stderr.slice(0, 2000)}`);
       }
-      if (wynik.is_error) throw new Error(`claude -p zakończył się błędem: ${wynik.result ?? stdout.slice(0, 2000)}`);
+      if (wynik.is_error) throw new Error(`claude -p zakończył się błędem: ${wynik.result ?? stdout.slice(-2000)}`);
       idSesji = wynik.session_id;
-      const tura = { tekst: wynik.result ?? "", odmowy: wynik.permission_denials ?? [], koszt: wynik.total_cost_usd };
+      const polecenia = wiadomosci
+        .filter((w) => w.type === "assistant")
+        .flatMap((w) => w.message?.content ?? [])
+        .filter((c) => c.type === "tool_use" && ["Bash", "PowerShell"].includes(c.name))
+        .map((c) => String(c.input?.command ?? ""));
+      const tura = {
+        tekst: wynik.result ?? "",
+        odmowy: wynik.permission_denials ?? [],
+        koszt: wynik.total_cost_usd,
+        polecenia,
+      };
       tury.push(tura);
       kosztPrzebiegu += tura.koszt ?? 0;
       process.stderr.write(
         `[sesja] tura ${tury.length}: ${dolary(tura.koszt)} (sesja ${dolary(tury.reduce((s, t) => s + (t.koszt ?? 0), 0))}, przebieg ${dolary(kosztPrzebiegu)})\n`,
       );
       return tura;
+    },
+
+    /** Polecenia narzędzi Bash i PowerShell ze wszystkich tur, w kolejności. */
+    polecenia() {
+      return tury.flatMap((t) => t.polecenia);
     },
 
     /** Wywołania atrapy `gh` w kolejności. */

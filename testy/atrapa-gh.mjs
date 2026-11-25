@@ -1,6 +1,6 @@
 // Atrapa `gh` dla sesji testowych agenta.
 // Wywołanie: node atrapa-gh.mjs <katalog-atrapy> <argumenty gh...>
-// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], zawiera?: [...fragmenty], stdout?, stderr?, kod? }
+// <katalog-atrapy>/odpowiedzi.json — lista { argumenty: [...prefiks], zawiera?: [...fragmenty], zFlaga?: [...flagi], stdout?, stderr?, kod? }
 // zadana przez test; pierwsza pasująca wygrywa.
 // <katalog-atrapy>/wywolania.jsonl — każde wywołanie: argumenty, treść z --body-file, powłoka, czy przewidziane.
 import { appendFileSync, readFileSync } from "node:fs";
@@ -43,7 +43,13 @@ const pasuje = (prefiks) => prefiks.length <= argumenty.length && prefiks.every(
 // `zawiera` (opcjonalnie): każdy fragment występuje w którymś argumencie — np. login w zapytaniu GraphQL,
 // niezależnie od kolejności pól.
 const zawiera = (fragmenty = []) => fragmenty.every((f) => argumenty.some((a) => a.includes(f)));
-const odpowiedz = wczytajOdpowiedzi().find((o) => pasuje(o.argumenty) && zawiera(o.zawiera));
+// `zFlaga` (opcjonalnie): wywołanie ma którąś z flag, samą, jako `flaga=wartość` albo krótką sklejoną z wartością
+// (`-lx`) — np. etykiety przy `issue create` z konta bez uprawnień do nich.
+const krotkaSklejona = (a, f) => /^-[a-zA-Z]$/.test(f) && a.startsWith(f) && a.length > 2;
+const zFlaga = (flagi) =>
+  flagi === undefined ||
+  argumenty.some((a) => flagi.some((f) => a === f || a.startsWith(`${f}=`) || krotkaSklejona(a, f)));
+const odpowiedz = wczytajOdpowiedzi().find((o) => pasuje(o.argumenty) && zawiera(o.zawiera) && zFlaga(o.zFlaga));
 
 appendFileSync(
   join(katalog, "wywolania.jsonl"),

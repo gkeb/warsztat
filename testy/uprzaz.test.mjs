@@ -2,7 +2,38 @@
 // Od tej klasyfikacji zależy kontrola „retro niczego nie zmieniło” w testach sesji.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { zmieniaStan } from "./sesja.mjs";
+
+// Atrapa `gh`: odpowiedź z `zFlaga` pasuje tylko do wywołania z którąś z flag (sama albo `flaga=wartość`) —
+// tak testy sesji odrzucają etykiety przy zakładaniu Issue z projektu (konto bez uprawnień do etykiet).
+const atrapa = join(dirname(fileURLToPath(import.meta.url)), "atrapa-gh.mjs");
+const odpowiedziEtykiet = [
+  { argumenty: ["issue", "create"], zFlaga: ["--label", "-l"], kod: 1, stderr: "brak uprawnień do etykiet\n" },
+  { argumenty: ["issue", "create"], stdout: "https://github.com/a/b/issues/1\n" },
+];
+for (const [opis, argumenty, kod] of [
+  ["bez etykiet → założone", ["issue", "create", "--repo", "a/b", "--title", "[spec] label-like title", "--body-file", "x"], 0],
+  ["--label → odrzucone", ["issue", "create", "--repo", "a/b", "--label", "process-report"], 1],
+  ["--label=… → odrzucone", ["issue", "create", "--repo", "a/b", "--label=process-report"], 1],
+  ["-l → odrzucone", ["issue", "create", "--repo", "a/b", "-l", "process-report"], 1],
+  ["-l sklejone z wartością → odrzucone", ["issue", "create", "--repo", "a/b", "-lprocess-report"], 1],
+]) {
+  test(`atrapa gh, zFlaga: ${opis}`, () => {
+    const katalog = mkdtempSync(join(tmpdir(), "warsztat-atrapa-"));
+    try {
+      writeFileSync(join(katalog, "odpowiedzi.json"), JSON.stringify(odpowiedziEtykiet));
+      const wynik = spawnSync(process.execPath, [atrapa, katalog, ...argumenty], { encoding: "utf8" });
+      assert.equal(wynik.status, kod, `stdout: ${wynik.stdout}\nstderr: ${wynik.stderr}`);
+    } finally {
+      rmSync(katalog, { recursive: true, force: true });
+    }
+  });
+}
 
 const zapytanie =
   "query=query($login: String!) { user(login: $login) { contributionsCollection { contributionCalendar { totalContributions } } } }";
