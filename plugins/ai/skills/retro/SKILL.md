@@ -10,6 +10,8 @@ Przeczytaj wspólny rdzeń `../../KONTRAKT.md` oraz `../../kontrakt/pamiec.md` w
 
 Przy propozycji kontroli hookiem czytaj „Hooki kodu” w `../../kontrakt/narzedzia.md`; przy rozwoju profilu odpowiednie sekcje `../../kontrakt/profile-i-wydania.md`.
 
+**Wyciek w wysłanym zgłoszeniu.** Użytkownik mówi, że wysłane zgłoszenie warsztatu albo komentarz do niego zawierał sekret albo dane projektu → najpierw, zanim przejdziesz lekcje, pokaż mu procedurę z „Wyciek w wysłanym zgłoszeniu” w `../../kontrakt/pamiec.md` — wszystkie kroki jego wariantu i linię o powiadomieniach. Niczego na GitHubie sam nie zmieniasz.
+
 Lekcja w pliku to najsłabszy mechanizm: agent musi ją przeczytać i o niej pamiętać. Celem retro jest przesunięcie każdego powtarzalnego problemu jak najwyżej w hierarchii mechanizmów.
 
 ## 1. Materiał

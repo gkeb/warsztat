@@ -20,7 +20,7 @@
 ### Z01. Rdzeń nie przyjmuje zmian ani treści rozszerzeń od innych osób
 
 - Siła: twarda
-- Egzekwowanie: przegląd — `przeglad` i opiekun przy każdej zmianie `plugins/ai`; po wdrożeniu `model-zgloszen` automat: CODEOWNERS i ruleset z wymaganą akceptacją opiekuna
+- Egzekwowanie: automat — `.github/CODEOWNERS` (`* @gkeb`) i ruleset `warsztat-galaz-glowna` gałęzi głównej (reguła `pull_request` z `require_code_owner_review`, obejście tylko dla roli admin); do tego `przeglad` i opiekun przy każdej zmianie `plugins/ai`
 - Status: obowiązuje
 - Dlaczego: [ADR 0001](decyzje/0001-rdzen-i-katalog-spolecznosci.md)
 - Wyjątki: pozycje katalogu społeczności przeniesione przez opiekuna po statusie `potwierdzony`

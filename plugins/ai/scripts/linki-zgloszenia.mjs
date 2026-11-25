@@ -1,14 +1,26 @@
 // Linki zgłoszenia warsztatu bez `gh` (skill retro, procedura `skills/retro/zgloszenie.md`).
 // Użycie: node linki-zgloszenia.mjs --repo <właściciel/nazwa> --tytul <plik tytułu> --tresc <plik treści>
-// Wynik (stdout, JSON): wyszukiwanie — link do wyszukiwania podobnych zgłoszeń, formularz — link do nowego
-// Issue, trescWLinku — czy treść zmieściła się w linku formularza (false → link z samym tytułem, treść do
-// wklejenia), dlugoscPelnego — długość pełnego linku z treścią, limit — największa dopuszczalna długość.
+// Wynik (stdout, JSON): wyszukiwanie — link do wyszukiwania podobnych zgłoszeń, formularz — link do formularza
+// zgłoszenia (`process-report.yml`) z tytułem i polami szkicu, trescWLinku — czy treść jest w linku (false → link
+// z samym tytułem, treść do wklejenia), dlugoscPelnego — długość pełnego linku z polami (null, gdy treść nie składa
+// się wyłącznie z pól formularza), limit — największa dopuszczalna długość.
 // Błędne argumenty → kod 2 i komunikat na stderr, bez linków.
 import { readFileSync } from 'node:fs';
 
 const LIMIT = 6000;
-const ETYKIETY = '&labels=process-report,status:+new';
+const SZABLON = 'process-report.yml';
 const REPOZYTORIUM = /^[A-Za-z0-9_.][A-Za-z0-9_.-]*\/[A-Za-z0-9_.-]+$/;
+// Pola szkicu (`### <pole>`) i `id` pól formularza `.github/ISSUE_TEMPLATE/process-report.yml` repozytorium warsztatu.
+// Formularz wypełnia się z linku po `id`, nie parametrem `body`; etykiety nadaje sam formularz.
+const POLA = new Map([
+  ['Workshop version', 'workshop-version'],
+  ['Agent and model', 'agent-and-model'],
+  ['Skill and step', 'skill-and-step'],
+  ['Kind', 'kind'],
+  ['Symptom', 'symptom'],
+  ['Occurrences', 'occurrences'],
+  ['Proposed direction', 'proposed-direction'],
+]);
 
 // encodeURIComponent zostawia `!'()*`; nawias zamykający kończy link w markdownie `[…](url)`, więc kodujemy i je.
 const koduj = (tekst) =>
@@ -40,6 +52,20 @@ function czytaj(plik) {
   }
 }
 
+/** Wartości pól szkicu po `id` formularza; null, gdy treść ma coś poza znanymi polami albo pole się powtarza. */
+function polaSzkicu(tresc) {
+  const naglowki = [...tresc.matchAll(/^### ([^\r\n]*?)[ \t]*\r?$/gm)];
+  if (naglowki.length === 0 || tresc.slice(0, naglowki[0].index).trim()) return null;
+  const wartosci = new Map();
+  for (const [i, naglowek] of naglowki.entries()) {
+    const id = POLA.get(naglowek[1]);
+    if (id === undefined || wartosci.has(id)) return null;
+    const koniec = naglowki[i + 1]?.index ?? tresc.length;
+    wartosci.set(id, tresc.slice(naglowek.index + naglowek[0].length, koniec).trim());
+  }
+  return [...POLA.values()].filter((id) => wartosci.has(id)).map((id) => [id, wartosci.get(id)]);
+}
+
 const { repo, tytul: plikTytulu, tresc: plikTresci } = argumenty(process.argv.slice(2));
 // Segment `.` albo `..` zmieniłby ścieżkę linku po normalizacji adresu.
 if (!REPOZYTORIUM.test(repo) || repo.split('/').some((s) => /^\.+$/.test(s))) blad(`repozytorium nie ma postaci właściciel/nazwa: ${repo}`);
@@ -53,17 +79,18 @@ const adres = `https://github.com/${repo}`;
 const skill = /^\[([^\]]+)\]/.exec(tytul)?.[1] ?? tytul;
 const wyszukiwanie = `${adres}/issues?q=${koduj(`is:issue label:process-report ${skill}`)}`;
 
-const zTytulem = `${adres}/issues/new?title=${koduj(tytul)}`;
-const pelny = `${zTytulem}&body=${koduj(tresc)}${ETYKIETY}`;
-const trescWLinku = pelny.length <= LIMIT;
+const zTytulem = `${adres}/issues/new?template=${SZABLON}&title=${koduj(tytul)}`;
+const pola = polaSzkicu(tresc);
+const pelny = pola && `${zTytulem}${pola.map(([id, wartosc]) => `&${id}=${koduj(wartosc)}`).join('')}`;
+const trescWLinku = pelny !== null && pelny.length <= LIMIT;
 
 console.log(
   JSON.stringify(
     {
       wyszukiwanie,
-      formularz: trescWLinku ? pelny : `${zTytulem}${ETYKIETY}`,
+      formularz: trescWLinku ? pelny : zTytulem,
       trescWLinku,
-      dlugoscPelnego: pelny.length,
+      dlugoscPelnego: pelny?.length ?? null,
       limit: LIMIT,
     },
     null,

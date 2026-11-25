@@ -606,15 +606,17 @@ function linkiBezGh(tekst, opis) {
   assert.match(q, /\bspec\b/, `wyszukiwanie bez nazwy skilla: ${q}`);
   const parametry = new URL(formularz).searchParams;
   assert.match(parametry.get("title") ?? "", /^\[spec\]/, `formularz bez tytułu [spec]: ${formularz}`);
+  // Formularz `process-report.yml` nadaje etykiety sam i wypełnia się po `id` pól (decyzja przy tickecie 06).
   assert.equal(
-    parametry.get("labels"),
-    "process-report,status: new",
-    `formularz bez etykiet (${formularz.length} znaków), koniec linku: …${formularz.slice(-300)}\n${opis}`,
+    parametry.get("template"),
+    "process-report.yml",
+    `link bez formularza zgłoszenia (${formularz.length} znaków), koniec linku: …${formularz.slice(-300)}\n${opis}`,
   );
   assert.ok(formularz.length <= 6000, `link formularza dłuższy niż limit: ${formularz.length}`);
-  const tresc = parametry.get("body") ?? "";
-  const pozycje = pola.map((pole) => tresc.indexOf(pole));
-  assert.ok(pozycje.every((x) => x >= 0), `treść w linku bez któregoś pola: ${pozycje}\n${tresc}\n${opis}`);
+  const idPol = ["workshop-version", "agent-and-model", "skill-and-step", "kind", "symptom", "occurrences", "proposed-direction"];
+  const brak = idPol.filter((id) => !(parametry.get(id) ?? "").trim());
+  assert.deepEqual(brak, [], `link formularza bez pól szkicu\n${formularz}\n${opis}`);
+  const tresc = idPol.map((id) => parametry.get(id)).join("\n");
   for (const zakazane of [/src\/billing/i, /invoice\.ts/i, /faktur/i, /Kowalski/i, /jan@example\.com/i]) {
     assert.doesNotMatch(`${parametry.get("title")}\n${tresc}`, zakazane, `dane projektu w linku (${zakazane})\n${tresc}`);
   }
@@ -711,3 +713,54 @@ test("S9: starsza wersja bez wpisu w historii zmian — zwykły szkic zgłoszeni
       bezZmianGh(projekt, opis);
     },
   ));
+
+// S13: wysłana lekcja bez nowych wystąpień (zgłoszenie z 2026-11-05, wystąpienia do 2026-11-03), a użytkownik
+// w wywołaniu retro mówi, że zgłoszenie zawierało sekret albo dane projektu.
+const lekcjeWyslaneBezNowych = zamien(lekcjeTrzech, "Wystąpienia:", `Zgłoszenie: ${linkIssue(101)}. Wystąpienia:`);
+const krokiWspolne = [
+  [/edyt|edit/i, "edycja treści"],
+  [/histori/i, "historia edycji"],
+  [/usun|usuni|delete/i, "usunięcie"],
+  [/opiekun/i, "prośba do opiekuna"],
+  [/kana\S* bezpiecze|security\/advisories|prywatn\S* zgłosz/i, "kanał bezpieczeństwa"],
+  [/e-?mail/i, "powiadomienia e-mail"],
+  [/webhook/i, "webhooki"],
+];
+for (const [wariant, wiadomosc, kroki] of [
+  [
+    "sekret",
+    `/ai:retro Wysłane zgłoszenie ${linkIssue(101)} zawierało sekret — token API z mojego projektu. Co mam zrobić?`,
+    [
+      [/ujawnion/i, "sekret uznany za ujawniony"],
+      [/unieważn|zmie\S* (go|sekret|token)|rotu|rotac/i, "unieważnienie albo zmiana sekretu"],
+      [/GitHub Support/i, "GitHub Support przy danych uwierzytelniających"],
+      ...krokiWspolne,
+    ],
+  ],
+  [
+    "dane projektu",
+    `/ai:retro Wysłane zgłoszenie ${linkIssue(101)} zawierało dane projektu — nazwy modułów i klienta. Co mam zrobić?`,
+    krokiWspolne,
+  ],
+]) {
+  test(`S13: procedura po wycieku — ${wariant}`, limit, () =>
+    sesjaRetro(
+      {
+        fikstura: trzy,
+        repozytoriumPluginu: adresOficjalny,
+        pliki: { ".ai/lekcje.md": lekcjeWyslaneBezNowych },
+        odpowiedziGh: odpowiedzi(widokIssue(101)),
+      },
+      async (projekt) => {
+        const { tekst } = await projekt.tura(wiadomosc);
+        const opis = opisSesji(projekt);
+        for (const [wzorzec, krok] of kroki) assert.match(tekst, wzorzec, `brak kroku: ${krok}\n${opis}`);
+        assert.match(
+          tekst,
+          /^\s*Usunięcie zgłoszenia nie cofa wysłanych już powiadomień e-mail ani webhooków\.\s*$/m,
+          `brak dosłownej linii o powiadomieniach e-mail i webhookach\n${opis}`,
+        );
+        bezZmianGh(projekt, opis);
+      },
+    ));
+}
