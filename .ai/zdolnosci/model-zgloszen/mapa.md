@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-`skill buduj model-zgloszen` → ticket 09 (poprawki po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła), tickety 09–15). Po 15 — runda R2 weryfikacji (`skill weryfikuj model-zgloszen`, inny model niż budujący). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
+`skill buduj model-zgloszen` → ticket 10 (poprawki po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła), tickety 09–15; 09 zrobiony — skrypt `scripts/stale-pola.mjs` czeka na podpięcie w 10 i 12; przy 10 zostaje zdanie o szukaniu z `gh` po etykiecie w `kontrakt/pamiec.md` i `skills/retro/zgloszenie.md`). Sesja `testy/retro-zgloszenia.test.mjs` po zmianie asercji linku wyszukiwania w 09 niesprawdzona. Po 15 — runda R2 weryfikacji (`skill weryfikuj model-zgloszen`, inny model niż budujący). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
 
 ## Otwarte pytania
 

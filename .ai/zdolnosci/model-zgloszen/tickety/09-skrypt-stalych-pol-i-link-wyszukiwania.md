@@ -1,10 +1,10 @@
 ---
 nr: "09"
 tytul: Rozpoznanie stałych pól i link wyszukiwania bez filtra etykiety
-status: do-zrobienia
+status: zrobione
 blokowany-przez: []
 scenariusze: ["S6", "S10", "S33"]
-budowal: null
+budowal: "Claude Code / claude-opus-5-5"
 github: 22
 ---
 
@@ -16,12 +16,12 @@ Deterministyczny skrypt odpowiada, czy treść Issue jest w stałych polach (def
 
 ## Kryteria akceptacji
 
-- [ ] Skrypt rozpoznania stałych pól przyjmuje treść Issue i zwraca „w stałych polach” albo „nie”. Test jednostkowy w `walidacja` sprawdza granice: 7 nagłówków z jednym pustym polem → tak; 6 nagłówków → nie; nagłówek powtórzony → nie; tekst przed pierwszym nagłówkiem → nie; obcy nagłówek trzeciego poziomu → nie; treść z formularza GitHuba z `_No response_` w pustym polu → tak.
-- [ ] Skrypt jest używalny z procedury `retro` (wywołanie przez `node` ze ścieżką względem pliku skilla) i z innych skryptów (ticket 12).
-- [ ] Skrypt linków: zapytanie wyszukiwania nie ma filtra etykiety zgłoszenia i zawęża wyniki do zgłoszeń, np. frazą nagłówka pola i nazwą skilla. Test skryptu linków sprawdza nową postać zapytania; dotychczasowe granice długości (5 999 / 6 000 / 6 001) dalej przechodzą.
-- [ ] Kontrakt opisuje link wyszukiwania bez filtra etykiety.
-- [ ] Wersja pluginu podbita w obu manifestach do 0.29.0; kolejne tickety poprawek (10–15) nie podbijają jej osobno.
-- [ ] `claude plugin validate plugins/ai` przechodzi.
+- [x] Skrypt rozpoznania stałych pól przyjmuje treść Issue i zwraca „w stałych polach” albo „nie”. Test jednostkowy w `walidacja` sprawdza granice: 7 nagłówków z jednym pustym polem → tak; 6 nagłówków → nie; nagłówek powtórzony → nie; tekst przed pierwszym nagłówkiem → nie; obcy nagłówek trzeciego poziomu → nie; treść z formularza GitHuba z `_No response_` w pustym polu → tak.
+- [x] Skrypt jest używalny z procedury `retro` (wywołanie przez `node` ze ścieżką względem pliku skilla) i z innych skryptów (ticket 12).
+- [x] Skrypt linków: zapytanie wyszukiwania nie ma filtra etykiety zgłoszenia i zawęża wyniki do zgłoszeń, np. frazą nagłówka pola i nazwą skilla. Test skryptu linków sprawdza nową postać zapytania; dotychczasowe granice długości (5 999 / 6 000 / 6 001) dalej przechodzą.
+- [x] Kontrakt opisuje link wyszukiwania bez filtra etykiety.
+- [x] Wersja pluginu podbita w obu manifestach do 0.29.0; kolejne tickety poprawek (10–15) nie podbijają jej osobno.
+- [x] `claude plugin validate plugins/ai` przechodzi.
 
 ## Poza zakresem
 

@@ -76,8 +76,10 @@ if (!tytul || /[\r\n]/.test(tytul)) blad('tytuł musi być jedną niepustą lini
 
 const adres = `https://github.com/${repo}`;
 // Wyszukiwanie po nazwie skilla z tytułu `[<skill>] …`: cały tytuł łączyłby słowa przez AND i zwykle nic nie znajdował.
+// Bez filtra etykiety: Issue z konta, które nie może nadawać etykiet, czeka bez niej na opiekuna. Zawęża fraza nagłówka
+// stałego pola, którą ma każde zgłoszenie, z etykietą albo bez.
 const skill = /^\[([^\]]+)\]/.exec(tytul)?.[1] ?? tytul;
-const wyszukiwanie = `${adres}/issues?q=${koduj(`is:issue label:process-report ${skill}`)}`;
+const wyszukiwanie = `${adres}/issues?q=${koduj(`is:issue "Skill and step" ${skill}`)}`;
 
 const zTytulem = `${adres}/issues/new?template=${SZABLON}&title=${koduj(tytul)}`;
 const pola = polaSzkicu(tresc);

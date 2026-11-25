@@ -601,7 +601,9 @@ function linkiBezGh(tekst, opis) {
   assert.ok(szukanie, `brak linku wyszukiwania\n${opis}`);
   assert.ok(formularz, `brak linku formularza\n${opis}`);
   const q = new URL(szukanie).searchParams.get("q") ?? "";
-  assert.match(q, /label:process-report/, `wyszukiwanie bez etykiety process-report: ${q}`);
+  // Bez filtra etykiety — link obejmuje też zgłoszenia czekające na opiekuna bez etykiety (S10, S33).
+  assert.doesNotMatch(q, /label:/, `wyszukiwanie z filtrem etykiety: ${q}`);
+  assert.match(q, /"Skill and step"/, `wyszukiwanie bez frazy nagłówka pola: ${q}`);
   assert.match(q, /\bspec\b/, `wyszukiwanie bez nazwy skilla: ${q}`);
   const parametry = new URL(formularz).searchParams;
   assert.match(parametry.get("title") ?? "", /^\[spec\]/, `formularz bez tytułu [spec]: ${formularz}`);

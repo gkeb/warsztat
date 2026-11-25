@@ -174,7 +174,7 @@ gh issue list --repo <zgloszenia> --label process-report --state open --search "
 node "<skrypt>" --repo <zgloszenia> --tytul "<plik tytułu>" --tresc "<plik treści>"
 ```
 
-Wynik to JSON: `wyszukiwanie` — link do wyszukiwania podobnych zgłoszeń (duplikaty sprawdza użytkownik), `formularz` — link do formularza zgłoszenia `process-report.yml` z tytułem i polami szkicu (formularz nadaje etykiety sam), `trescWLinku` — czy treść zmieściła się w linku (limit długości pełnego linku: `limit`; treść spoza pól `### <pole>` z kroku 6 → `false`). Oba linki przepisujesz w kroku 11 dosłownie i w całości — bez skracania, dekodowania i zmiany znaków. `trescWLinku` = `false` → link formularza ma sam tytuł, a treść użytkownik wkleja z pokazanego szkicu. Błąd skryptu albo brak `node` → powiedz, co się nie udało, i zamiast linków podaj adres `https://github.com/<zgloszenia>/issues/new?template=process-report.yml` z tytułem i treścią do przepisania.
+Wynik to JSON: `wyszukiwanie` — link do wyszukiwania podobnych zgłoszeń, z etykietą i czekających bez niej na opiekuna (duplikaty sprawdza użytkownik), `formularz` — link do formularza zgłoszenia `process-report.yml` z tytułem i polami szkicu (formularz nadaje etykiety sam), `trescWLinku` — czy treść zmieściła się w linku (limit długości pełnego linku: `limit`; treść spoza pól `### <pole>` z kroku 6 → `false`). Oba linki przepisujesz w kroku 11 dosłownie i w całości — bez skracania, dekodowania i zmiany znaków. `trescWLinku` = `false` → link formularza ma sam tytuł, a treść użytkownik wkleja z pokazanego szkicu. Błąd skryptu albo brak `node` → powiedz, co się nie udało, i zamiast linków podaj adres `https://github.com/<zgloszenia>/issues/new?template=process-report.yml` z tytułem i treścią do przepisania.
 
 ## 11. Zgoda
 

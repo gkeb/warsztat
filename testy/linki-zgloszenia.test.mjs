@@ -67,12 +67,12 @@ for (const [dlugosc, zmiescila] of [
   });
 }
 
-test("S10: link wyszukiwania — etykieta process-report i nazwa skilla z tytułu", () => {
+test("S10: link wyszukiwania — bez filtra etykiety (obejmuje zgłoszenia czekające, S33), fraza pola i nazwa skilla z tytułu", () => {
   const wynik = uruchom(tytul, szkic(wartosciKrotkie));
-  assert.equal(
-    wynik.wyszukiwanie,
-    `https://github.com/${repo}/issues?q=${encodeURIComponent("is:issue label:process-report spec")}`,
-  );
+  const q = new URL(wynik.wyszukiwanie).searchParams.get("q");
+  assert.doesNotMatch(q, /label:/);
+  assert.equal(q, 'is:issue "Skill and step" spec');
+  assert.equal(wynik.wyszukiwanie, `https://github.com/${repo}/issues?q=is%3Aissue%20%22Skill%20and%20step%22%20spec`);
 });
 
 test("S10: każde pole szkicu trafia do pola formularza o swoim id, tytuł bez końcowej nowej linii", () => {
