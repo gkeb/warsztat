@@ -24,6 +24,7 @@ const limitTury = 15 * 60 * 1000;
 // `git` w obu powłokach. Prefiksy podkomend wykluczają `git -C <inny katalog>` i `git -c alias...`.
 // `cat` i `Get-Content` (odczyt szkicu do skanu) czytają dowolny plik, jak `Read`; `gitleaks` tylko `stdin` (skan) i `version`
 // (sprawdzenie obecności — bez niego procedura retro nie wysyła).
+// Skan przed commitem (wdrożenie w trybie warsztatu): dokładnie komenda `bezpieczenstwo.skanSekretow` z fikstury.
 // To granica miękka (np. `gh.cmd` przepuszcza argumenty przez cmd) — fikstury i odpowiedzi atrapy muszą być zaufane.
 const podkomendyGit = ["status", "log", "diff", "show", "add", "commit", "ls-files"];
 const dozwoloneNarzedzia = [
@@ -43,6 +44,7 @@ const dozwoloneNarzedzia = [
     `${powloka}(gh:*)`,
     `${powloka}(gitleaks stdin:*)`,
     `${powloka}(gitleaks version:*)`,
+    `${powloka}(gitleaks git --pre-commit --staged --redact --no-banner)`,
     ...podkomendyGit.map((p) => `${powloka}(git ${p}:*)`),
   ]),
 ];

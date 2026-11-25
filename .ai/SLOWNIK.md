@@ -20,7 +20,7 @@
 
 **Opiekun** — osoba, która utrzymuje warsztat i jako jedyna wdraża zmiany w rdzeniu.
 
-**Zgłoszenie** — opis problemu procesu warsztatu z wystąpieniami i proponowanym kierunkiem; dziś wpis w `ZGLOSZENIA.md`, po wdrożeniu `model-zgloszen` Issue z etykietą zgłoszenia w repozytorium zgłoszeń. _Zawsze:_ nie zawiera kodu, ścieżek, nazw ani pojęć projektu, z którego pochodzi; problem bezpieczeństwa warsztatu nie jest publicznym zgłoszeniem, tylko idzie kanałem bezpieczeństwa.
+**Zgłoszenie** — opis problemu procesu warsztatu z wystąpieniami i proponowanym kierunkiem; Issue z etykietą zgłoszenia (`process-report`) i jedną etykietą statusu — z projektu w repozytorium zgłoszeń, zgłoszenia opiekuna w repozytorium warsztatu. _Zawsze:_ nie zawiera kodu, ścieżek, nazw ani pojęć projektu, z którego pochodzi; problem bezpieczeństwa warsztatu nie jest publicznym zgłoszeniem, tylko idzie kanałem bezpieczeństwa.
 
 **Szkic zgłoszenia** — treść zgłoszenia albo komentarza „wystąpienie” przed wysłaniem, w stałych polach szablonu; widzi go użytkownik i dopiero po jego zgodzie zostaje wysłany. _Nie mylić z:_ lekcją `[warsztat]`, z której powstaje.
 

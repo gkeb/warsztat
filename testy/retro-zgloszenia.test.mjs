@@ -2,7 +2,8 @@
 import { before, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dwaKolejnePrzejscia, katalogRepo, przygotujProjekt, zmieniaStan } from "./sesja.mjs";
@@ -43,8 +44,6 @@ before(async () => {
 
 test("S1: lekcja [warsztat] z 2 wystąpieniami zostaje lekcją, bez propozycji wysyłki", limit, async () => {
   const lekcja = "[warsztat] Skill `spec` przy bramce akceptacji nie pokazał streszczenia scenariuszy";
-  const zgloszeniaPrzed = readFileSync(plikZgloszen, "utf8");
-
   await dwaKolejnePrzejscia(async () => {
     const projekt = przygotujProjekt({ fikstura: join(fikstury, "retro-dwa-wystapienia") });
     try {
@@ -64,7 +63,7 @@ test("S1: lekcja [warsztat] z 2 wystąpieniami zostaje lekcją, bez propozycji w
     }
   });
 
-  assert.equal(readFileSync(plikZgloszen, "utf8"), zgloszeniaPrzed, "sesja zmieniła plik zgłoszeń repozytorium warsztatu");
+  assert.equal(existsSync(plikZgloszen), false, "sesja utworzyła plik zgłoszeń w repozytorium warsztatu");
 });
 
 // Wysyłka: lekcja [warsztat] z 3 wystąpieniami, własne repozytorium zgłoszeń w ustawieniu projektu.
@@ -764,3 +763,131 @@ for (const [wariant, wiadomosc, kroki] of [
       },
     ));
 }
+
+// S19: retro w repozytorium warsztatu (fikstura z `plugins/ai/KONTRAKT.md`, `github.repo`) — cykl życia zgłoszenia
+// etykietami statusu, zamknięciem „not planned” i commitem z `Closes #<nr>`. Zgoda opiekuna w drugiej turze.
+const warsztat = join(fikstury, "retro-warsztat");
+const repoWarsztatu = "przyklad-warsztat/warsztat";
+const nrZgloszenia = 7;
+const zgloszenieWarsztatu = {
+  number: nrZgloszenia,
+  title: "[spec] Spec skill asks for acceptance without a summary of scenarios",
+  url: `https://github.com/${repoWarsztatu}/issues/${nrZgloszenia}`,
+  state: "OPEN",
+  createdAt: "2026-11-10T10:00:00Z",
+  author: { login: "uzytkownik-testowy" },
+  labels: [{ name: "process-report" }, { name: "status: new" }],
+  comments: [],
+  body: [
+    "### Workshop version",
+    "0.1.0",
+    "### Agent and model",
+    "Claude Code / claude-sonnet-5-5",
+    "### Skill and step",
+    "`skills/spec/SKILL.md`, step 2",
+    "### Kind",
+    "regular",
+    "### Symptom",
+    "At the acceptance gate the spec skill asks for acceptance without showing a summary of the scenarios.",
+    "### Occurrences",
+    "3 occurrences: 2026-11-01, 2026-11-03, 2026-11-05.",
+    "### Proposed direction",
+    "`plugins/ai/skills/spec/SKILL.md`, step 2: before asking, show a one-line summary of every scenario.",
+  ].join("\n\n"),
+};
+const odpowiedziWarsztatu = [
+  { argumenty: ["--version"], stdout: "gh version 2.0.0 (atrapa)\n" },
+  { argumenty: ["auth", "status"], stdout: "github.com\n  ✓ Logged in to github.com account opiekun-testowy\n" },
+  { argumenty: ["issue", "list"], stdout: JSON.stringify([zgloszenieWarsztatu]) + "\n" },
+  { argumenty: ["issue", "view"], stdout: JSON.stringify(zgloszenieWarsztatu) + "\n" },
+  { argumenty: ["issue", "edit"], stdout: `${zgloszenieWarsztatu.url}\n` },
+  { argumenty: ["issue", "close"], stdout: `✓ Closed issue ${repoWarsztatu}#${nrZgloszenia}\n` },
+  { argumenty: ["issue", "comment"], stdout: `${zgloszenieWarsztatu.url}#issuecomment-1\n` },
+  {
+    argumenty: ["label", "list"],
+    stdout: ["process-report", "status: new", "status: accepted", "status: discussion"].join("\n") + "\n",
+  },
+];
+
+/** Wartości opcji (`--add-label x`, `--add-label=x`, listy po przecinku) z argumentów wywołania. */
+function wartosci(argumenty, ...opcje) {
+  const wynik = [];
+  for (let i = 0; i < argumenty.length; i++) {
+    for (const opcja of opcje) {
+      if (argumenty[i] === opcja) wynik.push(argumenty[i + 1] ?? "");
+      else if (argumenty[i].startsWith(`${opcja}=`)) wynik.push(argumenty[i].slice(opcja.length + 1));
+    }
+  }
+  return wynik.flatMap((w) => w.split(",")).map((w) => w.trim());
+}
+const dotyczyZgloszenia = (w, podkomenda) =>
+  w.argumenty[0] === "issue" && w.argumenty[1] === podkomenda && w.argumenty.includes(String(nrZgloszenia));
+
+function sesjaWarsztatu(zgodaOpiekuna, sprawdz) {
+  return dwaKolejnePrzejscia(async () => {
+    const projekt = przygotujProjekt({ fikstura: warsztat, odpowiedziGh: odpowiedziWarsztatu });
+    try {
+      const pierwsza = await projekt.tura("/ai:retro");
+      const opis1 = opisSesji(projekt);
+      assert.ok(pierwsza.tekst.includes(`#${nrZgloszenia}`), `retro nie pokazało zgłoszenia #${nrZgloszenia}\n${opis1}`);
+      const lista = projekt.wywolaniaGh().find((w) => w.argumenty[0] === "issue" && w.argumenty[1] === "list");
+      assert.ok(lista, `retro nie odczytało zgłoszeń z Issues\n${opis1}`);
+      assert.equal(repoArgument(lista.argumenty), repoWarsztatu, `zgłoszenia z innego repozytorium: ${lista.argumenty.join(" ")}`);
+      assert.ok(wartosci(lista.argumenty, "--label", "-l").includes("process-report"), `lista bez etykiety process-report: ${lista.argumenty.join(" ")}`);
+      bezZmianGh(projekt, opis1);
+      await projekt.tura(zgodaOpiekuna);
+      await sprawdz(projekt, opisSesji(projekt));
+    } finally {
+      projekt.usun();
+    }
+  });
+}
+
+test("S19: przyjęcie zgłoszenia zmienia etykietę statusu na status: accepted", limit, () =>
+  sesjaWarsztatu(
+    `Przyjmuję zgłoszenie #${nrZgloszenia} — zgadzam się na zmianę jego statusu na przyjęte na GitHubie, wykonaj ją teraz. Samej zmiany w skillu dziś nie wdrażaj.`,
+    (projekt, opis) => {
+      const zmiany = projekt.wywolaniaGh().filter((w) => zmieniaStan(w.argumenty));
+      const edycje = zmiany.filter((w) => dotyczyZgloszenia(w, "edit"));
+      assert.equal(edycje.length, 1, `oczekiwana jedna edycja zgłoszenia\n${opis}`);
+      const [edycja] = edycje;
+      assert.equal(repoArgument(edycja.argumenty), repoWarsztatu, `edycja w innym repozytorium: ${edycja.argumenty.join(" ")}`);
+      assert.deepEqual(wartosci(edycja.argumenty, "--add-label"), ["status: accepted"], `dodane etykiety: ${edycja.argumenty.join(" ")}`);
+      assert.deepEqual(wartosci(edycja.argumenty, "--remove-label"), ["status: new"], `zdjęte etykiety: ${edycja.argumenty.join(" ")}`);
+      assert.deepEqual(zmiany.filter((w) => w !== edycja), [], `inne zmiany na GitHubie\n${opis}`);
+    },
+  ));
+
+test("S19: odrzucenie zamyka zgłoszenie jako not planned z powodem w komentarzu", limit, () =>
+  sesjaWarsztatu(
+    `Odrzucam zgłoszenie #${nrZgloszenia}. Powód: bramka akceptacji ma już streszczenie w szablonie specu, więc zmiana dublowałaby regułę. Zgadzam się na zamknięcie go na GitHubie z tym powodem — wykonaj to teraz.`,
+    (projekt, opis) => {
+      const zmiany = projekt.wywolaniaGh().filter((w) => zmieniaStan(w.argumenty));
+      const zamkniecia = zmiany.filter((w) => dotyczyZgloszenia(w, "close"));
+      assert.equal(zamkniecia.length, 1, `oczekiwane jedno zamknięcie zgłoszenia\n${opis}`);
+      const [zamkniecie] = zamkniecia;
+      assert.equal(repoArgument(zamkniecie.argumenty), repoWarsztatu, `zamknięcie w innym repozytorium: ${zamkniecie.argumenty.join(" ")}`);
+      assert.deepEqual(wartosci(zamkniecie.argumenty, "--reason", "-r"), ["not planned"], `powód zamknięcia: ${zamkniecie.argumenty.join(" ")}`);
+      // Powód w komentarzu: opcja `--comment` zamknięcia albo osobny `issue comment` (treść w argumencie albo pliku).
+      const komentarze = [
+        ...wartosci(zamkniecie.argumenty, "--comment", "-c"),
+        ...zmiany
+          .filter((w) => dotyczyZgloszenia(w, "comment"))
+          .flatMap((w) => [...wartosci(w.argumenty, "--body", "-b"), w.tresc ?? ""]),
+      ].join("\n");
+      assert.match(komentarze, /szablon|template|dubl|duplicat/i, `brak komentarza z powodem odrzucenia\n${opis}`);
+    },
+  ));
+
+test("S19: wdrożenie zgłoszenia zamyka commit z Closes #<nr>", limit, () =>
+  sesjaWarsztatu(
+    `Wdróż zgłoszenie #${nrZgloszenia} teraz — zgadzam się na zmianę w skillu spec i na commit w tym repozytorium. Nie podbijaj wersji i niczego nie wypychaj.`,
+    (projekt, opis) => {
+      const log = execFileSync("git", ["log", "--format=%H%n%B%n---"], { cwd: projekt.katalog, encoding: "utf8" });
+      assert.match(log, new RegExp(String.raw`Closes #${nrZgloszenia}\b`), `brak commita z Closes #${nrZgloszenia}\n${log}\n${opis}`);
+      const zmienione = execFileSync("git", ["log", "--name-only", "--format=", "-1"], { cwd: projekt.katalog, encoding: "utf8" });
+      assert.match(zmienione, /plugins\/ai\/skills\/spec\/SKILL\.md/, `commit nie zmienia skilla spec: ${zmienione}\n${opis}`);
+      const zamkniecia = projekt.wywolaniaGh().filter((w) => dotyczyZgloszenia(w, "close"));
+      assert.deepEqual(zamkniecia, [], `zgłoszenie zamknięte ręcznie zamiast commitem\n${opis}`);
+    },
+  ));

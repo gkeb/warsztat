@@ -60,7 +60,7 @@ Zewnętrzny fakt — limit API, przepis, stawka podatku, zasada platformy — us
 
 Osobno: czego nie powtarzać, czego się nauczyliśmy, co dotyczy wielu projektów i co jest problemem samego narzędzia. Zapisywane od razu, gdy się wydarzy, nie na koniec sesji. Czytane według obszaru, nie w całości.
 
-- **Warsztat:** `proby.md`, `lekcje.md`, `wzorce/`, `ZGLOSZENIA.md` — opis w [kontrakt/pamiec.md](../plugins/ai/kontrakt/pamiec.md).
+- **Warsztat:** `proby.md`, `lekcje.md`, `wzorce/`, zgłoszenia warsztatu (Issues `process-report`) — opis w [kontrakt/pamiec.md](../plugins/ai/kontrakt/pamiec.md).
 - **Rozstrzygnij:** które z tych rodzajów domena potrzebuje od początku. Zwykle wystarczą lekcje i próby; wzorce pojawiają się, gdy jest kilka projektów.
 
 ### 8. Lekcje zamienia się w mechanizmy, od najmocniejszego

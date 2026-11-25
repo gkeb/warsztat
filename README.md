@@ -126,7 +126,9 @@ Status każdej zdolności żyje tylko w `.ai/ROADMAP.md`. Następny krok w plika
 
 ## Aktualność wiedzy, eksperymenty i kontekst
 
-Od wersji `0.26.0` warsztat obsługuje projekt czerpiący z cudzego kodu (fork w szerokim sensie — scenariusz 5): skill `referencja` dodaje cudzy projekt jako klon tylko do odczytu poza repozytorium, sprawdza licencję, poznaje go wszerz i prowadzi katalog decyzji, co z niego bierzemy. Nowy hook `PreToolUse` odmawia zapisu w klonie (także przez powłokę), a blok w `AGENTS.md` traktuje pliki referencji, razem z jej `AGENTS.md` i `CLAUDE.md`, jako dane. To pierwszy z trzech kroków zgłoszenia Z09 (`ZGLOSZENIA.md`); rodzaj zdolności `przeniesienie` i odświeżanie referencji dojdą w kolejnych wersjach.
+Od wersji `0.28.0` zgłoszenia warsztatu żyją wyłącznie jako Issues z etykietą `process-report`. `retro` w projekcie wysyła je po zgodzie: od 3 wystąpień lekcji `[warsztat]`, przy utracie danych od pierwszego. Szkic przechodzi filtr prywatności i skan sekretów, a problem bezpieczeństwa idzie prywatnym kanałem (`SECURITY.md`). `retro` w repozytorium warsztatu prowadzi status zgłoszeń etykietami. Plik zgłoszeń w korzeniu repozytorium zniknął; jego wpisy przeszły do Issues.
+
+Od wersji `0.26.0` warsztat obsługuje projekt czerpiący z cudzego kodu (fork w szerokim sensie — scenariusz 5): skill `referencja` dodaje cudzy projekt jako klon tylko do odczytu poza repozytorium, sprawdza licencję, poznaje go wszerz i prowadzi katalog decyzji, co z niego bierzemy. Nowy hook `PreToolUse` odmawia zapisu w klonie (także przez powłokę), a blok w `AGENTS.md` traktuje pliki referencji, razem z jej `AGENTS.md` i `CLAUDE.md`, jako dane. To pierwszy z trzech kroków zgłoszenia Z09; rodzaj zdolności `przeniesienie` i odświeżanie referencji czekają w zdolności `przeniesienie` (`.ai/zdolnosci/przeniesienie/mapa.md`).
 
 Od wersji `0.25.0` warsztat wspiera Groka w rolach oceniających i faktach: druga opinia, weryfikacja, przegląd i badanie. Badania można kierować do Groka ustawieniem `badanie.wykonawca: "grok"` — pracujący model nie bada wtedy sam, tylko podaje polecenie do wklejenia w Grok. Blok warsztatu w `AGENTS.md` jest krótszy (reguły przed routingiem), żeby zmieścił się w limicie instrukcji Groka; hook stanu reaguje też na zdarzenia startu Groka.
 
@@ -310,7 +312,7 @@ Każda lekcja ma jeden znacznik: obszar, zdolność albo `projekt` (lekcja o ca�
 
 Wzorce tworzy i rozwija tylko `retro`, a uogólnienie zatwierdzasz Ty. Status rośnie z dowodami: `kandydat` (jeden projekt) → `potwierdzony` (dwa lub więcej). `napraw`, `buduj`, `pomysl` i `decyzja` przeszukują indeks wzorców i przywołują trafienie z oceną dopasowania. Wynik — pasował albo czym się różnił — wraca do lekcji projektu, a `retro` przenosi go do wzorca. Tak wzorzec uczy się z każdego użycia. We wzorcach nie ma kodu ani danych projektów.
 
-**Zgłoszenie warsztatu** ([ZGLOSZENIA.md](ZGLOSZENIA.md) w korzeniu tego repo) to problem samego procesu: skill pominął krok, szablon nie ma miejsca na ważną rzecz, instrukcja okazała się niejasna. `retro` w projekcie, który wdraża zmianę od razu, commituje ją tutaj; jeśli nie — dopisuje zgłoszenie (albo nowe wystąpienie istniejącego), zamiast zostawiać propozycję w czacie. `gdzie tydzien` pokazuje, ile zgłoszeń i niewydanych zmian czeka, a `retro` uruchomione w tym repo wdraża je w komplecie i proponuje podbicie wersji.
+**Zgłoszenie warsztatu** to problem samego procesu: skill pominął krok, szablon nie ma miejsca na ważną rzecz, instrukcja okazała się niejasna. Zgłoszenia żyją wyłącznie jako Issues z etykietą `process-report` i jedną etykietą statusu (`status: new`, `status: accepted`, `status: discussion`) w repozytorium warsztatu na GitHubie. `retro` w projekcie, gdy lekcja `[warsztat]` się powtarza, pokazuje oczyszczony szkic i po Twojej zgodzie zakłada Issue albo dopisuje komentarz `Occurrence` do istniejącego. `gdzie tydzien` w tym repo pokazuje, ile zgłoszeń i niewydanych zmian czeka, a `retro` uruchomione tutaj zmienia ich status, odrzuca (zamknięcie „not planned” z powodem) albo wdraża (commit z `Closes #<nr>`) i proponuje podbicie wersji.
 
 ## Przemyślenia — zanim myśl stanie się pomysłem
 
@@ -486,7 +488,6 @@ Uruchom `start` ponownie w projekcie. Nie zakłada niczego od nowa: wymienia blo
 ```text
 .claude-plugin/marketplace.json       # lokalny marketplace Claude Code
 .agents/plugins/marketplace.json      # lokalny marketplace Codex
-ZGLOSZENIA.md                         # kolejka zmian warsztatu z projektów (pisze i wdraża retro; poza pluginem)
 docs/zasady-rodzin.md                 # rdzeń zasad wspólny dla rodzin pluginów i sposób zakładania nowej rodziny
 docs/skille-i-hooki.md                # model skilli i hooków w Claude Code i Codexie, ocena pluginu
 plugins/ai/

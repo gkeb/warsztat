@@ -9,7 +9,7 @@
 ## Dokumenty
 
 - `README.md` — opis pluginu i instalacji — aktualność: niesprawdzona
-- `ZGLOSZENIA.md` — zgłoszenia zmian procesu warsztatu (prowadzi skill `retro`) — aktualność: żywy plik
+- Issues `process-report` w `gkeb/warsztat` — zgłoszenia zmian procesu warsztatu (prowadzi skill `retro`); dawny plik zgłoszeń usunięty 2026-11-25, migracja: [lista](zdolnosci/model-zgloszen/migracja-zgloszen.md) — aktualność: żywe
 - `docs/zasady-rodzin.md` — zasady rodzin skilli — aktualność: niesprawdzona
 - `docs/skille-i-hooki.md` — skille i hooki Claude Code/Codex — aktualność: niesprawdzona
 - `docs/rodzina-marketing.md` — rodzina skilli marketingowych — aktualność: niesprawdzona

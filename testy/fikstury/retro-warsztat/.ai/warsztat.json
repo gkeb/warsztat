@@ -1,0 +1,104 @@
+{
+  "wersja": 1,
+  "tracker": "github",
+  "git": {
+    "galezie": "glowna",
+    "glowna": "main",
+    "push": "pytaj",
+    "scalanie": "merge"
+  },
+  "bezpieczenstwo": {
+    "skanSekretow": "gitleaks git --pre-commit --staged --redact --no-banner",
+    "chronione": [
+      ".env",
+      ".env.local",
+      ".env.*.local",
+      ".env.production",
+      ".env.staging",
+      "*.pem",
+      "*.key",
+      "*.p12",
+      "*.pfx",
+      "id_rsa*",
+      "id_ed25519*",
+      "secrets/**",
+      "credentials*.json",
+      "service-account*.json"
+    ]
+  },
+  "sprzatanie": {
+    "smieci": []
+  },
+  "profile": [
+    "przekrojowe"
+  ],
+  "walidacja": [],
+  "mutacje": null,
+  "odniesienie": {
+    "data": null,
+    "znane": []
+  },
+  "weryfikacja": {
+    "wymagana": true,
+    "innyModel": true,
+    "drugaOpinia": "zalecana",
+    "recenzjaPlanu": true,
+    "odbior": true
+  },
+  "wydanie": {
+    "wersjonowanie": null,
+    "changelog": null,
+    "githubRelease": false,
+    "komendy": [],
+    "sprawdzenie": []
+  },
+  "pielegnacja": [],
+  "przeglad": {
+    "bezpieczenstwo": "auto"
+  },
+  "badanie": {
+    "wykonawca": "biezacy"
+  },
+  "hooki": {
+    "formatowanie": true,
+    "kontrola": true,
+    "zakazane": []
+  },
+  "sciezki": {
+    "decyzje": ".ai/decyzje"
+  },
+  "referencje": [],
+  "modele": {
+    "claude": {
+      "czytanie": {
+        "model": "haiku",
+        "wysilek": "medium"
+      },
+      "recenzja": {
+        "model": "sonnet",
+        "wysilek": null
+      },
+      "badanie": {
+        "model": "sonnet",
+        "wysilek": null
+      }
+    },
+    "codex": {
+      "czytanie": {
+        "model": "gpt-6.1-terra",
+        "wysilek": "medium"
+      },
+      "recenzja": {
+        "model": "gpt-6.2-sol",
+        "wysilek": "medium"
+      },
+      "badanie": {
+        "model": "gpt-6.2-sol",
+        "wysilek": "medium"
+      }
+    }
+  },
+  "github": {
+    "repo": "przyklad-warsztat/warsztat"
+  }
+}

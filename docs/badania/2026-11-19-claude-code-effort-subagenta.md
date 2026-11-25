@@ -1,7 +1,7 @@
 # Badanie: Czy Claude Code przyjmuje `effort` we frontmatterze subagenta i czy Haiku 5.5 obsługuje poziomy effort?
 
 - Data: 2026-11-19
-- Dla: ogólne (zgłoszenie Z06 w `ZGLOSZENIA.md`, rola `czytelnik` na `haiku`)
+- Dla: ogólne (zgłoszenie Z06 w `ZGLOSZENIA.md` — dawny plik zgłoszeń, dziś w historii gita; rola `czytelnik` na `haiku`)
 - Kontekst: plugin `plugins/ai`, agenci w `agents/*.md` z samym `model: sonnet`; dokumentacja Claude Code z 2026-11-19 (changelog na wersji 2.1.328), dokumentacja API z 2026-11-19; Windows, PowerShell
 - Pewność: wysoka (dokumentacja pierwotna, spójna między stronami); nie sprawdzano zachowania w działającym Claude Code
 
