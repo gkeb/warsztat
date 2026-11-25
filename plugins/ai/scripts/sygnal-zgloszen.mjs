@@ -1,6 +1,9 @@
 // Sygnał globalny zgłoszeń warsztatu (skill retro, tryb warsztatu): grupy i kolejność listy opiekuna.
-// Użycie: gh issue list ... --json number,title,url,labels,createdAt,author,body,comments | node sygnal-zgloszen.mjs
-//         albo node sygnal-zgloszen.mjs <plik z tym JSON-em>
+// Użycie: gh issue list ... --limit <n> --json number,title,url,labels,createdAt,author,body,comments | node sygnal-zgloszen.mjs --limit <n>
+//         albo node sygnal-zgloszen.mjs --limit <n> <plik z tym JSON-em>
+// `--limit` to ta sama liczba co `--limit` w `gh issue list`. `gh` nie potwierdza końca listy (eksport bez `pageInfo`),
+// a komentarzy jednego zgłoszenia pobiera najwyżej 100 (`comments(first: 100)`, gh 2.89) — liczba zgłoszeń równa limitowi
+// albo 100 komentarzy jednego zgłoszenia znaczy, że mogło być więcej: niepełny odczyt → kod 3 i komunikat na stderr, bez wyniku.
 // Wystąpienia zgłoszenia: treść Issue (autor zgłoszenia) i komentarze, których pierwsza niepusta linia to nagłówek
 // `Occurrence` — liczone po autorach. Co najmniej 2 różne konta → grupa `najpierw`, reszta → `reszta`; w każdej grupie
 // od najstarszego zgłoszenia. Wynik (stdout, JSON): najpierw, reszta — zgłoszenia z numerem, tytułem, adresem, datą,
@@ -10,6 +13,7 @@
 import { readFileSync } from 'node:fs';
 
 const PROG_KONT = 2;
+const STRONA_KOMENTARZY = 100; // gh issue list --json comments: comments(first: 100), bez kolejnych stron
 const LOGIN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
 const NAGLOWEK_WYSTAPIENIA = /^#{1,6}\s*Occurrence\s*$/i;
 
@@ -18,9 +22,22 @@ function blad(komunikat) {
   process.exit(2);
 }
 
-function wczytaj() {
-  const [plik, ...nadmiar] = process.argv.slice(2);
-  if (nadmiar.length > 0) blad('za dużo argumentów — podaj najwyżej jeden plik');
+function argumenty() {
+  const reszta = process.argv.slice(2);
+  const i = reszta.indexOf('--limit');
+  const limit = i >= 0 && /^[0-9]+$/.test(reszta[i + 1] ?? '') ? Number(reszta[i + 1]) : NaN;
+  if (!Number.isInteger(limit) || limit < 1) blad('podaj --limit <n> — tę samą liczbę co --limit w gh issue list');
+  reszta.splice(i, 2);
+  if (reszta.length > 1) blad('za dużo argumentów — podaj najwyżej jeden plik');
+  return { limit, plik: reszta[0] };
+}
+
+function niepelny(komunikat) {
+  console.error(`sygnal-zgloszen: odczyt niepełny — ${komunikat}`);
+  process.exit(3);
+}
+
+function wczytaj(plik) {
   let tekst;
   try {
     tekst = readFileSync(plik ?? 0, 'utf8');
@@ -75,7 +92,16 @@ function opisz(zgloszenie) {
 const porownaj = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
 const odNajstarszego = (a, b) => porownaj(String(a.utworzone), String(b.utworzone)) || porownaj(a.numer, b.numer);
 
-const opisane = wczytaj().map(opisz).sort(odNajstarszego);
+const { limit, plik } = argumenty();
+const zgloszenia = wczytaj(plik);
+if (zgloszenia.length >= limit) {
+  niepelny(`pobrano ${zgloszenia.length} zgłoszeń przy limicie ${limit}; zwiększ limit w obu poleceniach i odczytaj ponownie`);
+}
+const uciete = zgloszenia.filter((z) => (z.comments ?? []).length >= STRONA_KOMENTARZY).map((z) => `#${z.number}`);
+if (uciete.length > 0) {
+  niepelny(`zgłoszenia ${uciete.join(', ')} mają po ${STRONA_KOMENTARZY} pobranych komentarzy — gh issue list nie pobiera dalszych; sprawdź je w przeglądarce`);
+}
+const opisane = zgloszenia.map(opisz).sort(odNajstarszego);
 const najpierw = opisane.filter((z) => z.konta.length >= PROG_KONT);
 const reszta = opisane.filter((z) => z.konta.length < PROG_KONT);
 const kontaDoSprawdzenia = [...new Set(najpierw.flatMap((z) => z.konta.map((k) => k.login)))].filter((l) => LOGIN.test(l));
