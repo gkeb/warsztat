@@ -20,7 +20,9 @@
 
 **Opiekun** — osoba, która utrzymuje warsztat i jako jedyna wdraża zmiany w rdzeniu.
 
-**Zgłoszenie** — opis problemu procesu warsztatu z wystąpieniami i proponowanym kierunkiem; Issue z etykietą zgłoszenia (`process-report`) i jedną etykietą statusu — z projektu w repozytorium zgłoszeń, zgłoszenia opiekuna w repozytorium warsztatu. _Zawsze:_ nie zawiera kodu, ścieżek, nazw ani pojęć projektu, z którego pochodzi; problem bezpieczeństwa warsztatu nie jest publicznym zgłoszeniem, tylko idzie kanałem bezpieczeństwa.
+**Zgłoszenie** — opis problemu procesu warsztatu z wystąpieniami i proponowanym kierunkiem; Issue w stałych polach z etykietą zgłoszenia (`process-report`) i jedną etykietą statusu. Zgłoszenie z projektu trafia do repozytorium zgłoszeń, zgłoszenie opiekuna — do repozytorium warsztatu. Etykiety nadaje formularz albo opiekun, bo konto zgłaszającego zwykle nie może. Issue w stałych polach bez etykiety to **zgłoszenie czekające na opiekuna**: jest zgłoszeniem, ale nie wchodzi do kolejności opiekuna, dopóki nie dostanie etykiet. _Zawsze:_ nie zawiera kodu, ścieżek, nazw ani pojęć projektu, z którego pochodzi; problem bezpieczeństwa warsztatu nie jest publicznym zgłoszeniem, tylko idzie kanałem bezpieczeństwa.
+
+**Stałe pola** — siedem pól zgłoszenia, każde jako nagłówek trzeciego poziomu: wersja warsztatu, agent i model, skill i krok, rodzaj problemu, objaw, wystąpienia, proponowany kierunek (po angielsku, jak w formularzu). Issue jest w stałych polach, gdy jego treść zaczyna się nagłówkiem pola i ma wszystkie siedem nagłówków, każdy raz, bez innych nagłówków tego poziomu; pole może być puste. Komentarz „wystąpienie” ma własny, krótszy zestaw pól.
 
 **Szkic zgłoszenia** — treść zgłoszenia albo komentarza „wystąpienie” przed wysłaniem, w stałych polach szablonu; widzi go użytkownik i dopiero po jego zgodzie zostaje wysłany. _Nie mylić z:_ lekcją `[warsztat]`, z której powstaje.
 

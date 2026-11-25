@@ -3,7 +3,7 @@
 Rodzaj: funkcja
 Grill: Claude Code / claude-opus-5-5
 Druga opinia: Claude Code / claude-sonnet-5-5, 2026-11-22 (częściowo nieniezależna — przed własnym zdaniem zobaczyła decyzje mapy)
-Spec: [spec.md](spec.md) — zaakceptowany 2026-11-22
+Spec: [spec.md](spec.md) — zaakceptowany 2026-11-22, zmiana po weryfikacji R1 zaakceptowana 2026-11-25
 
 ## Problem
 
@@ -11,7 +11,7 @@ Retro zakłada dziś, że użytkownik ma zapis w repozytorium warsztatu i sam wd
 
 ## Następny krok
 
-Rozstrzygnąć uwagi blokujące i zaakceptować zakres poprawek po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła). Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
+`skill pokroj model-zgloszen` — tickety poprawek po [weryfikacji R1](weryfikacja.md#runda-r1--2026-11-25--nie-przeszła) według zmienionego specu (zaakceptowany 2026-11-25): R1.1 z nowym S33, luki testów i kodu R1.2–R1.13; rozszerzenie atrapy `gh` o nadawanie etykiet i listę bez filtra etykiety. Pełny przebieg sesji `testy/retro-zgloszenia.test.mjs` po ticketach 07–08 pozostaje niesprawdzony (decyzja użytkownika przy 08). CI: projekt nie ma CI.
 
 ## Otwarte pytania
 
@@ -56,6 +56,9 @@ Rozstrzygnąć uwagi blokujące i zaakceptować zakres poprawek po [weryfikacji 
 2026-11-22 — recenzja planu ticketów: przyjęte wszystkie uwagi — wydzielony ticket 01 z sesjami testowymi i regułą wyniku (2 kolejne przejścia), kanał bezpieczeństwa zawsze w oficjalnym repozytorium, skan szkicu `gitleaks stdin` (sprawdzone: gitleaks 8.30.1, kod 1 przy trafieniu), retro w projekcie nie pisze już do pliku zgłoszeń, test S19, oznaczenie S20 w raporcie, repozytorium opiekuna = `github.repo`, pomiar limitu bez szablonu formularza, automat Z01 w tickecie 06, zamknięte zgłoszenie przy S8 (doprecyzowanie założenia „zgłoszenie otwarte”), pełna lista miejsc w migracji, wpis słownika „Rodzaj problemu”, schemat pola `repository`; odpartych brak
 2026-11-24 — Odmowa komentarza „wystąpienie” do wysłanej lekcji (S8 z S3): ślad `Zgłoszenie: <link>, niewysłane RRRR-MM-DD` — link zostaje, a retro nie wraca do lekcji przed wystąpieniem późniejszym niż ta data (jak S11); wysłany komentarz usuwa część `, niewysłane …`. Nowe wystąpienie wysłanej lekcji = data późniejsza niż założenie i zamknięcie zgłoszenia oraz ostatni własny komentarz `Occurrence` (z `gh issue view`), bez daty w śladzie — decyzja użytkownika przy budowie ticketu 04
 2026-11-24 — Reguła wyniku sesji testowych (ticket 01: 2 kolejne przejścia) dostaje skrót na czas budowy: `WARSZTAT_TEST_PRZEBIEGI=1` daje jedno uruchomienie, a domyślnie zostają dwa i przebieg przed commitem idzie na dwóch; uprząż wypisuje koszt każdej tury — trzy przebiegi w jednej sesji wyczerpały limit wydatków, decyzja użytkownika przy budowie ticketu 04
+
+2026-11-25 — zmiana specu po weryfikacji R1: etykiety zgłoszenia nadaje formularz albo opiekun, retro w projekcie wysyła Issue bez etykiet, nowy S33 (grupa „bez etykiety” w retro opiekuna), deduplikacja S6 także wśród nieoznaczonych (R1.1); pole rodzaju problemu w S2 (R1.6); odcięcie po dacie w S8 i S11 z tabelami — wystąpienie z dnia odcięcia już zgłoszone (R1.11, zgodnie z decyzją z 2026-11-24); S17 — wkłady według kalendarza profilu, mogą obejmować prywatne (R1.4), wszystkie otwarte zgłoszenia i błąd przy niepełnym odczycie (R1.3); Testy — granice S10 w teście skryptu, w sesjach oba widoczne wyniki (R1.8) — dlaczego: weryfikacja R1 wykazała, że konto bez uprawnień nie nada etykiet, a spec był niepełny lub niejednoznaczny w tych miejscach; decyzje użytkownika
+2026-11-25 — recenzja planu zmiany specu: przyjęte — definicja „stałych pól” w słowniku (wszystkie siedem nagłówków, ostrzej niż reguła skryptu linków, która dopuszcza część pól), Issue bez etykiet wymagane w S2, trafienie bez etykiety tylko w stałych polach (S6), link wyszukiwania bez `gh` obejmuje nieoznaczone (S10), kryterium niepełnego odczytu zgłoszeń i komentarzy (S17), stany zamknięte i dopisek `niewysłane` w tabeli S8, zakres decyzji o etykietach dla forka i firmy, nagłówek specu, rozbity wpis „Zgłoszenie”, S33 liczy się od kolejnego retro; odparte — rozszerzenie atrapy `gh` o nadawanie etykiet i listę bez filtra etykiety: krok budowy, trafia do ticketu poprawek
 ## Plasterki
 
 1. [01 — Sesje testowe agenta z atrapą gh](tickety/01-sesje-testowe-agenta.md)
